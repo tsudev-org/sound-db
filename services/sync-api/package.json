@@ -1,0 +1,26 @@
+{
+  "name": "@sound-db/sync-api",
+  "private": true,
+  "description": "Máy chủ Sound Db trên Cloudflare Workers + D1: đăng nhập qua tsudev.com (OIDC), token cho app, đồng bộ dữ liệu đo, phục vụ website tĩnh",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "migrate:local": "wrangler d1 migrations apply sound-db --local",
+    "migrate:remote": "wrangler d1 migrations apply sound-db --remote",
+    "deploy": "wrangler d1 migrations apply sound-db --remote && wrangler deploy"
+  },
+  "dependencies": {
+    "hono": "4.13.19",
+    "jose": "6.2.17",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@cloudflare/vitest-pool-workers": "0.23.0",
+    "@cloudflare/workers-types": "5.20261116.1",
+    "typescript": "5.9.3",
+    "vitest": "4.1.12",
+    "wrangler": "4.163.0"
+  }
+}

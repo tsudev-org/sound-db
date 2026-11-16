@@ -1,0 +1,93 @@
+import 'dart:async';
+import 'dart:io';
+import 'dart:typed_data';
+
+import 'package:record/record.dart';
+
+class AudioInputException implements Exception {
+  AudioInputException(this.message);
+  final String message;
+  @override
+  String toString() => message;
+}
+
+/// Thu âm micro thành luồng mẫu Float32 [-1, 1].
+///
+/// Tắt mọi xử lý của hệ điều hành (AGC, khử vọng, khử ồn) và trên Android chọn
+/// nguồn `unprocessed`: các bộ xử lý đó đổi mức âm theo thời gian, làm máy đo
+/// sai một cách không đoán trước được.
+class AudioInput {
+  AudioInput({this.sampleRate = 48000});
+
+  final int sampleRate;
+  final AudioRecorder _recorder = AudioRecorder();
+  StreamSubscription<Uint8List>? _subscription;
+  final StreamController<Float32List> _controller = StreamController<Float32List>.broadcast();
+  int _carry = -1;
+
+  Stream<Float32List> get samples => _controller.stream;
+
+  Future<List<InputDevice>> devices() => _recorder.listInputDevices();
+
+  Future<void> start({InputDevice? device}) async {
+    if (!await _recorder.hasPermission()) {
+      throw AudioInputException('Sound Db cần quyền dùng micro để đo. Hãy cấp quyền trong cài đặt hệ thống.');
+    }
+    final config = RecordConfig(
+      encoder: AudioEncoder.pcm16bits,
+      sampleRate: sampleRate,
+      numChannels: 1,
+      autoGain: false,
+      echoCancel: false,
+      noiseSuppress: false,
+      device: device,
+      androidConfig: const AndroidRecordConfig(audioSource: AndroidAudioSource.unprocessed),
+      iosConfig: const IosRecordConfig(categoryOptions: [IosAudioCategoryOption.allowBluetooth]),
+    );
+    if (!await _recorder.isEncoderSupported(AudioEncoder.pcm16bits)) {
+      throw AudioInputException('Thiết bị không hỗ trợ thu PCM 16-bit.');
+    }
+    final stream = await _recorder.startStream(config);
+    _carry = -1;
+    _subscription = stream.listen(_onBytes, onError: (Object e) => _controller.addError(AudioInputException('$e')));
+  }
+
+  /// PCM16 little-endian. Gói byte có thể bị cắt lẻ giữa một mẫu: giữ byte thừa
+  /// để ghép với gói sau thay vì làm lệch pha toàn bộ phần còn lại.
+  void _onBytes(Uint8List bytes) {
+    var offset = 0;
+    final total = bytes.length + (_carry >= 0 ? 1 : 0);
+    final out = Float32List(total ~/ 2);
+    var index = 0;
+    if (_carry >= 0 && bytes.isNotEmpty) {
+      out[index++] = _toSample(_carry, bytes[0]);
+      offset = 1;
+      _carry = -1;
+    }
+    for (; offset + 1 < bytes.length; offset += 2) {
+      out[index++] = _toSample(bytes[offset], bytes[offset + 1]);
+    }
+    if (offset < bytes.length) _carry = bytes[offset];
+    if (index > 0) _controller.add(index == out.length ? out : Float32List.sublistView(out, 0, index));
+  }
+
+  static double _toSample(int lo, int hi) {
+    var v = lo | (hi << 8);
+    if (v >= 0x8000) v -= 0x10000;
+    return v / 32768.0;
+  }
+
+  Future<void> stop() async {
+    await _subscription?.cancel();
+    _subscription = null;
+    if (await _recorder.isRecording()) await _recorder.stop();
+  }
+
+  Future<void> dispose() async {
+    await stop();
+    await _recorder.dispose();
+    await _controller.close();
+  }
+
+  static String get platformName => Platform.operatingSystem;
+}

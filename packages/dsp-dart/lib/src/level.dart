@@ -141,6 +141,13 @@ class SoundLevelMeter {
 
   double get elapsedSeconds => _samples / sampleRate;
 
+  /// Số mẫu đã đo trong phiên.
+  int get sampleCount => _samples;
+
+  /// Tổng bình phương tín hiệu đã lọc trọng số [w] từ đầu phiên (để tính Leq
+  /// cho từng khoảng con: lấy hiệu hai lần đọc chia số mẫu).
+  double weightedSumSquares(Weighting w) => _detectors[w.index].sumSq;
+
   void resetSession() {
     for (final d in _detectors) {
       d.resetStats();

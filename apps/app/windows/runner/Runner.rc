@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.tsudev" "\0"
-            VALUE "FileDescription", "sound_db" "\0"
+            VALUE "CompanyName", "tsudev" "\0"
+            VALUE "FileDescription", "Sound Db" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "sound_db" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2026 com.tsudev. All rights reserved." "\0"
+            VALUE "InternalName", "Sound Db" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2026 tsudev. Apache-2.0." "\0"
             VALUE "OriginalFilename", "sound_db.exe" "\0"
-            VALUE "ProductName", "sound_db" "\0"
+            VALUE "ProductName", "Sound Db" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

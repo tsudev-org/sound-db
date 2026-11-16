@@ -1,0 +1,38 @@
+// sounddb.tsudev.com: MỘT Worker phục vụ cả website tĩnh (apps/web/dist) lẫn API.
+// /api/* và /auth/* chạy mã Worker trước; mọi đường khác là tệp tĩnh (0 lượt gọi Worker
+// tính phí). Cùng khung với lotus/swico/trafficmonitor.tsudev.com (Workers Static Assets,
+// Custom Domain tự tạo DNS + chứng chỉ trong zone tsudev.com).
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "sound-db",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-11-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": "../../apps/web/dist",
+    "binding": "ASSETS",
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash",
+    "run_worker_first": ["/api/*", "/auth/*"]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "sound-db",
+      // Điền sau `wrangler d1 create sound-db --location apac` (xem docs/DEPLOYMENT.md).
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "vars": {
+    "PUBLIC_ORIGIN": "https://sounddb.tsudev.com",
+    "OIDC_ISSUER": "https://tsudev.com/oidc",
+    "OIDC_CLIENT_ID": "sounddb"
+  },
+  // Secret (wrangler secret put): SESSION_SECRET (>= 32 byte ngẫu nhiên), IP_HASH_SALT.
+  "triggers": { "crons": ["17 3 * * *"] },
+  "observability": { "enabled": true },
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [{ "pattern": "sounddb.tsudev.com", "custom_domain": true }]
+}

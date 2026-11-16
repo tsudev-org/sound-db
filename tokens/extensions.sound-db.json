@@ -1,0 +1,84 @@
+{
+  "$note": "Phần MỞ RỘNG riêng của Sound Db, ghép lên .standards/tokens/design-tokens.json bởi scripts/build-tokens.mjs để sinh apps/app/lib/theme/tokens.g.dart và apps/web/src/styles/tokens.css. KHÔNG sửa hai tệp sinh ra. brand.* = bảng đen tuyền + xanh logo của website hệ sinh thái (ECOSYSTEM_IDENTITY.md mục 4.2, giá trị theo tsudev/tokens/extensions.tsudev-web.json 16/11/2026). chart.* = màu biểu đồ đo (đồ họa phi văn bản, mỗi màu đạt >= 3:1 với bg-surface; kiểm bằng scripts/build-tokens.mjs --check).",
+  "meta": {
+    "name": "sound-db-token-extensions",
+    "updated": "17/11/2026",
+    "base": ".standards/tokens/design-tokens.json"
+  },
+  "brand": {
+    "$note": "Tông thương hiệu ĐEN TUYỀN + XANH LOGO (chủ dự án chọn 16/11/2026 - phiên 55, thay tông đen + tím của phiên 47; màu lấy mẫu trực tiếp từ packages/brand/source/logo-tsudev.png: xanh lơ mạch điện ~#30C8F0 và xanh dương chữ 'dev' ~#1E90FF; bố cục/nút/hiệu ứng vẫn tham khảo supabase.com). Chế độ Tối là MẶC ĐỊNH, nền #0A0A0A (đen tuyền về mắt, nhưng KHÔNG phải #000000 - DESIGN_SYSTEM.md §1 cấm đen tuyệt đối), bề mặt xám lạnh rất nhẹ cho khớp nền logo, xanh chỉ ở điểm nhấn. CHỈ HAI bảng màu: Sáng và Tối (+ lựa chọn 'Hệ thống' giải ra một trong hai). Ở chế độ Tối, chữ trên nút xanh là MỰC ĐEN (xanh lơ sáng như logo không đạt 4.5:1 dưới chữ trắng). Mọi cặp bị contrast.test.ts canh ở WCAG AA.",
+    "light": {
+      "bg-base": "#FAFAFA",
+      "bg-surface": "#FFFFFF",
+      "bg-subtle": "#F4F4F5",
+      "bg-hover": "#EBEBED",
+      "border": "#E4E4E7",
+      "border-strong": "#D4D4D8",
+      "border-control": "#71717A",
+      "text-primary": "#0A0A0A",
+      "text-secondary": "#3F3F46",
+      "text-muted": "#52525B",
+      "text-link": "#0757A3",
+      "primary": "#0868C4",
+      "primary-hover": "#0757A3",
+      "primary-active": "#064785",
+      "focus-ring": "#0868C4",
+      "overlay": "rgba(10,10,10,0.45)"
+    },
+    "dark": {
+      "bg-base": "#0A0A0A",
+      "bg-surface": "#0F1114",
+      "bg-subtle": "#15181D",
+      "bg-hover": "#1C2027",
+      "border": "#22272F",
+      "border-strong": "#2C323C",
+      "border-control": "#6E6E6E",
+      "text-primary": "#EDEDED",
+      "text-secondary": "#B4B4B4",
+      "text-muted": "#8F8F8F",
+      "text-link": "#7DD3FC",
+      "primary": "#38BDF8",
+      "primary-hover": "#7DD3FC",
+      "primary-active": "#0EA5E9",
+      "on-primary": "#0A0A0A",
+      "focus-ring": "#38BDF8",
+      "on-status": "#0A0A0A"
+    }
+  },
+  "chart": {
+    "light": {
+      "line": "#0868C4",
+      "fill": "rgba(8,104,196,0.14)",
+      "peak": "#B45309",
+      "grid": "#D4D4D8",
+      "axis": "#52525B",
+      "level-safe": "#15803D",
+      "level-caution": "#B45309",
+      "level-danger": "#DC2626"
+    },
+    "dark": {
+      "line": "#38BDF8",
+      "fill": "rgba(56,189,248,0.18)",
+      "peak": "#FBBF24",
+      "grid": "#2C323C",
+      "axis": "#8F8F8F",
+      "level-safe": "#4ADE80",
+      "level-caution": "#FBBF24",
+      "level-danger": "#F87171"
+    },
+    "spectrogram": [
+      "#000004",
+      "#320A5E",
+      "#781B6C",
+      "#BB3654",
+      "#EC6824",
+      "#FBB41A",
+      "#FCFFA4"
+    ]
+  },
+  "meter-zones": {
+    "$note": "Ngưỡng tô màu mức âm (dBA) theo khuyến nghị WHO/NIOSH: dưới 70 an toàn, 70-85 cần lưu ý, từ 85 nguy hại khi tiếp xúc kéo dài.",
+    "caution": 70,
+    "danger": 85
+  }
+}

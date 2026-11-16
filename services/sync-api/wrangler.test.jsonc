@@ -1,0 +1,13 @@
+// Cấu hình CHỈ cho bộ test (vitest-pool-workers): không có assets/route/cron thật.
+{
+  "name": "sound-db-test",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-08-22",
+  "compatibility_flags": ["nodejs_compat"],
+  "d1_databases": [{ "binding": "DB", "database_name": "sound-db-test", "database_id": "test", "migrations_dir": "migrations" }],
+  "vars": {
+    "PUBLIC_ORIGIN": "https://sounddb.tsudev.com",
+    "OIDC_ISSUER": "https://idp.test/oidc",
+    "OIDC_CLIENT_ID": "sounddb"
+  }
+}

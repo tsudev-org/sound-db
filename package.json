@@ -1,0 +1,30 @@
+{
+  "name": "sound-db",
+  "private": true,
+  "description": "Sound Db - máy đo âm thanh chính xác của hệ sinh thái tsudev (monorepo)",
+  "license": "Apache-2.0",
+  "workspaces": [
+    "apps/web",
+    "services/sync-api"
+  ],
+  "scripts": {
+    "tokens": "node scripts/build-tokens.mjs",
+    "tokens:check": "node scripts/build-tokens.mjs --check",
+    "wasm": "bash scripts/build-wasm.sh",
+    "test": "npm --workspace services/sync-api test",
+    "typecheck": "npm --workspaces run typecheck",
+    "build": "npm run wasm && npm --workspace apps/web run build",
+    "deploy": "npm run build && npm --workspace services/sync-api run deploy"
+  },
+  "engines": {
+    "node": ">=22",
+    "npm": ">=11"
+  },
+  "packageManager": "npm@11.21.2",
+  "allowScripts": {
+    "esbuild@0.28.1": true,
+    "esbuild@0.28.2": true,
+    "workerd@1.20260815.1": true,
+    "workerd@1.20261116.1": true
+  }
+}

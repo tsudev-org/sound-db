@@ -1,4 +1,4 @@
-package com.tsudev.sound_db
+package com.tsudev.sounddb
 
 import io.flutter.embedding.android.FlutterActivity
 
