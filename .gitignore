@@ -327,3 +327,7 @@ apps/web/public/wasm/
 # Wrangler
 .wrangler/
 .dev.vars
+
+# Khóa ký Android của app (do CI giải mã từ secret)
+**/key.properties
+**/upload-keystore.jks

@@ -1,11 +1,19 @@
-# STATE.md - Trạng thái project
+# STATE.md - Trạng thái project Sound Db
 
 > Agent đọc file này ở đầu mỗi phiên và cập nhật ở cuối mỗi phiên.
 > Quy trình: `.standards/docs/AGENT_PROTOCOL.md`.
 
 ## Hàng đợi task (làm từ trên xuống)
 
-- [ ] (thêm task tại đây)
+- [ ] 👤 Đăng ký client OIDC `sounddb` ở tsudev (phiếu `logs/handover/20261117-01_yeu-cau-dang-ky-client-oidc-tsudev.md`)
+- [ ] 👤 Token Cloudflare/GitHub để agent tạo D1, đặt secret, triển khai (`docs/DEPLOYMENT.md` mục 2)
+- [ ] Tạo repo `tsudev-org/sound-db`, bật secret scanning + push protection, branch protection `main`
+- [ ] Triển khai sounddb.tsudev.com + nghiệm thu production (`docs/DEPLOYMENT.md` mục 3)
+- [ ] 👤 Khóa ký Android (keystore) đặt vào Environment `release`, rồi tag bản đầu
+- [ ] iOS: kênh nền tảng đặt `AVAudioSession.Mode.measurement` (plugin record không lộ tham số)
+- [ ] Báo phiên `tsudev` thêm Sound Db vào danh bạ `/apps` (`packages/ui/src/lib/ecosystem.ts`)
+- [ ] Kênh cài bằng lệnh (Scoop, Homebrew, winget, APT/RPM) sau bản phát hành đầu (`PACKAGING.md`)
+- [ ] Logo riêng cho Sound Db: đề xuất cho chủ dự án duyệt (`BRAND_ASSETS.md` mục 15)
 
 ## Đang thực hiện
 
@@ -14,17 +22,19 @@
 
 ## Đã hoàn thành (mới nhất trên cùng)
 
-- DD/MM/YYYY - <việc đã xong>
+- 17/11/2026 - Khởi tạo toàn bộ dự án (agent-sound): lõi DSP Rust + WASM (12 test độ chính xác IEC), bản Dart khớp
+  vector đối chiếu, app Flutter 5 nền tảng (APK Android dựng được, 7 test app), máy chủ Workers + D1 (17 test),
+  website + máy đo trên trình duyệt (nghiệm thu đầu-cuối tông 1 kHz đọc đúng 77,0 dB), CI/CodeQL/deploy/release,
+  tài liệu kiến trúc + 4 ADR.
 
 ## Quyết định quan trọng
 
-> Quyết định kiến trúc lớn thì viết ADR riêng theo `docs/templates/ADR.md` và chỉ
-> ghi một dòng tham chiếu ở đây.
-
-- DD/MM/YYYY - <quyết định + đường dẫn ADR nếu có>
+- 17/11/2026 - Monorepo, Rust tham chiếu + Flutter + Astro + Workers/D1: `docs/adr/0001-*`
+- 17/11/2026 - App dùng bản Dart khớp vector đối chiếu thay vì Rust FFI: `docs/adr/0002-*`
+- 17/11/2026 - Đăng nhập đi qua máy chủ Sound Db (IdP tsudev dùng token mờ, tắt CORS, chưa có client native): `docs/adr/0003-*`
+- 17/11/2026 - Đồng bộ ghi sau thắng, con trỏ `rev`: `docs/adr/0004-*`
+- 17/11/2026 - Dùng logo tsudev chung cho tới khi có logo riêng được duyệt.
 
 ## Sự cố bảo mật
-
-> Ghi theo `.standards/docs/SECURITY_BASELINE.md` mục 9. Để trống nếu chưa có.
 
 - (chưa có)

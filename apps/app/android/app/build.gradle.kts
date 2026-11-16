@@ -30,11 +30,27 @@ android {
         versionName = flutter.versionName
     }
 
+    // Khóa ký phát hành KHÔNG nằm trong repo (GITIGNORE_POLICY.md nhóm 2): đọc từ android/key.properties do CI
+    // giải mã từ secret, hoặc do chủ dự án đặt ở máy. Thiếu tệp ⇒ bản release ký bằng khóa debug và chỉ dùng thử
+    // cục bộ; workflow phát hành chặn trường hợp đó (SOUNDDB_REQUIRE_RELEASE_KEY=1).
+    val keyFile = rootProject.file("key.properties")
+    if (keyFile.exists()) {
+        val props = java.util.Properties().apply { keyFile.inputStream().use { load(it) } }
+        signingConfigs {
+            create("release") {
+                storeFile = file(props.getProperty("storeFile"))
+                storePassword = props.getProperty("storePassword")
+                keyAlias = props.getProperty("keyAlias")
+                keyPassword = props.getProperty("keyPassword")
+            }
+        }
+    } else if (System.getenv("SOUNDDB_REQUIRE_RELEASE_KEY") == "1") {
+        throw GradleException("Thiếu android/key.properties - không phát hành APK ký bằng khóa debug.")
+    }
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = if (keyFile.exists()) signingConfigs.getByName("release") else signingConfigs.getByName("debug")
         }
     }
 }

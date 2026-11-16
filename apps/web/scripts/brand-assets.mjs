@@ -215,6 +215,22 @@ async function main() {
   for (const s of CFG.appSizes ?? [16, 24, 32, 48, 64, 128, 256, 512]) emit(app(`icon-${s}.png`), await at(s));
   emit(app('app.ico'), await ico(rounded));
 
+  // --- Icon app Flutter (apps/app): Android mipmap, iOS/macOS AppIcon (đọc Contents.json để ra đúng tên/cỡ),
+  // Windows app_icon.ico. iOS không nhận kênh alpha: dùng ô nền đặc.
+  const flutter = (rel) => path.join(ROOT, 'apps/app', rel);
+  for (const [dir, size] of [['mdpi', 48], ['hdpi', 72], ['xhdpi', 96], ['xxhdpi', 144], ['xxxhdpi', 192]]) {
+    emit(flutter(`android/app/src/main/res/mipmap-${dir}/ic_launcher.png`), await at(size));
+  }
+  for (const [set, solid] of [['ios/Runner/Assets.xcassets/AppIcon.appiconset', true], ['macos/Runner/Assets.xcassets/AppIcon.appiconset', false]]) {
+    const contents = JSON.parse(fs.readFileSync(flutter(`${set}/Contents.json`), 'utf8'));
+    for (const img of contents.images) {
+      if (!img.filename) continue;
+      const px = Math.round(parseFloat(img.size) * parseFloat(img.scale));
+      emit(flutter(`${set}/${img.filename}`), solid ? await onSolid(px, 1, square) : await at(px));
+    }
+  }
+  emit(flutter('windows/runner/resources/app_icon.ico'), await ico(rounded));
+
   // --- Ghi hoặc kiểm.
   const bad = [];
   for (const [abs, buf] of outputs) {
