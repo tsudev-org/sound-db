@@ -1,0 +1,122 @@
+---
+// Khung chung: <head> theo ECOSYSTEM_IDENTITY mục 2.2, đầu trang, chân trang nối về tsudev.com (mục 4).
+import '../styles/fonts.css';
+import '../styles/fonts-mono.css';
+import '../styles/tokens.css';
+import '../styles/site.css';
+import { REPO_URL, SAN_PHAM, SITE } from '../lib/site';
+
+interface Props {
+  tieuDe?: string;
+  moTa: string;
+  duongDan: string;
+  anChiMuc?: boolean;
+}
+const { tieuDe, moTa, duongDan, anChiMuc = false } = Astro.props;
+const title = tieuDe ? `${tieuDe} - ${SAN_PHAM} | tsudev` : `${SAN_PHAM} | tsudev`;
+const url = `${SITE}${duongDan}`;
+const nam = new Date().getFullYear();
+const menu = [
+  { href: '/do/', ten: 'Đo trên web' },
+  { href: '/huong-dan/', ten: 'Hướng dẫn' },
+  { href: '/bao-mat/', ten: 'Bảo mật' },
+  { href: '/bang-dieu-khien/', ten: 'Tài khoản' },
+];
+const cheDo = [
+  { ma: 'light', ten: 'Sáng', icon: '<circle cx="12" cy="12" r="4.2"/><path d="M12 2.6v2.2M12 19.2v2.2M2.6 12h2.2M19.2 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6 1.6"/>' },
+  { ma: 'dark', ten: 'Tối', icon: '<path d="M20.5 14.3A8.5 8.5 0 1 1 9.7 3.5a6.8 6.8 0 0 0 10.8 10.8Z"/>' },
+  { ma: 'system', ten: 'Hệ thống', icon: '<rect x="2.8" y="4.4" width="18.4" height="12.2" rx="1.6"/><path d="M8.6 20.2h6.8M12 16.6v3.6"/>' },
+];
+const dangO = (href: string) => duongDan.startsWith(href);
+---
+<!doctype html>
+<html lang="vi" data-theme="dark">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{title}</title>
+    <meta name="description" content={moTa}>
+    <meta name="theme-color" content="#0a0a0a">
+    <meta name="color-scheme" content="dark light">
+    <script is:inline src="/theme.js"></script>
+    {anChiMuc && <meta name="robots" content="noindex">}
+    <link rel="canonical" href={url}>
+    <meta property="og:site_name" content="tsudev">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="vi_VN">
+    <meta property="og:title" content={tieuDe ? `${tieuDe} - ${SAN_PHAM}` : SAN_PHAM}>
+    <meta property="og:description" content={moTa}>
+    <meta property="og:image" content={`${SITE}/og-image.png`}>
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content={url}>
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/manifest.webmanifest">
+  </head>
+  <body>
+    <a class="bo-qua" href="#noi-dung">Bỏ qua tới nội dung</a>
+    <header class="dau-trang">
+      <div class="khung dau-trang__trong">
+        <a class="thuong-hieu" href="/" aria-label="Sound Db - Trang chủ">
+          <picture><source srcset="/brand/logo-sound-db-48.avif 1x, /brand/logo-sound-db-96.avif 2x" type="image/avif"><source srcset="/brand/logo-sound-db-48.webp 1x, /brand/logo-sound-db-96.webp 2x" type="image/webp"><img src="/brand/logo-sound-db.png" alt="" width="36" height="36"></picture>
+          <span>Sound Db</span>
+        </a>
+        <nav aria-label="Chính">
+          <ul class="menu">
+            {menu.map((m) => <li><a href={m.href} aria-current={dangO(m.href) ? 'page' : undefined}>{m.ten}</a></li>)}
+          </ul>
+        </nav>
+        <div class="dau-trang__nut">
+          <a class="nut nut--phu nut--nho" href={REPO_URL} target="_blank" rel="noopener noreferrer">Mã nguồn</a>
+          <a class="nut nut--chinh nut--nho" href="/tai-ve/" aria-current={dangO('/tai-ve/') ? 'page' : undefined}>Tải về</a>
+        </div>
+      </div>
+    </header>
+    <main id="noi-dung">
+      <slot />
+    </main>
+    <footer class="chan-trang">
+      <div class="khung">
+        <div class="chan-trang__trong">
+          <div>
+            <a class="thuong-hieu thuong-hieu--nho" href="https://tsudev.com" target="_blank" rel="noopener noreferrer">
+              <picture><source srcset="/brand/logo-tsudev-48.avif 1x, /brand/logo-tsudev-96.avif 2x" type="image/avif"><source srcset="/brand/logo-tsudev-48.webp 1x, /brand/logo-tsudev-96.webp 2x" type="image/webp"><img src="/brand/logo-tsudev-256.png" alt="" width="28" height="28" loading="lazy" decoding="async"></picture>
+              <span>tsudev</span>
+            </a>
+            <p>Sound Db là máy đo âm thanh của hệ sinh thái tsudev, mã nguồn mở theo
+              <a href={`${REPO_URL}/blob/main/LICENSE`} target="_blank" rel="noopener noreferrer">giấy phép Apache 2.0</a>.</p>
+          </div>
+          <nav aria-label="Hệ sinh thái tsudev">
+            <ul class="chan-trang__lien-ket">
+              <li><a href="https://tsudev.com/terms" target="_blank" rel="noopener noreferrer">Điều khoản sử dụng</a></li>
+              <li><a href="https://tsudev.com/privacy" target="_blank" rel="noopener noreferrer">Chính sách riêng tư</a></li>
+              <li><a href="https://tsudev.com/projects" target="_blank" rel="noopener noreferrer">Sản phẩm khác</a></li>
+            </ul>
+          </nav>
+          <nav aria-label="Dự án">
+            <ul class="chan-trang__lien-ket">
+              <li><a href="/tai-ve/">Tải về</a></li>
+              <li><a href="/bao-mat/">Bảo mật và quyền riêng tư</a></li>
+              <li><a href={`${REPO_URL}/issues`} target="_blank" rel="noopener noreferrer">Báo lỗi, góp ý</a></li>
+            </ul>
+          </nav>
+        </div>
+        <div class="chan-trang__cuoi">
+          <p>© {nam} tsudev</p>
+          <div class="giao-dien" id="giao-dien" role="radiogroup" aria-label="Giao diện" hidden>
+            {cheDo.map((c) => (
+              <button type="button" role="radio" aria-checked={c.ma === 'dark' ? 'true' : 'false'} tabindex={c.ma === 'dark' ? '0' : '-1'}
+                      aria-label={c.ten} title={c.ten} data-chon-giao-dien={c.ma}>
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"
+                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" set:html={c.icon} />
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

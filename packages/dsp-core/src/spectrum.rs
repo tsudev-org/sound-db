@@ -165,8 +165,11 @@ impl SpectrumAnalyzer {
 
     pub fn analyze(&mut self, frame: &[f32]) {
         assert_eq!(frame.len(), self.size, "khung phải dài đúng kích thước FFT");
+        // Bỏ thành phần một chiều (DC) của micro: không thì búp DC rò vào vài bin đầu và
+        // kéo "tần số trội" xuống dưới 20 Hz.
+        let mean = frame.iter().map(|&x| x as f64).sum::<f64>() / self.size as f64;
         for ((dst, &x), &w) in self.input.iter_mut().zip(frame).zip(&self.window) {
-            *dst = x as f64 * w;
+            *dst = (x as f64 - mean) * w;
         }
         self.fft
             .process_with_scratch(&mut self.input, &mut self.output, &mut self.scratch)
@@ -287,8 +290,9 @@ impl SpectrumAnalyzer {
             });
         }
         let half = self.lobe_half_width();
-        let start = bin.saturating_sub(half).max(1);
-        let end = (bin + half).min(last - 1);
+        // Vùng trọng tâm không vượt khỏi dải đang tìm (tránh búp lân cận ngoài dải kéo lệch).
+        let start = bin.saturating_sub(half).max(lo.saturating_sub(1)).max(1);
+        let end = (bin + half).min(hi + 1).min(last - 1);
         let (mut total, mut moment) = (0.0, 0.0);
         for k in start..=end {
             total += self.power[k];

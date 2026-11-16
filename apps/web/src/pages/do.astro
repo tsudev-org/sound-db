@@ -1,0 +1,51 @@
+---
+import Trang from '../layouts/Trang.astro';
+---
+<Trang tieuDe="Đo trên trình duyệt" moTa="Máy đo âm thanh chạy ngay trong trình duyệt: mức dB trọng số A, C, Z, Leq, Lmax, phổ tần số và tần số trội. Âm thanh không rời máy." duongDan="/do/">
+  <div class="khung may-do">
+    <h1 class="an-di">Máy đo âm thanh trên trình duyệt</h1>
+    <p id="loi" class="thong-bao thong-bao--loi" role="alert" hidden></p>
+    <p class="thong-bao">Micro của máy tính và tai nghe khác nhau rất nhiều: kết quả chỉ chính xác sau khi
+      <a href="/huong-dan/">hiệu chuẩn</a>. Âm thanh được xử lý ngay trên trình duyệt, không gửi đi đâu.</p>
+    <div class="hang-nut">
+      <button id="nut-do" class="nut nut--chinh" type="button">Bắt đầu đo</button>
+      <button id="nut-dat-lai" class="nut nut--phu" type="button" disabled>Đặt lại phiên</button>
+    </div>
+    <div class="so-lon" aria-live="polite">
+      <span id="nhan-muc">LAF</span>
+      <output id="muc" for="nut-do">-</output>
+      <span id="don-vi">dB(A)</span>
+    </div>
+    <div class="hang-chon">
+      <div class="chon" role="group" aria-label="Trọng số tần số">
+        <button type="button" data-trong-so="0" aria-pressed="true">A</button>
+        <button type="button" data-trong-so="1" aria-pressed="false">C</button>
+        <button type="button" data-trong-so="2" aria-pressed="false">Z</button>
+      </div>
+      <div class="chon" role="group" aria-label="Trọng số thời gian">
+        <button type="button" data-thoi-gian="0" aria-pressed="true">Nhanh</button>
+        <button type="button" data-thoi-gian="1" aria-pressed="false">Chậm</button>
+        <button type="button" data-thoi-gian="2" aria-pressed="false">Xung</button>
+      </div>
+    </div>
+    <dl class="o-so">
+      <div><dt>Leq</dt><dd id="leq">-</dd></div>
+      <div><dt>Lmax</dt><dd id="lmax">-</dd></div>
+      <div><dt>Lmin</dt><dd id="lmin">-</dd></div>
+      <div><dt>Lpeak</dt><dd id="lpeak">-</dd></div>
+      <div><dt>LAF10</dt><dd id="l10">-</dd></div>
+      <div><dt>LAF90</dt><dd id="l90">-</dd></div>
+      <div><dt>Tần số trội</dt><dd id="tan-so">-</dd></div>
+      <div><dt>Thời lượng</dt><dd id="thoi-luong">-</dd></div>
+    </dl>
+    <canvas id="pho" class="bieu-do" role="img" aria-label="Phổ tần số trên trục log từ 20 Hz"></canvas>
+    <details>
+      <summary>Hiệu chuẩn cho trình duyệt này</summary>
+      <p>Offset hiện tại: <strong id="offset-hien">-</strong> dB. Mức = 10·log10(trung bình bình phương) + offset.</p>
+      <label for="offset">Offset mới (dB)</label>
+      <input id="offset" class="o-tim" type="number" step="0.1" min="0" max="200" inputmode="decimal">
+      <button id="nut-offset" class="nut nut--phu nut--nho" type="button">Áp dụng</button>
+    </details>
+  </div>
+  <script src="../scripts/may-do.ts"></script>
+</Trang>

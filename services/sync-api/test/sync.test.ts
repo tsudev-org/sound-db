@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { cleanup } from '../src/index';
+import { cleanup } from '../src/maintenance';
 import { env } from 'cloudflare:test';
 import { appLogin, call, fakeIdp } from './helpers';
 

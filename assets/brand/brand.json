@@ -1,0 +1,14 @@
+{
+  "_ghi_chu": "Cấu hình dây chuyền thương hiệu (apps/web/scripts/brand-assets.mjs). Sound Db CHƯA có logo riêng được duyệt (BRAND_ASSETS.md mục 12.3 và 15) nên dùng logo tsudev chính thức (tsudev/packages/brand/source/logo-tsudev.png, SHA-256 2ad933bd...77ba). Có logo riêng được duyệt: thay ảnh ở source/, sửa id/source, chạy lại `node apps/web/scripts/brand-assets.mjs`. CI chạy với --check.",
+  "id": "sound-db",
+  "name": "Sound Db",
+  "source": "source/logo-tsudev.png",
+  "mode": "tile",
+  "tileRadius": 0.22,
+  "solidBg": "#000001",
+  "ogGlow": "#0b3a52",
+  "ogAccent": "#38bdf8",
+  "domain": "sounddb.tsudev.com",
+  "ogLines": ["Máy đo mức âm, phổ tần số và cao độ", "Android, iOS, Windows, macOS, Linux và web"],
+  "appSizes": [16, 24, 32, 48, 64, 128, 256, 512, 1024]
+}

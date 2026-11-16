@@ -98,7 +98,7 @@ class LevelSnapshot {
 
   double level(Weighting w, TimeWeighting t) => instant[w.index][t.index];
 
-  /// Cùng bố cục 61 số với `LevelSnapshot::to_flat` của Rust.
+  /// Cùng bố cục 46 số với `LevelSnapshot::to_flat` của Rust.
   List<double> toFlat() => [
         for (final row in instant) ...row,
         ...leq,

@@ -102,8 +102,14 @@ class SpectrumAnalyzer {
 
   void analyze(Float32List frame) {
     assert(frame.length == size);
+    // Bỏ thành phần một chiều (DC) - xem bản Rust.
+    var mean = 0.0;
     for (var i = 0; i < size; i++) {
-      _re[i] = frame[i] * _window[i];
+      mean += frame[i];
+    }
+    mean /= size;
+    for (var i = 0; i < size; i++) {
+      _re[i] = (frame[i] - mean) * _window[i];
       _im[i] = 0;
     }
     _fft.transform(_re, _im);
@@ -175,8 +181,8 @@ class SpectrumAnalyzer {
       return PeakEstimate((best + delta) * bin, _amplitudeDb(math.exp(b - 0.25 * (a - c) * delta)), best);
     }
     final half = windowKind.lobeHalfWidth;
-    final start = math.max(1, best - half);
-    final end = math.min(last - 1, best + half);
+    final start = math.max(1, math.max(lo - 1, best - half));
+    final end = math.min(last - 1, math.min(hi + 1, best + half));
     var total = 0.0, moment = 0.0;
     for (var k = start; k <= end; k++) {
       total += power[k];

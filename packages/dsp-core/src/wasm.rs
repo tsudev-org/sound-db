@@ -72,7 +72,7 @@ impl WasmEngine {
         Ok(())
     }
 
-    /// 61 số theo `LevelSnapshot::to_flat`.
+    /// 46 số theo `LevelSnapshot::to_flat`.
     pub fn levels(&self) -> Vec<f64> {
         self.inner.levels().to_flat()
     }

@@ -45,7 +45,7 @@ void main() {
     }
   });
 
-  test('máy đo mức (61 số của ảnh chụp)', () {
+  test('máy đo mức (46 số của ảnh chụp)', () {
     for (final raw in doc['meters'] as List<dynamic>) {
       final c = raw as Map<String, dynamic>;
       final meter = SoundLevelMeter(d(c['fs']), d(c['offset_db']));
@@ -58,7 +58,7 @@ void main() {
           expect(got[i].isFinite, isFalse, reason: 'chỉ số $i');
         } else {
           // Phân vị lượng tử 0,1 dB: lệch số học sát biên có thể nhảy một ô.
-          final tol = (i >= 36 && i < 43) ? 0.1 + 1e-9 : tolDb;
+          final tol = (i >= 33 && i < 40) ? 0.1 + 1e-9 : tolDb;
           expect(got[i], closeTo(d(expected[i]), tol), reason: 'chỉ số $i');
         }
       }

@@ -304,7 +304,7 @@ impl SoundLevelMeter {
 }
 
 impl LevelSnapshot {
-    /// Bố cục phẳng cố định để truyền qua WASM/FFI. Thứ tự (61 số):
+    /// Bố cục phẳng cố định để truyền qua WASM/FFI. Thứ tự (46 số):
     /// instant[3][3], leq[3], max[3][3], min[3][3], peak[3], percentiles[7],
     /// sel_a, dose_niosh, dose_osha, twa_niosh, twa_osha, elapsed_s.
     /// THAY ĐỔI THỨ TỰ = thay đổi phá vỡ hợp đồng với apps/web.

@@ -1,0 +1,38 @@
+---
+import Trang from '../layouts/Trang.astro';
+---
+<Trang tieuDe="Hướng dẫn đo" moTa="Hướng dẫn đo mức âm đúng cách với Sound Db: chọn trọng số A, C, Z, trọng số thời gian, hiệu chuẩn micro và đọc phổ tần số." duongDan="/huong-dan/">
+  <article class="khung van-ban">
+    <h1>Hướng dẫn đo</h1>
+    <h2>1. Chọn trọng số</h2>
+    <ul>
+      <li><strong>A</strong> (dBA): mô phỏng độ nhạy tai người, dùng cho tiếng ồn môi trường và nghề nghiệp.</li>
+      <li><strong>C</strong> (dBC): giữ gần như nguyên tần số thấp, dùng cho âm nhạc, máy móc và đỉnh LCpeak.</li>
+      <li><strong>Z</strong> (dBZ): không trọng số, để đo kỹ thuật và phân tích phổ.</li>
+    </ul>
+    <h2>2. Chọn trọng số thời gian</h2>
+    <ul>
+      <li><strong>Nhanh (F, 125 ms)</strong>: tiếng ồn thay đổi nhanh, mặc định cho phần lớn phép đo.</li>
+      <li><strong>Chậm (S, 1 s)</strong>: tiếng ồn ổn định; liều tiếp xúc tính trên mức này.</li>
+      <li><strong>Xung (I)</strong>: tiếng đập, tiếng nổ ngắn.</li>
+    </ul>
+    <h2>3. Hiệu chuẩn</h2>
+    <p>Micro mỗi máy khác nhau tới 10 dB. Trước khi dùng số đo cho việc quan trọng:</p>
+    <ol>
+      <li>Có máy hiệu chuẩn âm (94 dB hoặc 114 dB tại 1 kHz): chọn cách tương ứng trong Cài đặt, đo 10 giây, áp dụng.</li>
+      <li>Có máy đo âm chuẩn: đặt hai máy sát nhau trước một nguồn ồn ổn định, đo cùng lúc 10 giây, nhập LAeq của máy chuẩn.</li>
+      <li>Biết sẵn offset của máy: nhập tay.</li>
+    </ol>
+    <p>Hồ sơ hiệu chuẩn được đồng bộ khi bạn đăng nhập, nhưng chỉ đúng cho đúng thiết bị đó.</p>
+    <h2>4. Đọc kết quả</h2>
+    <ul>
+      <li><strong>Leq</strong>: mức năng lượng trung bình của cả phiên, con số dùng để so với quy chuẩn.</li>
+      <li><strong>LAF10 / LAF90</strong>: mức bị vượt 10% / 90% thời gian; LAF90 là ồn nền.</li>
+      <li><strong>Liều</strong>: 100% là giới hạn tiếp xúc cho một ngày làm việc 8 giờ.</li>
+    </ul>
+    <h2>5. Giới hạn cần biết</h2>
+    <p>Điện thoại không phải máy đo âm cấp 1/cấp 2 được kiểm định. Micro điện thoại thường bão hòa quanh 100-120 dB
+      và kém nhạy dưới 50 Hz. Dùng Sound Db để khảo sát, theo dõi và so sánh; với phép đo có giá trị pháp lý, dùng
+      thiết bị đã kiểm định.</p>
+  </article>
+</Trang>
