@@ -1,0 +1,11 @@
+name: sounddb_dsp
+description: Lõi xử lý tín hiệu âm thanh của Sound Db cho Dart/Flutter - bản port của packages/dsp-core (Rust), kiểm khớp bằng conformance/vectors.json.
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: ^3.10.0
+
+dev_dependencies:
+  test: ^1.26.0
+  lints: ^6.0.0
