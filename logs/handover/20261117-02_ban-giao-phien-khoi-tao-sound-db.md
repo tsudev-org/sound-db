@@ -3,7 +3,7 @@
 - **Mã phiếu**: 20261117-02
 - **Từ**: agent-sound (phiên `projects-b2`) - **Đến**: phiên kế tiếp của repo `sound-db`
 - **Thời điểm**: 12:40 17/11/2026
-- **Trạng thái**: MỞ
+- **Trạng thái**: ĐÓNG (tiếp nối ở phiếu 20261117-03)
 - **Nhánh git**: `main` sạch, đã đẩy (commit cuối `ee7cde2` trở đi). Không nhánh dở trong repo này.
 
 ## 1. Việc đã làm xong (chi tiết: `logs/STATE.md` mục Đã hoàn thành)
