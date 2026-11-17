@@ -10,7 +10,9 @@
   trong `.github/workflows/deploy.yml` (hiện triển khai bằng `wrangler` đã đăng nhập trên máy dev)
 - [ ] 👤 Khóa ký Android: 4 secret ở Environment `release` (`.github/workflows/release.yml`), rồi tag bản mới
 - [ ] 👤 Bật Required reviewers cho Environment `release` và `production`
-- [ ] Kênh APT/RPM: PR thêm `tsudev-org/sound-db` vào `linux-packages/products.json` (cần bản phát hành có icon trong bundle, từ 26.11.1702); winget: PR vào microsoft/winget-pkgs (bộ phân loại từng chặn - để chủ dự án)
+- [ ] linux-packages PR #30: hỏng cài thử debian:12/ubuntu:22.04 (nghi glibc) - bước sửa ở phiếu `20261117-02` mục 2
+- [ ] ⛔ scoop-bucket PR #17 (sửa excavator) chờ chủ sở hữu duyệt
+- [ ] winget: PR vào microsoft/winget-pkgs (bộ phân loại từng chặn - để chủ dự án)
 - [ ] Logo riêng cho Sound Db: đề xuất cho chủ dự án duyệt (`BRAND_ASSETS.md` mục 15)
 
 ## Đang thực hiện
@@ -19,6 +21,9 @@
 | --- | --- | --- |
 
 ## Đã hoàn thành (mới nhất trên cùng)
+
+- 17/11/2026 - Bản 26.11.1702 (sửa Lịch sử, đăng nhập không WebView, iOS mode đo lường). Scoop + Homebrew đã ở
+  26.11.1702. Phiếu bàn giao cuối phiên: `logs/handover/20261117-02_ban-giao-phien-khoi-tao-sound-db.md`.
 
 - 17/11/2026 - Scoop `tsudev-sound-db` (scoop-bucket#16, cài thử thật trên Windows đạt) và Homebrew cask (homebrew-tap#8, cài thử trên macOS đạt), tự cập nhật theo Release. iOS mode `.measurement`; CI thêm job dựng kiểm iOS + macOS (bắt buộc trong ruleset). `packaging/package.json`, khối Cài bằng lệnh trên /tai-ve/.
 
