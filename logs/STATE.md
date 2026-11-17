@@ -6,12 +6,11 @@
 ## Hàng đợi task (làm từ trên xuống)
 
 - [ ] 👤 Đăng ký client OIDC `sounddb` ở tsudev (phiếu `logs/handover/20261117-01_yeu-cau-dang-ky-client-oidc-tsudev.md`)
-- [ ] 👤 Token Cloudflare/GitHub để agent tạo D1, đặt secret, triển khai (`docs/DEPLOYMENT.md` mục 2)
-- [ ] Tạo repo `tsudev-org/sound-db`, bật secret scanning + push protection, branch protection `main`
-- [ ] Triển khai sounddb.tsudev.com + nghiệm thu production (`docs/DEPLOYMENT.md` mục 3)
+- [ ] 👤 Secret `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID` ở Environment `production` rồi bật lại trigger `push`
+  trong `.github/workflows/deploy.yml` (hiện triển khai bằng `wrangler` đã đăng nhập trên máy dev)
+- [ ] Branch protection/ruleset cho `main` (check bắt buộc: CI các job, CodeQL)
 - [ ] 👤 Khóa ký Android (keystore) đặt vào Environment `release`, rồi tag bản đầu
 - [ ] iOS: kênh nền tảng đặt `AVAudioSession.Mode.measurement` (plugin record không lộ tham số)
-- [ ] Báo phiên `tsudev` thêm Sound Db vào danh bạ `/apps` (`packages/ui/src/lib/ecosystem.ts`)
 - [ ] Kênh cài bằng lệnh (Scoop, Homebrew, winget, APT/RPM) sau bản phát hành đầu (`PACKAGING.md`)
 - [ ] Logo riêng cho Sound Db: đề xuất cho chủ dự án duyệt (`BRAND_ASSETS.md` mục 15)
 
@@ -21,6 +20,11 @@
 | --- | --- | --- |
 
 ## Đã hoàn thành (mới nhất trên cùng)
+
+- 17/11/2026 - Repo `tsudev-org/sound-db` (Public, secret scanning + push protection + Dependabot). Production
+  sounddb.tsudev.com: Worker `sound-db` + D1 `sound-db` (apac, id cfcceb24-...), secret đặt. Nghiệm thu: health ok,
+  `/do/` một CSP có WASM, `/api/v1/me` 401, máy đo trên Chromium với tông 1 kHz -20 dBFS đọc 77,0 dB / 1,000 kHz.
+  tsudev đã sửa host OIDC (#297) và thêm thẻ Sound Db ở tsudev.com/apps (#298). npm audit 0 lỗ hổng (overrides).
 
 - 17/11/2026 - Khởi tạo toàn bộ dự án (agent-sound): lõi DSP Rust + WASM (12 test độ chính xác IEC), bản Dart khớp
   vector đối chiếu, app Flutter 5 nền tảng (APK Android dựng được, 7 test app), máy chủ Workers + D1 (17 test),
