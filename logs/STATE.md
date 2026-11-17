@@ -5,9 +5,12 @@
 
 ## Hàng đợi task (làm từ trên xuống)
 
-- [ ] Đăng nhập tsudev: client `sounddb` ĐÃ có (phiên tsudev chèn ~21:05 17/11, `/oidc/auth` 303). Còn tắc ở tsudev:
-  `GET tsudev.com/oidc/interaction/<uid>` trả 404 text/plain (cả uid bịa) - đã báo phiên `tsudev-e1`. tsudev sửa
-  xong ⇒ nghiệm thu đăng nhập web + app (cần tài khoản tsudev thật của chủ dự án), đồng bộ hai thiết bị.
+- [ ] 👤 Đăng nhập tsudev: ĐÃ HẾT TẮC (22:20 17/11) - `/auth/web/start` → `/oidc/auth` 303 → `/oidc/interaction/<uid>`
+  307 → `tsudev.com/login` 200. Còn nghiệm thu bằng tài khoản tsudev thật của chủ dự án: đăng nhập web
+  (sounddb.tsudev.com → Đăng nhập) + app, rồi đồng bộ hai thiết bị. Agent không có tài khoản ⇒ không tự làm được.
+- [ ] 👤 Cài thử APK trên emulator: SDK đã có `emulator` + `system-images;android-36;google_apis;x86_64`, AVD
+  `sounddb36` đã tạo; thiếu quyền KVM. Chủ dự án chạy `! sudo usermod -aG kvm $USER` rồi mở lại WSL, sau đó:
+  `emulator -avd sounddb36 -no-window -no-audio -gpu swiftshader_indirect` + `adb install sound-db_26.11.1705_x64-setup.apk`.
 - [ ] 👤 Required reviewers cho Environment `release` và `production` (tài khoản `tsudev-tsudev` không có quyền admin
   repo - HTTP 403). Lệnh: phiếu `20261117-05` mục 3.
 - [ ] 👤 Chọn logo riêng (phiếu `logs/handover/20261117-04_de-xuat-logo-rieng-sound-db.md`, 3 phương án SVG).
