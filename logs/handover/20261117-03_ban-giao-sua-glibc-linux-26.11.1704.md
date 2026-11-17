@@ -72,10 +72,17 @@
   để `upload.jks` + mật khẩu trong thư mục chủ dự án chỉ định. Required reviewers làm SAU các bản phát hành.
 - Kiểm thử trình duyệt toàn bộ (Playwright + axe) + luồng đăng nhập/đồng bộ khi có client OIDC.
 
+**Cập nhật 19:30 17/11/2026:** chủ dự án đã duyệt; scoop-bucket #17 chạy lại cổng bản quyền ⇒ đạt, đã merge,
+excavator chạy tay đạt (Scoop 26.11.1704); Homebrew `cap-nhat` chạy tay ⇒ 26.11.1704; `xuat-ban` xong, kho apt/rpm
+có `tsudev-sound-db` 26.11.1704-1. `/tai-ve/` đọc `pkg.tsudev.com/catalog.json` lúc build để hiện lệnh APT/DNF;
+`packaging/package.json` chuyển apt, rpm sang `channels`. Test máy chủ ghim `PUBLIC_ORIGIN` (trước đó `.dev.vars`
+cục bộ làm 2 test hỏng ở máy dev). Mục 2 gạch đầu tiên và mục 3.1, 3.6 ĐÃ XONG.
+
 ## 5. Cảnh báo
 
 - Tag `v26.11.1703` không có Release - đừng dùng lại số này.
 - Runner `ubuntu-22.04`: `libunwind-14-dev` cài sẵn xung đột `libunwind-dev` (đã xử lý trong `release.yml`).
+- Máy dev quá tải (CPU/RAM gần 100%) làm `fetch` lúc build Astro hết giờ - dựng lại; CI không bị.
 - Sau `wrangler deploy`, trang tĩnh có thể còn bản cũ ~1 phút do cache cạnh (`cf-cache-status: HIT`).
 - `pgrep -f "wrangler dev"` khớp cả chính shell đang chạy lệnh ⇒ báo nhầm; dùng `pgrep -x workerd` hoặc lọc PID shell.
 - Chưa xử lý: `~/.config/tsudev/cloudflare.env` quyền 644 (của phiên khác) - nên `chmod 600` hoặc thu hồi.

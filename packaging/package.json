@@ -55,6 +55,6 @@
       "group": "Applications/Multimedia"
     }
   },
-  "channels": ["scoop", "brew"],
-  "planned": ["apt", "rpm", "winget"]
+  "channels": ["scoop", "brew", "apt", "rpm"],
+  "planned": ["winget"]
 }

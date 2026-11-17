@@ -8,12 +8,32 @@ const LENH: Record<string, { ten: string; lenh: string }> = {
   scoop: { ten: 'Windows - Scoop', lenh: `scoop bucket add tsudev https://github.com/tsudev-org/scoop-bucket\nscoop install tsudev/${goi.name}` },
   brew: { ten: 'macOS - Homebrew', lenh: `brew install tsudev-org/tap/${goi.name}` },
 };
+// apt/dnf: đọc https://pkg.tsudev.com/catalog.json LÚC BUILD (README linux-packages) - chỉ hiện khi gói có thật
+// trong kho; không tải được thì bỏ khối Linux chứ không làm hỏng bản dựng.
+type GoiKho = { name: string; install?: { apt?: string; dnf?: string } };
+type Kho = { schema: number; setup?: { apt?: string[]; dnf?: string[] }; packages?: GoiKho[] };
+let kho: Kho | undefined;
+if (goi.channels.some((k) => k === 'apt' || k === 'rpm')) {
+  try {
+    const r = await fetch('https://pkg.tsudev.com/catalog.json', { signal: AbortSignal.timeout(15000) });
+    if (r.ok) kho = (await r.json()) as Kho;
+  } catch (e) {
+    console.warn('[tai-ve] không đọc được catalog.json:', e);
+  }
+}
+const goiKho = kho?.schema === 1 ? kho.packages?.find((p) => p.name === goi.name) : undefined;
+if (goiKho?.install?.apt && kho?.setup?.apt) {
+  LENH.apt = { ten: 'Debian, Ubuntu - APT', lenh: [...kho.setup.apt, goiKho.install.apt].join('\n') };
+}
+if (goiKho?.install?.dnf && kho?.setup?.dnf) {
+  LENH.rpm = { ten: 'Fedora, RHEL - DNF', lenh: [...kho.setup.dnf, goiKho.install.dnf].join('\n') };
+}
 const kenh = goi.channels.filter((k) => k in LENH).map((k) => LENH[k]!);
 
 const nenTang = [
   ['Windows', 'Windows 10/11 x64', 'Tệp .zip, giải nén rồi chạy sound_db.exe'],
   ['macOS', 'macOS 12 trở lên (Intel và Apple Silicon)', 'Tệp .zip chứa Sound Db.app (chưa ký Apple: chuột phải > Mở)'],
-  ['Linux', 'x64', 'Tệp .tar.gz, giải nén rồi chạy ./sound_db'],
+  ['Linux', 'x64 (Debian 12, Ubuntu 22.04, Fedora trở lên)', 'Gói APT/DNF (mục Cài bằng lệnh) hoặc tệp .tar.gz'],
   ['Android', 'Android 7.0 trở lên', 'APK ký số - sắp có'],
   ['iOS và iPadOS', 'iOS 15 trở lên', 'App Store - đang chuẩn bị'],
 ];
