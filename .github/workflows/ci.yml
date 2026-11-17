@@ -5,7 +5,9 @@ on:
   push: { branches: [main] }
   pull_request:
 permissions: { contents: read }
-concurrency: { group: ci-${{ github.ref }}, cancel-in-progress: true }
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 env:
   FLUTTER_VERSION: '3.47.9'
   FLUTTER_COMMIT: 'c197ca5199e9ee5661e865596c9c07294dfab51c'
