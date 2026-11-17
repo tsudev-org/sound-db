@@ -5,9 +5,12 @@
 
 ## Hàng đợi task (làm từ trên xuống)
 
-- [ ] Đăng nhập tsudev: client `sounddb` ĐÃ có (phiên tsudev chèn ~21:05 17/11, `/oidc/auth` 303). Còn tắc ở tsudev:
-  `GET tsudev.com/oidc/interaction/<uid>` trả 404 text/plain (cả uid bịa) - đã báo phiên `tsudev-e1`. tsudev sửa
-  xong ⇒ nghiệm thu đăng nhập web + app (cần tài khoản tsudev thật của chủ dự án), đồng bộ hai thiết bị.
+- [ ] **ƯU TIÊN 1 - Kiểm thử toàn diện trên smartphone thật qua adb** (5 phase: kết nối + smoke, chức năng từng tab,
+  phi chức năng + bảo mật, sửa lỗi + chuẩn hoá mã, phát hành bản sửa). Kế hoạch + lệnh + tiêu chí:
+  `logs/handover/20261117-06_ke-hoach-kiem-thu-smartphone-adb.md`. 👤 cần bật Gỡ lỗi không dây và chạy `adb pair`.
+- [ ] 👤 Đăng nhập tsudev: ĐÃ HẾT TẮC (22:20 17/11) - `/auth/web/start` → `/oidc/auth` 303 → `/oidc/interaction/<uid>`
+  307 → `tsudev.com/login` 200. Còn nghiệm thu bằng tài khoản tsudev thật của chủ dự án: đăng nhập web
+  (sounddb.tsudev.com → Đăng nhập) + app, rồi đồng bộ hai thiết bị. Agent không có tài khoản ⇒ không tự làm được.
 - [ ] 👤 Required reviewers cho Environment `release` và `production` (tài khoản `tsudev-tsudev` không có quyền admin
   repo - HTTP 403). Lệnh: phiếu `20261117-05` mục 3.
 - [ ] 👤 Chọn logo riêng (phiếu `logs/handover/20261117-04_de-xuat-logo-rieng-sound-db.md`, 3 phương án SVG).
@@ -22,6 +25,11 @@
 | --- | --- | --- |
 
 ## Đã hoàn thành (mới nhất trên cùng)
+
+- 17/11/2026 - Cài thử APK `sound-db_26.11.1705_x64-setup.apk` (SHA256 khớp) trên emulator Android 16 x86_64 (AVD
+  `sounddb36`): cài đạt, versionName 26.11.1705 / versionCode 26115705, app mở màn Đo mức đúng giao diện, không lỗi
+  Flutter/crash của app. Bấm Bắt đầu đo hiện hộp xin quyền micro. ANR chỉ của systemui/gms (máy quá tải). Emulator
+  chạy qua `wsl.exe -e <script>` để nhận nhóm `kvm` mới cấp mà không phải khởi động lại phiên.
 
 - 17/11/2026 - Scoop lên 26.11.1705 (excavator 44106910857 đạt; 403 rate limit lần trước là tạm thời). Phiếu V1: đã
   đối chiếu - thẻ, tiêu đề Release, phiên bản trong app/web, versionCode đúng khuôn; tên tệp + `SHA256SUMS` lệch, kế
