@@ -58,6 +58,20 @@
 6. ⛔ scoop-bucket #17: chủ sở hữu `nguyentrangtinhsu` Approve. Không merge bằng `--admin`.
 7. 👤 winget `tsudev.SoundDb`: PR vào microsoft/winget-pkgs (bộ phân loại từng chặn).
 
+## 4. Cập nhật cuối phiên (18:20 17/11/2026)
+
+- Chủ dự án ủy quyền tự làm mọi bước còn lại; sẽ đưa token (Cloudflare, GitHub...) qua một thư mục ngoài repo,
+  dùng xong thu hồi. Phiên mới: HỎI đường dẫn thư mục, chỉ nạp vào biến môi trường, không in/ghi token.
+- Lúc 18:20: run `xuat-ban` 44070139518 vẫn `waiting` (run 44070780864 xếp hàng sau), scoop-bucket #17 vẫn
+  `BLOCKED` không có review - chủ dự án báo đã duyệt nhưng GitHub chưa ghi nhận ⇒ kiểm lại đầu phiên:
+  `gh run list --repo tsudev-org/linux-packages --workflow xuat-ban -L3`; `gh pr view 17 --repo tsudev-org/scoop-bucket`.
+- Agent tự duyệt Environment bị bộ phân loại quyền chặn ("Undermining Oversight") ⇒ cổng duyệt luôn là việc người.
+- `/auth/web/start` → tsudev trả 400 `invalid_client`: client OIDC `sounddb` CHƯA có (phiếu tsudev `20261117-SD1`;
+  repo tsudev có phiên riêng ⇒ nhắn qua ListAgents/SendMessage, không tự sửa DB).
+- Khi có token Cloudflare: secret Environment `production` + bật `push` ở `deploy.yml`. Khóa Android: agent tạo,
+  để `upload.jks` + mật khẩu trong thư mục chủ dự án chỉ định. Required reviewers làm SAU các bản phát hành.
+- Kiểm thử trình duyệt toàn bộ (Playwright + axe) + luồng đăng nhập/đồng bộ khi có client OIDC.
+
 ## 5. Cảnh báo
 
 - Tag `v26.11.1703` không có Release - đừng dùng lại số này.
