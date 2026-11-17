@@ -331,3 +331,8 @@ apps/web/public/wasm/
 # Khóa ký Android của app (do CI giải mã từ secret)
 **/key.properties
 **/upload-keystore.jks
+
+# Mẫu "core" của bản chuẩn (tệp core dump) trùng thư mục mã nguồn Dart: mở lại đúng thư mục này.
+!apps/app/lib/core/
+# Siêu dữ liệu dự án Flutter (flutter tool cần để nâng cấp nền tảng).
+!apps/app/.metadata
