@@ -5,13 +5,13 @@
 
 ## Hàng đợi task (làm từ trên xuống)
 
-- [ ] 👤 Đăng ký client OIDC `sounddb` ở tsudev (phiếu `logs/handover/20261117-01_yeu-cau-dang-ky-client-oidc-tsudev.md`)
-- [ ] 👤 Secret `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID` ở Environment `production` rồi bật lại trigger `push`
-  trong `.github/workflows/deploy.yml` (hiện triển khai bằng `wrangler` đã đăng nhập trên máy dev)
-- [ ] 👤 Khóa ký Android: 4 secret ở Environment `release` (`.github/workflows/release.yml`), rồi tag bản mới
-- [ ] 👤 Bật Required reviewers cho Environment `release` và `production`
+- [ ] 👤 Đăng ký client OIDC `sounddb` ở tsudev (phiếu tsudev `20261117-SD1`; phiên tsudev không có `neon.env` ⇒ chỉ
+  chủ dự án chạy SQL được). Xong ⇒ agent nghiệm thu đăng nhập web + app, đồng bộ hai thiết bị.
+- [ ] 👤 Required reviewers cho Environment `release` và `production` (tài khoản `tsudev-tsudev` không có quyền admin
+  repo - HTTP 403). Lệnh: phiếu `20261117-05` mục 3.
+- [ ] 👤 Chọn logo riêng (phiếu `logs/handover/20261117-04_de-xuat-logo-rieng-sound-db.md`, 3 phương án SVG).
+- [ ] 👤 Duyệt `xuat-ban` của linux-packages khi có run mới cho 26.11.1705.
 - [ ] winget: PR vào microsoft/winget-pkgs (bộ phân loại từng chặn - để chủ dự án)
-- [ ] Logo riêng cho Sound Db: đề xuất cho chủ dự án duyệt (`BRAND_ASSETS.md` mục 15)
 
 ## Đang thực hiện
 
@@ -19,6 +19,11 @@
 | --- | --- | --- |
 
 ## Đã hoàn thành (mới nhất trên cùng)
+
+- 17/11/2026 - Bản 26.11.1705: APK Android ký số (arm64, x86_64) lần đầu; sửa `build.gradle.kts` (`java.util.Properties`
+  không giải được trong khối android {} - job Android sẽ hỏng ngay lần ký thật). Khóa ký ở
+  `~/.config/tsudev/android/` (600), 4 secret ở Environment `release`. Secret Cloudflare ở `production`; Deploy tự
+  động khi đẩy main (run 44097415902 đạt nghiệm thu). Homebrew 26.11.1705. Phiếu `20261117-05`.
 
 - 17/11/2026 - Kênh APT/DNF (pkg.tsudev.com) có Sound Db 26.11.1704; /tai-ve/ hiện lệnh từ catalog.json. scoop-bucket
   #17 merge (excavator đạt), Scoop + Homebrew ở 26.11.1704.
