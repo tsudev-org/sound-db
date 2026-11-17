@@ -115,5 +115,24 @@ jobs:
       - name: Tạo bản phát hành
         env: { GH_TOKEN: '${{ github.token }}', V: '${{ needs.version.outputs.v }}' }
         run: |
-          gh release create "$GITHUB_REF_NAME" out/* --repo "$GITHUB_REPOSITORY" --title "Sound Db $V" \
+          gh release create "$GITHUB_REF_NAME" out/* --repo "$GITHUB_REPOSITORY" --title "Sound Db $V" --draft \
             --notes "Bản dựng tự động từ ${GITHUB_SHA}. Kiểm chứng: \`sha256sum -c SHA256SUMS --ignore-missing\` và \`gh attestation verify <tệp> --repo $GITHUB_REPOSITORY\`."
+
+  # Quét VirusTotal khi Release còn NHÁP (DISTRIBUTION_TRUST.md mục 3, phiếu 20261117-P2 P1 bước 3). Mẫu dùng chung ở
+  # tsudev-org/.github; chưa có bí mật VT_API_KEY thì bỏ qua (xanh). Có engine gắn cờ ⇒ Release ở nháp, job đỏ.
+  virustotal:
+    needs: publish
+    permissions: { contents: write }
+    uses: tsudev-org/.github/.github/workflows/virustotal.yml@8a393ebd89349300637c8c57e89c12492b174e4d # main 18/11/2026
+    with: { tag: '${{ github.ref_name }}' }
+    secrets: { VT_API_KEY: '${{ secrets.VT_API_KEY }}' }
+
+  cong-bo:
+    needs: virustotal
+    if: needs.virustotal.outputs.flagged != 'true'
+    runs-on: ubuntu-24.04
+    permissions: { contents: write }
+    steps:
+      - name: Công bố Release (bỏ nháp)
+        env: { GH_TOKEN: '${{ github.token }}' }
+        run: gh release edit "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --draft=false
