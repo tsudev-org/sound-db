@@ -10,7 +10,8 @@
   trong `.github/workflows/deploy.yml` (hiện triển khai bằng `wrangler` đã đăng nhập trên máy dev)
 - [ ] 👤 Khóa ký Android: 4 secret ở Environment `release` (`.github/workflows/release.yml`), rồi tag bản mới
 - [ ] 👤 Bật Required reviewers cho Environment `release` và `production`
-- [ ] linux-packages PR #30: hỏng cài thử debian:12/ubuntu:22.04 (nghi glibc) - bước sửa ở phiếu `20261117-02` mục 2
+- [ ] 👤 Duyệt run `xuat-ban` của linux-packages (Environment `packages`), rồi đưa apt/rpm vào `channels` + /tai-ve/
+  (lệnh soạn sẵn: phiếu `20261117-03` mục 3)
 - [ ] ⛔ scoop-bucket PR #17 (sửa excavator) chờ chủ sở hữu duyệt
 - [ ] winget: PR vào microsoft/winget-pkgs (bộ phân loại từng chặn - để chủ dự án)
 - [ ] Logo riêng cho Sound Db: đề xuất cho chủ dự án duyệt (`BRAND_ASSETS.md` mục 15)
@@ -21,6 +22,10 @@
 | --- | --- | --- |
 
 ## Đã hoàn thành (mới nhất trên cùng)
+
+- 17/11/2026 - Bản 26.11.1704: bản Linux dựng trên ubuntu-22.04 (GLIBC cao nhất 2.34, có bước chặn hồi quy) - chạy
+  được trên Debian 12/Ubuntu 22.04. linux-packages #30 đạt 12/12, đã merge; chờ duyệt xuất bản. Web đã deploy.
+  Phiếu: `logs/handover/20261117-03_ban-giao-sua-glibc-linux-26.11.1704.md`.
 
 - 17/11/2026 - Bản 26.11.1702 (sửa Lịch sử, đăng nhập không WebView, iOS mode đo lường). Scoop + Homebrew đã ở
   26.11.1702. Phiếu bàn giao cuối phiên: `logs/handover/20261117-02_ban-giao-phien-khoi-tao-sound-db.md`.
