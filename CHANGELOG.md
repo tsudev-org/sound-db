@@ -6,6 +6,11 @@ Theo `.standards/docs/VERSIONING.md` mục 3. Ngày dạng DD/MM/YYYY.
 
 - Android (APK ký số) chờ khóa ký; iOS chờ tài khoản Apple Developer.
 
+## 26.11.1703 - 17/11/2026
+
+### Sửa
+- Bản Linux chạy được trên Debian 12 và Ubuntu 22.04 (trước đây báo thiếu `GLIBC_2.38` vì dựng trên Ubuntu 24.04).
+
 ## 26.11.1702 - 17/11/2026
 
 ### Sửa
