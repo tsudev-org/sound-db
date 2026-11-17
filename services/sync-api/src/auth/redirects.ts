@@ -1,7 +1,7 @@
 /**
  * Danh sách cho phép đích quay về của APP (so khớp tuyệt đối, không tiền tố):
- * - `com.tsudev.sounddb:/auth/callback` - Android, iOS, macOS.
- * - `http://127.0.0.1:<cổng>/callback` - Windows/Linux (RFC 8252 mục 7.3: cổng
+ * - `com.tsudev.sounddb:/auth/callback` - Android, iOS (nhận qua app_links).
+  * - `http://127.0.0.1:<cổng>/callback` - Windows, macOS, Linux (RFC 8252 mục 7.3: cổng
  *   vòng lặp do hệ điều hành cấp nên được tự do, mọi phần khác khớp tuyệt đối).
  * Phải khớp `apps/app/lib/sync/api_config.dart`.
  */

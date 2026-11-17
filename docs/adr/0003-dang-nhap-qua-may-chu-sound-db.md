@@ -26,7 +26,7 @@ IdP tsudev.com (`oidc-provider`) có ràng buộc đo được ngày 17/11/2026 
 
 Chọn **C** (mẫu "máy chủ liên kết danh tính", như các nền tảng xác thực phổ biến làm với Google/GitHub):
 
-1. App mở trình duyệt hệ thống tới `/auth/app/start` kèm `redirect_uri` (khớp tuyệt đối danh sách:
+1. App mở trình duyệt hệ thống (Custom Tabs/Safari/trình duyệt mặc định, KHÔNG WebView nhúng) tới `/auth/app/start` kèm `redirect_uri` (khớp tuyệt đối danh sách; Android/iOS dùng scheme nhận qua `app_links`, Windows/macOS/Linux dùng vòng lặp:
    `com.tsudev.sounddb:/auth/callback` hoặc `http://127.0.0.1:<cổng>/callback`), `state`, `code_challenge` S256.
 2. Máy chủ lưu yêu cầu (băm `state`, gắn cookie `__Host-sdb_login`), chuyển tới tsudev.com với PKCE + `nonce` riêng.
 3. `/auth/callback`: kiểm cookie gắn trình duyệt, đổi mã ở endpoint token (máy chủ - máy chủ), kiểm `id_token`

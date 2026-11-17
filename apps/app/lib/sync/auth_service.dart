@@ -6,7 +6,7 @@ import 'dart:math';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
+import 'package:app_links/app_links.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 
@@ -47,8 +47,10 @@ class AccountUser {
 /// HỆ THỐNG tới máy chủ Sound Db, máy chủ đăng nhập với tsudev.com (OIDC + PKCE)
 /// rồi trả một mã dùng một lần về app; app đổi mã bằng `code_verifier` của
 /// chính nó. Không WebView, không hứng mật khẩu.
-/// - Android/iOS/macOS: quay về bằng scheme `com.tsudev.sounddb:/auth/callback`.
-/// - Windows/Linux: vòng lặp `http://127.0.0.1:<cổng ngẫu nhiên>/callback` (RFC 8252).
+/// - Android/iOS: trình duyệt hệ thống (Custom Tabs/Safari), quay về bằng scheme
+///   `com.tsudev.sounddb:/auth/callback` nhận qua `app_links`.
+/// - Windows/macOS/Linux: vòng lặp `http://127.0.0.1:<cổng ngẫu nhiên>/callback` (RFC 8252).
+/// KHÔNG dùng WebView nhúng ở bất kỳ nền tảng nào (AUTH_AND_ACCOUNT.md mục 4).
 ///
 /// Refresh token nằm trong kho bí mật của hệ điều hành (Keychain, Keystore,
 /// Credential Manager, Secret Service), access token chỉ ở bộ nhớ.
@@ -117,7 +119,7 @@ class AuthService extends ChangeNotifier {
     try {
       final verifier = _randomUrlSafe(48);
       final state = _randomUrlSafe(24);
-      final useLoopback = Platform.isWindows || Platform.isLinux;
+      final useLoopback = Platform.isWindows || Platform.isLinux || Platform.isMacOS;
       String redirectUri;
       if (useLoopback) {
         loopback = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
@@ -138,8 +140,7 @@ class AuthService extends ChangeNotifier {
         }
         callback = await _awaitLoopback(loopback!);
       } else {
-        final result = await FlutterWebAuth2.authenticate(url: startUrl.toString(), callbackUrlScheme: appCallbackScheme);
-        callback = Uri.parse(result);
+        callback = await _awaitSchemeCallback(startUrl);
       }
       final params = callback.queryParameters;
       if (params['error'] != null) {
@@ -162,6 +163,27 @@ class AuthService extends ChangeNotifier {
       await loopback?.close(force: true);
       busy = false;
       notifyListeners();
+    }
+  }
+
+  /// Mở trình duyệt hệ thống, chờ hệ điều hành chuyển `com.tsudev.sounddb:/auth/callback` về app.
+  Future<Uri> _awaitSchemeCallback(Uri startUrl) async {
+    final completer = Completer<Uri>();
+    final sub = AppLinks().uriLinkStream.listen((uri) {
+      if (uri.scheme == appCallbackScheme && uri.path == '/auth/callback' && !completer.isCompleted) {
+        completer.complete(uri);
+      }
+    });
+    try {
+      if (!await launchUrl(startUrl, mode: LaunchMode.externalApplication)) {
+        throw AuthException('browser', 'Không mở được trình duyệt hệ thống.');
+      }
+      return await completer.future.timeout(
+        const Duration(minutes: 5),
+        onTimeout: () => throw AuthException('timeout', 'Hết 5 phút chờ đăng nhập - hãy thử lại.'),
+      );
+    } finally {
+      await sub.cancel();
     }
   }
 
