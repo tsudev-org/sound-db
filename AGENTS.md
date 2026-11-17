@@ -81,6 +81,9 @@ npx npm@11 install && npm test && npm run build
 - **`.gitignore` chuẩn có mẫu `core`** (tệp core dump) - nó chặn im lặng thư mục `apps/app/lib/core/`. Đã mở lại
   bằng `!apps/app/lib/core/`; thêm thư mục tên `core` ở chỗ khác thì phải mở lại tương tự (bài học 17/11: CI đỏ
   vì `format.dart` chưa bao giờ được commit).
+- **`wrangler dev` đổi header `Origin`** thành tên miền của route (`http://sounddb.tsudev.com`) ⇒ mọi lệnh ghi từ
+  trình duyệt bị chặn CSRF ở local. Chạy `wrangler dev --local-upstream localhost:8787` và đặt
+  `PUBLIC_ORIGIN=http://localhost:8787` trong `.dev.vars`.
 - **Cron**: tài khoản Cloudflare đã hết 5 cron Free - đừng thêm `triggers.crons`; việc định kỳ chạy kèm yêu cầu.
 - **Tệp chính của Worker chỉ export handler.** Export hằng/hàm thường từ `src/index.ts` làm workerd từ chối khởi
   động ("Incorrect type for map entry"). Đặt chúng ở module khác (`src/maintenance.ts`).

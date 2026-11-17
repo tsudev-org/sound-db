@@ -22,8 +22,13 @@ class LocalStore {
     }
     final dir = await getApplicationSupportDirectory();
     await dir.create(recursive: true);
+    return openAt(p.join(dir.path, 'sound_db.sqlite'));
+  }
+
+  /// Mở tại đường dẫn cho trước (test dùng `inMemoryDatabasePath`).
+  static Future<LocalStore> openAt(String path) async {
     final db = await openDatabase(
-      p.join(dir.path, 'sound_db.sqlite'),
+      path,
       version: 1,
       onCreate: (db, version) async {
         for (final table in const ['sessions', 'calibrations']) {
@@ -61,7 +66,7 @@ class LocalStore {
       Sqflite.firstIntValue(await _db.rawQuery('SELECT COUNT(*) FROM sessions WHERE deleted = 0')) ?? 0;
 
   Future<List<MeasurementSession>> listSessions({required int limit, required int offset}) async {
-    final rows = await _db.query('sessions', where: 'deleted = 0', orderBy: 'json_extract(data, "\$.started_at") DESC', limit: limit, offset: offset);
+    final rows = await _db.query('sessions', where: 'deleted = 0', orderBy: "json_extract(data, '\$.started_at') DESC", limit: limit, offset: offset);
     return rows.map(_session).toList();
   }
 

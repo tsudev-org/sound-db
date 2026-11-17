@@ -156,10 +156,22 @@ class _SpectrogramTab extends StatelessWidget {
               ),
             ),
             const SizedBox(height: SdbSpacing.s1),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              for (final hz in const [20.0, 100.0, 1000.0, 10000.0])
-                if (hz <= nyquist) Text(formatHz(hz), style: TextStyle(color: p.chartAxis, fontSize: 11)),
-            ]),
+            // Nhãn đặt ĐÚNG vị trí trên trục log (không dàn đều), chữ ngắn để vừa màn hình hẹp.
+            SizedBox(
+              height: 16,
+              child: LayoutBuilder(builder: (context, c) {
+                final axis = LogAxis(20, nyquist);
+                return Stack(clipBehavior: Clip.none, children: [
+                  for (final (hz, label) in const [(20.0, '20'), (100.0, '100'), (1000.0, '1k'), (10000.0, '10k')])
+                    if (hz <= nyquist)
+                      Positioned(
+                        left: (axis.toX(hz, c.maxWidth) - 8).clamp(0, c.maxWidth - 24),
+                        child: Text(label, style: TextStyle(color: p.chartAxis, fontSize: 11)),
+                      ),
+                  Positioned(right: 0, child: Text('Hz', style: TextStyle(color: p.chartAxis, fontSize: 11))),
+                ]);
+              }),
+            ),
           ]),
         );
       },

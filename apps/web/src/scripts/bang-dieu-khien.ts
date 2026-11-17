@@ -32,6 +32,20 @@ function o(text: string, cls?: string) {
 }
 
 const state = { page: 1, size: 10, total: 0, q: '' };
+let luotTai = 0; // chỉ hiển thị phản hồi của lượt tải MỚI NHẤT (bấm nhanh không bị phản hồi cũ đè)
+
+function baoLoi(e: unknown) {
+  const el = $('thong-bao');
+  el.textContent = (e as Error)?.message || 'Thao tác thất bại. Hãy thử lại.';
+  el.hidden = false;
+  if ((e as { status?: number }).status === 401) location.href = '/dang-nhap/';
+}
+
+/** Bọc thao tác của người dùng: lỗi hiện thành thông báo, không thành lỗi ngầm. */
+const an = (fn: () => Promise<unknown>) => () => {
+  $('thong-bao').hidden = true;
+  fn().catch(baoLoi);
+};
 
 function docSoDong(): number {
   const tuUrl = Number(new URLSearchParams(location.search).get('page_size'));
@@ -45,6 +59,7 @@ function docSoDong(): number {
 }
 
 async function taiPhien() {
+  const luot = ++luotTai;
   const sel = $<HTMLSelectElement>('so-dong');
   sel.disabled = true;
   const qs = new URLSearchParams({ page: String(state.page), page_size: String(state.size) });
@@ -52,6 +67,7 @@ async function taiPhien() {
   history.replaceState(null, '', `?page=${state.page}&page_size=${state.size}`);
   try {
     const r = await api<{ items: SessionRow[]; total: number }>(`/api/v1/sessions?${qs}`);
+    if (luot !== luotTai) return;
     state.total = r.total;
     const body = $('dong-phien');
     body.replaceChildren(
@@ -63,11 +79,11 @@ async function taiPhien() {
         xoa.className = 'nut nut--phu nut--nho';
         xoa.type = 'button';
         xoa.textContent = 'Xóa';
-        xoa.addEventListener('click', async () => {
+        xoa.addEventListener('click', an(async () => {
           if (!confirm(`Xóa phiên "${s.label}" trên mọi thiết bị?`)) return;
           await api(`/api/v1/sessions/${encodeURIComponent(s.id)}`, { method: 'DELETE' });
           await taiPhien();
-        });
+        }));
         td.append(xoa);
         tr.append(td);
         return tr;
@@ -102,11 +118,11 @@ async function taiThietBi() {
       b.className = 'nut nut--phu nut--nho';
       b.type = 'button';
       b.textContent = 'Đăng xuất thiết bị';
-      b.addEventListener('click', async () => {
+      b.addEventListener('click', an(async () => {
         if (!confirm(`Đăng xuất "${d.name}" khỏi tài khoản?`)) return;
         await api(`/api/v1/me/devices/${encodeURIComponent(d.id)}`, { method: 'DELETE' });
-        await taiThietBi();
-      });
+        await Promise.all([taiThietBi(), taiHoatDong()]);
+      }));
       td.append(b);
       tr.append(td);
       return tr;
@@ -135,6 +151,12 @@ async function taiHoatDong() {
 
 async function khoiDong() {
   try {
+    const trangThai = await api<{ signed_in: boolean }>('/api/v1/auth/status');
+    if (!trangThai.signed_in) {
+      $('trang-thai').hidden = true;
+      $('chua-dang-nhap').hidden = false;
+      return;
+    }
     const me = await api<Me>('/api/v1/me');
     $('trang-thai').hidden = true;
     $('da-dang-nhap').hidden = false;
@@ -165,28 +187,29 @@ $<HTMLSelectElement>('so-dong').addEventListener('change', (ev) => {
   } catch {
     /* bỏ qua */
   }
-  void taiPhien();
+  an(taiPhien)();
 });
-$('truoc').addEventListener('click', () => { state.page--; void taiPhien(); });
-$('sau').addEventListener('click', () => { state.page++; void taiPhien(); });
+$('truoc').addEventListener('click', () => { state.page = Math.max(1, state.page - 1); an(taiPhien)(); });
+$('sau').addEventListener('click', () => { state.page++; an(taiPhien)(); });
 let hen: number | undefined;
 $('tim').addEventListener('input', (ev) => {
   clearTimeout(hen);
   hen = window.setTimeout(() => {
     state.q = (ev.target as HTMLInputElement).value.trim();
     state.page = 1;
-    void taiPhien();
+    an(taiPhien)();
   }, 300);
 });
 $('nut-xuat').addEventListener('click', () => { location.href = '/api/v1/me/export'; });
-$('nut-dang-xuat').addEventListener('click', async () => {
+$('nut-dang-xuat').addEventListener('click', an(async () => {
   await api('/api/v1/auth/web-logout', { method: 'POST' });
   location.href = '/';
-});
-$('nut-xoa').addEventListener('click', async () => {
+}));
+$('nut-xoa').addEventListener('click', an(async () => {
   const go = prompt('Gõ "xoa-vinh-vien" để xác nhận xóa toàn bộ dữ liệu Sound Db:');
-  if (go !== 'xoa-vinh-vien') return;
+  if (go === null) return;
+  if (go.trim() !== 'xoa-vinh-vien') throw new Error('Chuỗi xác nhận không đúng - dữ liệu chưa bị xóa.');
   await api('/api/v1/me', { method: 'DELETE', headers: { 'X-Sdb-Confirm': 'xoa-vinh-vien' } });
   location.href = '/';
-});
+}));
 void khoiDong();

@@ -41,7 +41,7 @@ class PaginationFooter extends StatelessWidget {
     final muted = TextStyle(color: p.textMuted, fontSize: 13);
     return Container(
       constraints: const BoxConstraints(minHeight: 48),
-      padding: const EdgeInsets.symmetric(horizontal: SdbSpacing.s4),
+      padding: EdgeInsets.symmetric(horizontal: MediaQuery.sizeOf(context).width < 480 ? SdbSpacing.s2 : SdbSpacing.s4),
       decoration: BoxDecoration(color: p.bgSubtle, border: Border(top: BorderSide(color: p.border))),
       child: Row(children: [
         SizedBox(
@@ -65,14 +65,18 @@ class PaginationFooter extends StatelessWidget {
         ),
         const SizedBox(width: SdbSpacing.s2),
         Text('/ trang', style: muted),
-        Expanded(child: Center(child: Text('$first-$last / $total', style: muted))),
+        Expanded(
+          child: Center(child: Text('$first-$last / $total', style: muted, maxLines: 1, overflow: TextOverflow.ellipsis)),
+        ),
         IconButton(
+          visualDensity: VisualDensity.compact,
           tooltip: 'Trang trước',
           onPressed: loading || page <= 1 ? null : () => onPage(page - 1),
           icon: const Icon(Icons.chevron_left),
         ),
         Text('$page / $pages', style: muted),
         IconButton(
+          visualDensity: VisualDensity.compact,
           tooltip: 'Trang sau',
           onPressed: loading || page >= pages ? null : () => onPage(page + 1),
           icon: const Icon(Icons.chevron_right),

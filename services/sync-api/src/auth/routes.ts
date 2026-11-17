@@ -279,6 +279,16 @@ authRoutes.post('/api/v1/auth/logout', async (c) => {
   return c.body(null, 204);
 });
 
+/** Trang web hỏi "đã đăng nhập chưa" mà không sinh lỗi 401 trong console khi là khách. */
+authRoutes.get('/api/v1/auth/status', async (c) => {
+  const cookie = getCookie(c, SESSION_COOKIE);
+  if (!cookie) return c.json({ signed_in: false });
+  const row = await c.env.DB.prepare('SELECT 1 AS ok FROM web_sessions WHERE token_hash = ? AND expires_at > ?')
+    .bind(await sha256Hex(cookie), Date.now())
+    .first();
+  return c.json({ signed_in: Boolean(row) });
+});
+
 authRoutes.post('/api/v1/auth/web-logout', async (c) => {
   if (c.req.header('Origin') !== c.env.PUBLIC_ORIGIN || c.req.header('X-Sdb-Csrf') !== '1') {
     throw new ApiError(403, 'csrf', 'Yêu cầu bị chặn vì không đến từ trang Sound Db.');

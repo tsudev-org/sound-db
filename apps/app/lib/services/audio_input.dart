@@ -20,16 +20,22 @@ class AudioInput {
   AudioInput({this.sampleRate = 48000});
 
   final int sampleRate;
-  final AudioRecorder _recorder = AudioRecorder();
+  // Tạo lười: chỉ gọi plugin thu âm khi người dùng thật sự bắt đầu đo.
+  late final AudioRecorder _recorder = AudioRecorder();
+  bool _recorderCreated = false;
   StreamSubscription<Uint8List>? _subscription;
   final StreamController<Float32List> _controller = StreamController<Float32List>.broadcast();
   int _carry = -1;
 
   Stream<Float32List> get samples => _controller.stream;
 
-  Future<List<InputDevice>> devices() => _recorder.listInputDevices();
+  Future<List<InputDevice>> devices() {
+    _recorderCreated = true;
+    return _recorder.listInputDevices();
+  }
 
   Future<void> start({InputDevice? device}) async {
+    _recorderCreated = true;
     if (!await _recorder.hasPermission()) {
       throw AudioInputException('Sound Db cần quyền dùng micro để đo. Hãy cấp quyền trong cài đặt hệ thống.');
     }
@@ -80,12 +86,12 @@ class AudioInput {
   Future<void> stop() async {
     await _subscription?.cancel();
     _subscription = null;
-    if (await _recorder.isRecording()) await _recorder.stop();
+    if (_recorderCreated && await _recorder.isRecording()) await _recorder.stop();
   }
 
   Future<void> dispose() async {
     await stop();
-    await _recorder.dispose();
+    if (_recorderCreated) await _recorder.dispose();
     await _controller.close();
   }
 

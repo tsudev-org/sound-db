@@ -24,13 +24,15 @@ class _HistoryPageState extends State<HistoryPage> {
   bool _loading = true;
   List<MeasurementSession> _rows = const [];
   bool _initialised = false;
+  // Giữ tham chiếu từ didChangeDependencies: tra AppScope trong dispose() là không an toàn.
+  late final AppServices _services;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (_initialised) return;
     _initialised = true;
-    final services = AppScope.of(context);
+    final services = _services = AppScope.of(context);
     services.sync.addListener(_reload);
     () async {
       _pageSize = PaginationFooter.sanitize(int.tryParse(await services.store.getValue(_pageSizeKey) ?? ''));
@@ -40,7 +42,7 @@ class _HistoryPageState extends State<HistoryPage> {
 
   @override
   void dispose() {
-    AppScope.of(context).sync.removeListener(_reload);
+    _services.sync.removeListener(_reload);
     super.dispose();
   }
 

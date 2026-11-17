@@ -216,6 +216,15 @@ class MeasurementController extends ChangeNotifier {
     if (spectrogram.length > spectrogramRows) spectrogram.removeAt(0);
   }
 
+  /// Chỉ cho test: đẩy mẫu như từ micro rồi chạy một nhịp hiển thị.
+  @visibleForTesting
+  void debugProcess(Float32List block) {
+    _onSamples(block);
+    startedAt ??= DateTime.now();
+    _lastFrame = Duration.zero;
+    _onTick(const Duration(days: 1));
+  }
+
   void clearPeakHold() {
     _engine.spectrum.peakHold.fillRange(0, _engine.spectrum.peakHold.length, 0);
     notifyListeners();

@@ -126,6 +126,8 @@ describe('đăng nhập web (cookie)', () => {
     const session = cookieValue(cb, '__Host-sdb_session');
     const cookie = { Cookie: `__Host-sdb_session=${session}` };
     expect((await call('/api/v1/me', { headers: cookie })).status).toBe(200);
+    expect(await (await call('/api/v1/auth/status', { headers: cookie })).json()).toEqual({ signed_in: true });
+    expect(await (await call('/api/v1/auth/status')).json()).toEqual({ signed_in: false });
     const noCsrf = await call('/api/v1/me', { method: 'DELETE', headers: { ...cookie, 'X-Sdb-Confirm': 'xoa-vinh-vien' } });
     expect(noCsrf.status).toBe(403);
     const ok = await call('/api/v1/me', {

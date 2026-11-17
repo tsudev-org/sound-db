@@ -22,7 +22,7 @@ const nenTang = [
     <p><a class="nut nut--chinh" href={`${REPO_URL}/releases`} target="_blank" rel="noopener noreferrer">Mở trang phát hành</a></p>
     <h2>Kiểm chứng tệp tải về</h2>
     <p>Mỗi bản phát hành kèm tệp <code>SHA256SUMS</code>. So khớp trước khi cài:</p>
-    <pre><code>sha256sum -c SHA256SUMS --ignore-missing
+    <pre tabindex="0" aria-label="Lệnh kiểm chứng tệp tải về"><code>sha256sum -c SHA256SUMS --ignore-missing
 gh attestation verify sound-db_{PHIEN_BAN}_x64-linux.tar.gz --repo tsudev-org/sound-db</code></pre>
     <p>Trên Windows PowerShell: <code>Get-FileHash .\sound-db_{PHIEN_BAN}_x64-windows.zip -Algorithm SHA256</code>.</p>
   </div>

@@ -18,7 +18,9 @@ class GeneratorTab extends StatefulWidget {
 }
 
 class _GeneratorTabState extends State<GeneratorTab> {
-  final AudioPlayer _player = AudioPlayer(playerId: 'sounddb-generator');
+  // Tạo lười: chỉ khởi tạo bộ phát âm thanh khi người dùng bấm Phát.
+  AudioPlayer? _playerInstance;
+  AudioPlayer get _player => _playerInstance ??= AudioPlayer(playerId: 'sounddb-generator');
   final SignalGenerator _generator = SignalGenerator(48000);
   bool _playing = false;
   double _logFrequency = math.log(1000);
@@ -28,7 +30,7 @@ class _GeneratorTabState extends State<GeneratorTab> {
 
   @override
   void dispose() {
-    _player.dispose();
+    _playerInstance?.dispose();
     super.dispose();
   }
 
