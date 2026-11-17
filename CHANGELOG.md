@@ -4,7 +4,12 @@ Theo `.standards/docs/VERSIONING.md` mục 3. Ngày dạng DD/MM/YYYY.
 
 ## [Chưa phát hành]
 
-- Android (APK ký số) chờ khóa ký; iOS chờ tài khoản Apple Developer.
+- iOS chờ tài khoản Apple Developer.
+
+## 26.11.1705 - 17/11/2026
+
+### Thêm
+- Android: APK ký số cho arm64 và x86_64 (Android 7.0 trở lên), kèm SHA-256 và chứng thực nguồn gốc.
 
 ## 26.11.1704 - 17/11/2026
 

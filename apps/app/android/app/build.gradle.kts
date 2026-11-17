@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
@@ -35,7 +37,8 @@ android {
     // cục bộ; workflow phát hành chặn trường hợp đó (SOUNDDB_REQUIRE_RELEASE_KEY=1).
     val keyFile = rootProject.file("key.properties")
     if (keyFile.exists()) {
-        val props = java.util.Properties().apply { keyFile.inputStream().use { load(it) } }
+        // Phải import: trong khối android {} chữ `java` là extension JavaPluginExtension, không phải package.
+        val props = Properties().apply { keyFile.inputStream().use { load(it) } }
         signingConfigs {
             create("release") {
                 storeFile = file(props.getProperty("storeFile"))
