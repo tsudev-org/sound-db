@@ -19,8 +19,7 @@
     {
       "binding": "DB",
       "database_name": "sound-db",
-      // Điền sau `wrangler d1 create sound-db --location apac` (xem docs/DEPLOYMENT.md).
-      "database_id": "00000000-0000-0000-0000-000000000000",
+      "database_id": "cfcceb24-bbaf-4ba3-b1bb-31102a086dec",
       "migrations_dir": "migrations"
     }
   ],
@@ -30,7 +29,8 @@
     "OIDC_CLIENT_ID": "sounddb"
   },
   // Secret (wrangler secret put): SESSION_SECRET (>= 32 byte ngẫu nhiên), IP_HASH_SALT.
-  "triggers": { "crons": ["17 3 * * *"] },
+  // KHÔNG dùng cron: tài khoản đã hết 5 cron của gói Free (đo 17/11/2026). Dọn dữ liệu hết hạn chạy kèm ~1%
+  // yêu cầu /api (src/index.ts, waitUntil - không chặn phản hồi).
   "observability": { "enabled": true },
   "workers_dev": false,
   "preview_urls": false,

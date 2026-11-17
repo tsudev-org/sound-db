@@ -14,6 +14,9 @@ const app = new Hono<AppEnv>();
 // nhận header từ apps/web/public/_headers.
 app.use('*', async (c, next) => {
   await next();
+  if (c.req.path.startsWith('/api/') && Math.random() < 0.01) {
+    c.executionCtx.waitUntil(cleanup(c.env).catch((e) => console.error('cleanup', e)));
+  }
   const h = c.res.headers;
   if (!h.has('Cache-Control')) h.set('Cache-Control', 'no-store');
   h.set('X-Content-Type-Options', 'nosniff');
@@ -56,7 +59,4 @@ app.onError((err, c) => {
 
 export default {
   fetch: app.fetch,
-  async scheduled(_event, env, ctx) {
-    ctx.waitUntil(cleanup(env));
-  },
 } satisfies ExportedHandler<Env>;
