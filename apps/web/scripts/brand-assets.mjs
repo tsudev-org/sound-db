@@ -230,6 +230,8 @@ async function main() {
     }
   }
   emit(flutter('windows/runner/resources/app_icon.ico'), await ico(rounded));
+  // Icon trong bundle (data/flutter_assets/assets/brand/icon-512.png): tệp .desktop của gói Linux dùng.
+  emit(flutter('assets/brand/icon-512.png'), await at(512));
 
   // --- Ghi hoặc kiểm.
   const bad = [];

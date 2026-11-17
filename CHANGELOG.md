@@ -6,6 +6,18 @@ Theo `.standards/docs/VERSIONING.md` mục 3. Ngày dạng DD/MM/YYYY.
 
 - Android (APK ký số) chờ khóa ký; iOS chờ tài khoản Apple Developer.
 
+## 26.11.1702 - 17/11/2026
+
+### Sửa
+- Trang Lịch sử không hiện phiên đo nào trên máy dùng SQLite mới (truy vấn sắp xếp sai cú pháp).
+- Nhãn tần số dưới phổ đồ và chân bảng phân trang bị tràn trên màn hình điện thoại.
+- Đăng nhập không còn dùng khung web nhúng: điện thoại mở trình duyệt hệ thống, máy tính dùng vòng lặp 127.0.0.1.
+
+### Thêm
+- iOS: phiên âm thanh chế độ đo lường (tắt tự động tăng âm, khử ồn của hệ thống).
+- Biểu tượng ứng dụng trong gói Linux; cài bằng lệnh qua Scoop (`scoop install tsudev/tsudev-sound-db`) và
+  Homebrew (`brew install tsudev-org/tap/tsudev-sound-db`).
+
 ## 26.11.1701 - 17/11/2026
 
 Bản phát hành đầu: Windows, macOS, Linux trên GitHub Releases; website và máy đo trên trình duyệt tại

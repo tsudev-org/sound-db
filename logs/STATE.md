@@ -10,7 +10,7 @@
   trong `.github/workflows/deploy.yml` (hiện triển khai bằng `wrangler` đã đăng nhập trên máy dev)
 - [ ] 👤 Khóa ký Android: 4 secret ở Environment `release` (`.github/workflows/release.yml`), rồi tag bản mới
 - [ ] 👤 Bật Required reviewers cho Environment `release` và `production`
-- [ ] Kênh cài bằng lệnh (Scoop, Homebrew, winget, APT/RPM) sau bản phát hành đầu (`PACKAGING.md`)
+- [ ] Kênh APT/RPM: PR thêm `tsudev-org/sound-db` vào `linux-packages/products.json` (cần bản phát hành có icon trong bundle, từ 26.11.1702); winget: PR vào microsoft/winget-pkgs (bộ phân loại từng chặn - để chủ dự án)
 - [ ] Logo riêng cho Sound Db: đề xuất cho chủ dự án duyệt (`BRAND_ASSETS.md` mục 15)
 
 ## Đang thực hiện
@@ -19,6 +19,8 @@
 | --- | --- | --- |
 
 ## Đã hoàn thành (mới nhất trên cùng)
+
+- 17/11/2026 - Scoop `tsudev-sound-db` (scoop-bucket#16, cài thử thật trên Windows đạt) và Homebrew cask (homebrew-tap#8, cài thử trên macOS đạt), tự cập nhật theo Release. iOS mode `.measurement`; CI thêm job dựng kiểm iOS + macOS (bắt buộc trong ruleset). `packaging/package.json`, khối Cài bằng lệnh trên /tai-ve/.
 
 - 17/11/2026 - Đợt kiểm thử trình duyệt + app (Playwright, axe, test toàn app Flutter 2 cỡ màn hình). Lỗi đã sửa:
   (1) NGHIÊM TRỌNG: truy vấn Lịch sử dùng `json_extract(data, "$.started_at")` nháy kép - SQLite mới coi là tên

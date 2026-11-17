@@ -1,0 +1,59 @@
+{
+  "schema": 1,
+  "name": "tsudev-sound-db",
+  "winget": "tsudev.SoundDb",
+  "homepage": "https://sounddb.tsudev.com",
+  "license": "Apache-2.0",
+  "description": {
+    "vi": "Máy đo âm thanh chính xác: mức dB (IEC 61672-1), phổ FFT, phổ đồ, dải octave, cao độ, liều tiếng ồn",
+    "en": "Accurate sound level meter: dB (IEC 61672-1), FFT spectrum, spectrogram, octave bands, pitch, noise dose"
+  },
+  "release": {
+    "repo": "tsudev-org/sound-db",
+    "tagRegex": "^v(?<version>\\d+\\.\\d+\\.\\d+)$",
+    "sums": "SHA256SUMS"
+  },
+  "assets": {
+    "windows-x64": { "file": "sound-db_{version}_x64-windows.zip", "kind": "portable", "bin": "sound_db.exe" },
+    "linux-x64": { "file": "sound-db_{version}_x64-linux.tar.gz", "kind": "tar", "bin": "sound_db" },
+    "macos-universal": { "file": "sound-db_{version}_universal-macos.zip", "kind": "zip", "app": "Sound Db.app" },
+    "android-arm64": { "file": "sound-db_{version}_arm64-setup.apk", "kind": "apk" }
+  },
+  "linux": {
+    "command": "sound-db",
+    "icon": "data/flutter_assets/assets/brand/icon-512.png",
+    "desktop": {
+      "name": "Sound Db",
+      "genericName": { "vi": "Máy đo âm thanh", "en": "Sound level meter" },
+      "categories": ["GTK", "AudioVideo", "Audio", "Utility"],
+      "keywords": ["dB", "Decibel", "Sound", "Noise", "Spectrum", "FFT", "Octave", "Tuner"],
+      "wmClass": "com.tsudev.sounddb"
+    },
+    "deb": {
+      "depends": [
+        "libc6 (>= 2.34)",
+        "libgtk-3-0 | libgtk-3-0t64",
+        "libsecret-1-0",
+        "libsqlite3-0",
+        "pulseaudio-utils",
+        "libgstreamer1.0-0",
+        "gstreamer1.0-plugins-base",
+        "gstreamer1.0-plugins-good"
+      ],
+      "section": "sound"
+    },
+    "rpm": {
+      "depends": [
+        "libgtk-3.so.0()(64bit)",
+        "libsecret-1.so.0()(64bit)",
+        "libsqlite3.so.0()(64bit)",
+        "/usr/bin/parecord",
+        "gstreamer1-plugins-base",
+        "gstreamer1-plugins-good"
+      ],
+      "group": "Applications/Multimedia"
+    }
+  },
+  "channels": ["scoop", "brew"],
+  "planned": ["apt", "rpm", "winget"]
+}

@@ -1,6 +1,14 @@
 ---
 import Trang from '../layouts/Trang.astro';
+import goi from '../../../../packaging/package.json';
 import { PHIEN_BAN, REPO_URL } from '../lib/site';
+
+// Lệnh cài sinh từ packaging/package.json (PACKAGING.md mục 3): chỉ kênh đã có gói thật ("channels").
+const LENH: Record<string, { ten: string; lenh: string }> = {
+  scoop: { ten: 'Windows - Scoop', lenh: `scoop bucket add tsudev https://github.com/tsudev-org/scoop-bucket\nscoop install tsudev/${goi.name}` },
+  brew: { ten: 'macOS - Homebrew', lenh: `brew install tsudev-org/tap/${goi.name}` },
+};
+const kenh = goi.channels.filter((k) => k in LENH).map((k) => LENH[k]!);
 
 const nenTang = [
   ['Windows', 'Windows 10/11 x64', 'Tệp .zip, giải nén rồi chạy sound_db.exe'],
@@ -20,6 +28,15 @@ const nenTang = [
       <tbody>{nenTang.map(([a, b, c]) => <tr><td>{a}</td><td>{b}</td><td>{c}</td></tr>)}</tbody>
     </table>
     <p><a class="nut nut--chinh" href={`${REPO_URL}/releases`} target="_blank" rel="noopener noreferrer">Mở trang phát hành</a></p>
+    <h2>Cài bằng lệnh</h2>
+    {kenh.map((k) => (
+      <>
+        <p>{k.ten}:</p>
+        <pre tabindex="0" aria-label={`Lệnh cài ${k.ten}`}><code>{k.lenh}</code></pre>
+      </>
+    ))}
+    <p>Gói tự cập nhật theo bản phát hành mới (mã băm SHA-256 lấy từ chính bản phát hành).</p>
+
     <h2>Kiểm chứng tệp tải về</h2>
     <p>Mỗi bản phát hành kèm tệp <code>SHA256SUMS</code>. So khớp trước khi cài:</p>
     <pre tabindex="0" aria-label="Lệnh kiểm chứng tệp tải về"><code>sha256sum -c SHA256SUMS --ignore-missing
