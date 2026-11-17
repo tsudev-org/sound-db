@@ -30,8 +30,8 @@ jobs:
           - { os: ubuntu-24.04, target: android }
           - { os: ubuntu-24.04, target: linux }
           - { os: windows-2025, target: windows }
-          - { os: macos-15, target: macos }
-          - { os: macos-15, target: ios }
+          - { os: macos-26, target: macos }
+          - { os: macos-26, target: ios }
     runs-on: ${{ matrix.os }}
     timeout-minutes: 60
     environment: release
