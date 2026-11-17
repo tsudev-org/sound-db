@@ -20,7 +20,8 @@
     "android-arm64": { "file": "sound-db_{version}_arm64-setup.apk", "kind": "apk" }
   },
   "linux": {
-    "command": "sound-db",
+    "command": "tsudev-sound-db",
+    "links": { "sound-db": "sound_db" },
     "icon": "data/flutter_assets/assets/brand/icon-512.png",
     "desktop": {
       "name": "Sound Db",
