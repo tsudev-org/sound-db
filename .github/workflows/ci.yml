@@ -71,6 +71,21 @@ jobs:
         working-directory: apps/app
         run: flutter build linux --release
 
+  apple:
+    name: Dựng kiểm iOS + macOS
+    runs-on: macos-26
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with: { persist-credentials: false }
+      - name: Flutter (ghim commit)
+        run: |
+          git clone --depth 1 -b "$FLUTTER_VERSION" https://github.com/flutter/flutter.git "$RUNNER_TEMP/flutter"
+          test "$(git -C "$RUNNER_TEMP/flutter" rev-parse HEAD)" = "$FLUTTER_COMMIT"
+          echo "$RUNNER_TEMP/flutter/bin" >> "$GITHUB_PATH"
+      - working-directory: apps/app
+        run: flutter pub get && flutter build ios --debug --no-codesign && flutter build macos --debug
+
   web:
     name: Website + máy chủ
     runs-on: ubuntu-24.04

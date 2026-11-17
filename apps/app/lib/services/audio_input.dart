@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:flutter/services.dart';
 import 'package:record/record.dart';
 
 class AudioInputException implements Exception {
@@ -20,6 +21,7 @@ class AudioInput {
   AudioInput({this.sampleRate = 48000});
 
   final int sampleRate;
+  static const _sessionChannel = MethodChannel('com.tsudev.sounddb/audio_session');
   // Tạo lười: chỉ gọi plugin thu âm khi người dùng thật sự bắt đầu đo.
   late final AudioRecorder _recorder = AudioRecorder();
   bool _recorderCreated = false;
@@ -52,6 +54,16 @@ class AudioInput {
     );
     if (!await _recorder.isEncoderSupported(AudioEncoder.pcm16bits)) {
       throw AudioInputException('Thiết bị không hỗ trợ thu PCM 16-bit.');
+    }
+    if (Platform.isIOS) {
+      // iOS: tự đặt AVAudioSession mode .measurement (ios/Runner/AppDelegate.swift) thay vì để plugin đặt mode mặc
+      // định có xử lý giọng nói. Lỗi kênh không chặn đo, chỉ mất chế độ đo lường.
+      await _recorder.ios?.manageAudioSession(false);
+      try {
+        await _sessionChannel.invokeMethod<double>('configureMeasurement');
+      } on PlatformException catch (_) {
+        await _recorder.ios?.manageAudioSession(true);
+      }
     }
     final stream = await _recorder.startStream(config);
     _carry = -1;

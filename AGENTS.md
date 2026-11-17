@@ -68,7 +68,6 @@ npx npm@11 install && npm test && npm run build
 | Lệch ở đâu | Vì sao | Kế hoạch |
 | --- | --- | --- |
 | Logo: dùng logo tsudev chung | Chưa có logo riêng được chủ dự án duyệt (`BRAND_ASSETS.md` mục 15) | Có logo duyệt ⇒ thay `assets/brand/source/`, sửa `brand.json`, chạy lại dây chuyền |
-| iOS chưa đặt `AVAudioSession.Mode.measurement` | Plugin `record` không lộ tham số mode | Thêm kênh nền tảng nhỏ trong `ios/Runner` - `logs/STATE.md` |
 | Không ghim chứng chỉ (pinning) | Dữ liệu D2, không phải D3 (`LANGUAGE_SELECTION.md` mục 4) | Xét lại nếu dữ liệu nâng lên D3 |
 
 ### B.5. Việc riêng của repo cần biết trước khi sửa

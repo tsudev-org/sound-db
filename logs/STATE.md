@@ -10,7 +10,6 @@
   trong `.github/workflows/deploy.yml` (hiện triển khai bằng `wrangler` đã đăng nhập trên máy dev)
 - [ ] 👤 Khóa ký Android: 4 secret ở Environment `release` (`.github/workflows/release.yml`), rồi tag bản mới
 - [ ] 👤 Bật Required reviewers cho Environment `release` và `production`
-- [ ] iOS: kênh nền tảng đặt `AVAudioSession.Mode.measurement` (plugin record không lộ tham số)
 - [ ] Kênh cài bằng lệnh (Scoop, Homebrew, winget, APT/RPM) sau bản phát hành đầu (`PACKAGING.md`)
 - [ ] Logo riêng cho Sound Db: đề xuất cho chủ dự án duyệt (`BRAND_ASSETS.md` mục 15)
 
