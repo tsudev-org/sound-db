@@ -1,20 +1,20 @@
 ---
 import Trang from '../layouts/Trang.astro';
-import { REPO_URL } from '../lib/site';
+import { PHIEN_BAN, REPO_URL } from '../lib/site';
 
 const nenTang = [
-  ['Android', 'Android 7.0 trở lên', 'APK ký số trên GitHub Releases'],
-  ['iOS và iPadOS', 'iOS 13 trở lên', 'Phát hành qua App Store (đang chuẩn bị)'],
-  ['Windows', 'Windows 10/11 x64', 'Bản cài trên GitHub Releases'],
-  ['macOS', 'macOS 12 trở lên', 'Tệp .dmg trên GitHub Releases'],
-  ['Linux', 'x64, glibc 2.31+', 'Gói tar.gz trên GitHub Releases'],
+  ['Windows', 'Windows 10/11 x64', 'Tệp .zip, giải nén rồi chạy sound_db.exe'],
+  ['macOS', 'macOS 12 trở lên (Intel và Apple Silicon)', 'Tệp .zip chứa Sound Db.app (chưa ký Apple: chuột phải > Mở)'],
+  ['Linux', 'x64', 'Tệp .tar.gz, giải nén rồi chạy ./sound_db'],
+  ['Android', 'Android 7.0 trở lên', 'APK ký số - sắp có'],
+  ['iOS và iPadOS', 'iOS 13 trở lên', 'App Store - đang chuẩn bị'],
 ];
 ---
 <Trang tieuDe="Tải về" moTa="Tải Sound Db cho Android, iOS, Windows, macOS và Linux. Mỗi tệp cài đều công bố SHA-256 để bạn tự kiểm chứng trước khi cài đặt." duongDan="/tai-ve/">
   <div class="khung van-ban">
     <h1>Tải về Sound Db</h1>
-    <p class="thong-bao">Sound Db đang ở giai đoạn phát hành đầu tiên. Các bản dựng được tạo tự động trên GitHub Actions
-      từ mã nguồn công khai; trong lúc chờ bản chính thức, bạn có thể <a href="/do/">đo ngay trên trình duyệt</a>.</p>
+    <p>Bản mới nhất: <strong>{PHIEN_BAN}</strong>. Mọi bản được dựng tự động trên GitHub Actions từ mã nguồn công khai,
+      kèm SHA-256 và chứng thực nguồn gốc. Không muốn cài đặt? <a href="/do/">Đo ngay trên trình duyệt</a>.</p>
     <table class="bang">
       <thead><tr><th scope="col">Nền tảng</th><th scope="col">Yêu cầu</th><th scope="col">Kênh</th></tr></thead>
       <tbody>{nenTang.map(([a, b, c]) => <tr><td>{a}</td><td>{b}</td><td>{c}</td></tr>)}</tbody>
@@ -22,7 +22,8 @@ const nenTang = [
     <p><a class="nut nut--chinh" href={`${REPO_URL}/releases`} target="_blank" rel="noopener noreferrer">Mở trang phát hành</a></p>
     <h2>Kiểm chứng tệp tải về</h2>
     <p>Mỗi bản phát hành kèm tệp <code>SHA256SUMS</code>. So khớp trước khi cài:</p>
-    <pre><code>sha256sum -c SHA256SUMS --ignore-missing</code></pre>
-    <p>Trên Windows PowerShell: <code>Get-FileHash .\sound-db-setup.exe -Algorithm SHA256</code>.</p>
+    <pre><code>sha256sum -c SHA256SUMS --ignore-missing
+gh attestation verify sound-db_{PHIEN_BAN}_x64-linux.tar.gz --repo tsudev-org/sound-db</code></pre>
+    <p>Trên Windows PowerShell: <code>Get-FileHash .\sound-db_{PHIEN_BAN}_x64-windows.zip -Algorithm SHA256</code>.</p>
   </div>
 </Trang>

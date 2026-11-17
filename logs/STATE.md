@@ -8,8 +8,8 @@
 - [ ] 👤 Đăng ký client OIDC `sounddb` ở tsudev (phiếu `logs/handover/20261117-01_yeu-cau-dang-ky-client-oidc-tsudev.md`)
 - [ ] 👤 Secret `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID` ở Environment `production` rồi bật lại trigger `push`
   trong `.github/workflows/deploy.yml` (hiện triển khai bằng `wrangler` đã đăng nhập trên máy dev)
-- [ ] Branch protection/ruleset cho `main` (check bắt buộc: CI các job, CodeQL)
-- [ ] 👤 Khóa ký Android (keystore) đặt vào Environment `release`, rồi tag bản đầu
+- [ ] 👤 Khóa ký Android: 4 secret ở Environment `release` (`.github/workflows/release.yml`), rồi tag bản mới
+- [ ] 👤 Bật Required reviewers cho Environment `release` và `production`
 - [ ] iOS: kênh nền tảng đặt `AVAudioSession.Mode.measurement` (plugin record không lộ tham số)
 - [ ] Kênh cài bằng lệnh (Scoop, Homebrew, winget, APT/RPM) sau bản phát hành đầu (`PACKAGING.md`)
 - [ ] Logo riêng cho Sound Db: đề xuất cho chủ dự án duyệt (`BRAND_ASSETS.md` mục 15)
@@ -20,6 +20,10 @@
 | --- | --- | --- |
 
 ## Đã hoàn thành (mới nhất trên cùng)
+
+- 17/11/2026 - Bản phát hành 26.11.1701 (Windows/macOS/Linux) trên GitHub Releases, SHA256SUMS + chứng thực nguồn
+  gốc (đã `gh attestation verify` đạt). CI 5 job xanh; ruleset `main-bao-ve`. Bỏ flutter_web_auth_2 (WebView nhúng):
+  di động dùng app_links, desktop dùng vòng lặp 127.0.0.1. iOS/macOS dựng trên macos-26.
 
 - 17/11/2026 - Repo `tsudev-org/sound-db` (Public, secret scanning + push protection + Dependabot). Production
   sounddb.tsudev.com: Worker `sound-db` + D1 `sound-db` (apac, id cfcceb24-...), secret đặt. Nghiệm thu: health ok,
