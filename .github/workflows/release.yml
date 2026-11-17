@@ -28,7 +28,8 @@ jobs:
       matrix:
         include:
           - { os: ubuntu-24.04, target: android }
-          - { os: ubuntu-24.04, target: linux }
+          # glibc 2.35: bản dựng chạy được trên Debian 12 / Ubuntu 22.04 (deb khai libc6 >= 2.34).
+          - { os: ubuntu-22.04, target: linux }
           - { os: windows-2025, target: windows }
           - { os: macos-26, target: macos }
           - { os: macos-26, target: ios }
@@ -75,6 +76,12 @@ jobs:
               cp build/app/outputs/flutter-apk/app-x86_64-release.apk "$GITHUB_WORKSPACE/out/sound-db_${V}_x64-setup.apk" ;;
             linux)
               flutter build linux "${args[@]}"
+              # Chặn hồi quy: không tệp nào được đòi GLIBC mới hơn mức khai trong packaging/package.json.
+              max=$(find build/linux/x64/release/bundle -type f \( -name '*.so*' -o -perm -u+x \) -exec objdump -T {} + 2>/dev/null \
+                | grep -oE 'GLIBC_[0-9]+\.[0-9]+' | sort -uV | tail -1)
+              echo "GLIBC cao nhất: $max"
+              if [ "$(printf '%s\n' GLIBC_2.34 "$max" | sort -V | tail -1)" != GLIBC_2.34 ]; then
+                echo "::error::Bản Linux đòi $max > GLIBC_2.34 (libc6 >= 2.34)"; exit 1; fi
               tar -C build/linux/x64/release/bundle -czf "$GITHUB_WORKSPACE/out/sound-db_${V}_x64-linux.tar.gz" . ;;
             windows)
               flutter build windows "${args[@]}"
