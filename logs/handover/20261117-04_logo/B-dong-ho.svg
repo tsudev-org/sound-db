@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="Sound Db - phương án B: đồng hồ đo">
+  <defs>
+    <linearGradient id="nen" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0b2233"/><stop offset="1" stop-color="#03070c"/></linearGradient>
+    <linearGradient id="cung" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#22d3ee"/><stop offset=".6" stop-color="#38bdf8"/><stop offset="1" stop-color="#f97316"/></linearGradient>
+  </defs>
+  <rect width="1024" height="1024" rx="225" fill="url(#nen)"/>
+  <path d="M212 660 A300 300 0 0 1 812 660" fill="none" stroke="url(#cung)" stroke-width="88" stroke-linecap="round"/>
+  <path d="M512 660 L700 430" stroke="#f8fafc" stroke-width="44" stroke-linecap="round"/>
+  <circle cx="512" cy="660" r="62" fill="#f8fafc"/>
+  <path d="M300 812 h424" stroke="#38bdf8" stroke-width="32" stroke-linecap="round" opacity=".55"/>
+</svg>

@@ -1,12 +1,12 @@
 # Triển khai sounddb.tsudev.com (Worker + D1 + tệp tĩnh) sau khi CI xanh trên main.
 # Cần secret ở Environment "production" (bật Required reviewers): CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID.
 name: Deploy
-# Chỉ chạy tay cho tới khi secret Cloudflare được đặt; khi đã có, bật lại khối `push` dưới đây.
+# Secret đặt 17/11/2026; chạy tay lần đầu (run 44090540556) đạt nghiệm thu ⇒ bật triển khai tự động khi đẩy main.
 on:
   workflow_dispatch:
-  # push:
-  #   branches: [main]
-  #   paths: ['apps/web/**', 'services/sync-api/**', 'packages/dsp-core/**', 'tokens/**', 'package-lock.json']
+  push:
+    branches: [main]
+    paths: ['apps/web/**', 'services/sync-api/**', 'packages/dsp-core/**', 'tokens/**', 'package-lock.json']
 permissions: { contents: read }
 concurrency: { group: deploy-production, cancel-in-progress: false }
 env:
