@@ -48,7 +48,10 @@ jobs:
           test "$(git -C "$RUNNER_TEMP/flutter" rev-parse HEAD)" = "$FLUTTER_COMMIT"
           echo "$RUNNER_TEMP/flutter/bin" >> "$GITHUB_PATH"
       - if: matrix.target == 'linux'
-        run: sudo apt-get update -q && sudo apt-get install -yq clang cmake ninja-build pkg-config libgtk-3-dev libsecret-1-dev libsqlite3-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libpulse-dev
+        # Runner ubuntu-22.04 cài sẵn libunwind-14-dev, xung đột libunwind-dev mà libgstreamer1.0-dev cần.
+        run: |
+          sudo apt-get remove -yq libunwind-14-dev || true
+          sudo apt-get update -q && sudo apt-get install -yq libunwind-dev clang cmake ninja-build pkg-config libgtk-3-dev libsecret-1-dev libsqlite3-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libpulse-dev
       - name: Khóa ký Android
         if: matrix.target == 'android'
         env:
