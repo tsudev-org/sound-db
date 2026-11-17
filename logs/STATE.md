@@ -12,6 +12,8 @@
   repo - HTTP 403). Lệnh: phiếu `20261117-05` mục 3.
 - [ ] 👤 Chọn logo riêng (phiếu `logs/handover/20261117-04_de-xuat-logo-rieng-sound-db.md`, 3 phương án SVG).
 - [ ] 👤 Duyệt `xuat-ban` của linux-packages khi có run mới cho 26.11.1705.
+- [ ] Phiếu V1 (khuôn phiên bản thống nhất): chờ `tsudev-standards` v3.7.0 ⇒ sync, bản chuyển tiếp phát hành cả
+  tên tệp cũ + mới (`{os}-{arch}`, `SHA256SUMS.txt`), phiếu cho scoop-bucket + homebrew-tap. Kế hoạch: phiếu V1 mục 6.
 - [ ] winget: PR vào microsoft/winget-pkgs (bộ phân loại từng chặn - để chủ dự án)
 
 ## Đang thực hiện
@@ -20,6 +22,10 @@
 | --- | --- | --- |
 
 ## Đã hoàn thành (mới nhất trên cùng)
+
+- 17/11/2026 - Scoop lên 26.11.1705 (excavator 44106910857 đạt; 403 rate limit lần trước là tạm thời). Phiếu V1: đã
+  đối chiếu - thẻ, tiêu đề Release, phiên bản trong app/web, versionCode đúng khuôn; tên tệp + `SHA256SUMS` lệch, kế
+  hoạch chuyển tiếp ở phiếu V1 mục 6. OIDC vẫn tắc (`tsudev.com/oidc/interaction/*` 404 lúc 21:45).
 
 - 17/11/2026 - Bản 26.11.1705: APK Android ký số (arm64, x86_64) lần đầu; sửa `build.gradle.kts` (`java.util.Properties`
   không giải được trong khối android {} - job Android sẽ hỏng ngay lần ký thật). Khóa ký ở

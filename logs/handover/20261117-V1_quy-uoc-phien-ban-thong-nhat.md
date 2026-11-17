@@ -82,4 +82,24 @@ Tám kiểu đặt thẻ cùng tồn tại, khó so sánh/đối chiếu phiên 
 
 ## 6. Kết quả xử lý (mỗi repo điền vào bản sao của mình)
 
--
+- **sound-db - Đã đọc** (agent-sound, 21:50 17/11/2026). Đối chiếu trên bản mới nhất `v26.11.1705`:
+
+  | Mục | Hiện tại | Khớp khuôn? |
+  | --- | --- | --- |
+  | Thẻ git | `v26.11.1705` | ĐÚNG |
+  | Tiêu đề Release | `Sound Db 26.11.1705` | ĐÚNG |
+  | Phiên bản trong mã | `pubspec.yaml` `26.11.1705+26111705`, `apps/web/src/lib/site.ts` `26.11.1705`, /tai-ve/ và tsudev.com/apps | ĐÚNG |
+  | Android `versionCode` | `26111705` (APK tách ABI: `1000 × ABI + build` ⇒ 26113705, 26115705 - vẫn tăng dần) | ĐÚNG |
+  | Tên tệp | `sound-db_{ver}_x64-windows.zip`, `_x64-linux.tar.gz`, `_universal-macos.zip`, `_arm64-setup.apk`, `_x64-setup.apk` | LỆCH: thứ tự `{arch}-{os}`, APK thiếu `android` |
+  | Tệp kiểm | `SHA256SUMS` (chứng thực nguồn gốc qua `gh attestation`, không có `.sigstore.json`) | LỆCH: thiếu đuôi `.txt` |
+
+  Không có updater trong app (cập nhật qua kênh gói) ⇒ ràng buộc 3.2 không áp dụng; ràng buộc 3.3 áp dụng.
+  **Kế hoạch** (KHÔNG đổi ngay - bộ quy ước v3.7.0 chưa phát hành, tên `{loại}` cho zip/APK chưa chốt):
+  1. Sau khi `tsudev-standards` v3.7.0 ra: `sync-standards.sh`.
+  2. Bản kế tiếp phát hành CẢ tên cũ lẫn tên mới (`sound-db_{ver}_windows-x64.zip`, `_linux-x64.tar.gz`,
+     `_macos-universal.zip`, `_android-arm64.apk`, `_android-x64.apk`) + cả `SHA256SUMS` lẫn `SHA256SUMS.txt`
+     trong một bản chuyển tiếp ⇒ không kênh nào gãy trong lúc chờ các repo kho gói.
+  3. Cùng lúc: `packaging/package.json` (`assets.*.file`, `release.sums` - linux-packages đọc thẳng file này từ
+     `main`), lệnh kiểm trên `apps/web/src/pages/tai-ve.astro`; phiếu cho `scoop-bucket` (`autoupdate.url`,
+     `hash.url`/`regex`) và `homebrew-tap` (`url` cask).
+  4. Các kênh đã chuyển sang tên mới ⇒ bản sau đó bỏ tên cũ.
