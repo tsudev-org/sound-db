@@ -143,3 +143,29 @@ Ghi lại vào phiếu: hãng/model, phiên bản Android, ABI (`getprop ro.prod
 Danh sách lỗi (mã `QA-nn`, mức, tab, cách tái hiện, trạng thái):
 
 -
+
+## 7. Prompt khởi động chuẩn cho phiên kế tiếp (chủ dự án dán nguyên văn)
+
+```text
+Bạn là agent-sound, repo ~/projects/sound-db. Thực hiện theo đúng thứ tự, không bỏ bước:
+
+1. KHỞI ĐỘNG: đọc CLAUDE.md, AGENTS.md, .standards/AGENTS.md (+ docs/AGENT_PROTOCOL.md), logs/STATE.md,
+   logs/LOCKS.md, rồi phiếu logs/handover/20261117-06_ke-hoach-kiem-thu-smartphone-adb.md (việc CHÍNH) và
+   20261117-V1_*.md mục 6. `git status`, `git log --oneline -5`, `gh pr list` (PR còn mở của phiên trước ⇒ chờ CI
+   xanh rồi merge trước khi làm việc mới). Kiểm nhanh: `id -Gn` có kvm; `gh release list -R
+   tsudev-org/tsudev-standards -L1` (v3.7.0 đã ra chưa); `curl -s -o /dev/null -w '%{http_code}'
+   https://tsudev.com/oidc/interaction/x` (phải 307).
+2. GHI KHOÁ + "Đang thực hiện" trong STATE trước khi sửa file; xoá khoá ngay khi xong.
+3. LÀM phiếu 06 theo phase 1→5. Bắt đầu Phase 1: nếu `adb devices` trống thì dừng và yêu cầu tôi bật Gỡ lỗi không
+   dây + chạy `! ~/Android/Sdk/platform-tools/adb pair <IP>:<cổng> <mã>` (đưa đúng câu lệnh). KHÔNG dùng emulator
+   khi máy đang chạy phiên khác (đã quá tải).
+4. NGUYÊN TẮC: mọi kết luận phải có bằng chứng (ảnh/log/số đo); mỗi lỗi ⇒ mã QA-nn trong phiếu 06 mục 6 ⇒ test tái
+   hiện đỏ ⇒ sửa tận gốc ⇒ xanh; Rust là bản tham chiếu DSP; không sửa .standards/; không tạo/đổi tên repo theo
+   tên cũ (~/.claude/CLAUDE.md); không hỏi lại điều đã rõ trong phiếu; mật khẩu/đăng nhập tsudev là việc của tôi.
+5. TIẾT KIỆM: chạy cổng tại máy đúng phần bị sửa trước khi đẩy; gộp PR theo vùng; chờ CI bằng vòng `until` chạy
+   nền (repo không có auto-merge); job iOS bị huỷ khi chờ runner ⇒ `gh run rerun <id> --failed`; bọc lệnh adb trong
+   `timeout 30`; không đọc lại file vừa ghi.
+6. KẾT THÚC MỖI PHASE: cập nhật phiếu 06 mục 6 + STATE (Đã hoàn thành, hàng đợi), PR + merge. Hết phiên/sắp
+   đầy ngữ cảnh: viết phiếu bàn giao mới `logs/handover/<YYYYMMDD>-NN_*.md` (việc dang dở + bước tiếp theo CỤ THỂ +
+   prompt khởi động cho phiên sau theo khuôn này), main sạch, LOCKS trống, không tiến trình nền (emulator/adb).
+```
