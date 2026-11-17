@@ -59,6 +59,12 @@
   khóa nên không bắt được lỗi nhánh có khóa.
 - versionCode APK tách ABI = `1000 × ABI + build`: arm64 26113705, x86_64 26115705.
 
+## 4b. Cập nhật 22:00 17/11/2026 - OIDC
+
+- Phiên tsudev đã chèn client `sounddb` (mục 3.1 XONG). `/auth/web/start` → `/oidc/auth` 303 → `/oidc/interaction/<uid>`
+  nhưng trang đó trả 404 text/plain trên production (kể cả uid bịa; trang Next `[uid].tsx` lẽ ra chuyển sang
+  `/login`). Lỗi phía tsudev, ảnh hưởng mọi client OIDC - đã báo phiên `tsudev-e1` kèm repro.
+
 ## 5. Trạng thái cổng kiểm
 
 PR #7: 10/10 check xanh. Release 26.11.1705 7/7 job đạt. Deploy tự động đạt nghiệm thu production.

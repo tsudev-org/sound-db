@@ -5,8 +5,9 @@
 
 ## Hàng đợi task (làm từ trên xuống)
 
-- [ ] 👤 Đăng ký client OIDC `sounddb` ở tsudev (phiếu tsudev `20261117-SD1`; phiên tsudev không có `neon.env` ⇒ chỉ
-  chủ dự án chạy SQL được). Xong ⇒ agent nghiệm thu đăng nhập web + app, đồng bộ hai thiết bị.
+- [ ] Đăng nhập tsudev: client `sounddb` ĐÃ có (phiên tsudev chèn ~21:05 17/11, `/oidc/auth` 303). Còn tắc ở tsudev:
+  `GET tsudev.com/oidc/interaction/<uid>` trả 404 text/plain (cả uid bịa) - đã báo phiên `tsudev-e1`. tsudev sửa
+  xong ⇒ nghiệm thu đăng nhập web + app (cần tài khoản tsudev thật của chủ dự án), đồng bộ hai thiết bị.
 - [ ] 👤 Required reviewers cho Environment `release` và `production` (tài khoản `tsudev-tsudev` không có quyền admin
   repo - HTTP 403). Lệnh: phiếu `20261117-05` mục 3.
 - [ ] 👤 Chọn logo riêng (phiếu `logs/handover/20261117-04_de-xuat-logo-rieng-sound-db.md`, 3 phương án SVG).
