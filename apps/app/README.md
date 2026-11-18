@@ -1,6 +1,6 @@
 # sound_db
 
-Sound Db - máy đo âm thanh chính xác của hệ sinh thái tsudev
+Sound Db - máy đo âm thanh chính xác của hệ sinh thái TsuDEV
 
 ## Getting Started
 

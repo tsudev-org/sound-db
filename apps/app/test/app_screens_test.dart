@@ -88,7 +88,7 @@ void main() {
       expect(find.textContaining('Chưa có phiên đo nào'), findsOneWidget);
       expect(find.text('/ trang'), findsOneWidget);
       await go('Cài đặt');
-      expect(find.textContaining('Đăng nhập tài khoản tsudev'), findsOneWidget);
+      expect(find.textContaining('Đăng nhập tài khoản TsuDEV'), findsOneWidget);
       await go('Sáng');
       expect(s.settings.theme.name, 'light');
       await tester.tap(find.text('Hiệu chuẩn micro'));

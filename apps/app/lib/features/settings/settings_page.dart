@@ -83,7 +83,7 @@ class SettingsPage extends StatelessWidget {
             header('Giới thiệu'),
             ListTile(
               title: const Text('Sound Db'),
-              subtitle: Text('Phiên bản $appVersion · Một sản phẩm của tsudev'),
+              subtitle: Text('Phiên bản $appVersion · Một sản phẩm của TsuDEV'),
               onTap: () => launchUrl(Uri.parse(apiBase), mode: LaunchMode.externalApplication),
             ),
             ListTile(
@@ -127,10 +127,10 @@ class _AccountSection extends StatelessWidget {
                     }
                   },
             icon: const Icon(Icons.login),
-            label: const Text('Đăng nhập tài khoản tsudev để đồng bộ lịch sử đo và hiệu chuẩn'),
+            label: const Text('Đăng nhập tài khoản TsuDEV để đồng bộ lịch sử đo và hiệu chuẩn'),
           ),
           const SizedBox(height: SdbSpacing.s2),
-          Text('Mở trình duyệt hệ thống tới tsudev.com (Google, GitHub hoặc tài khoản tsudev).',
+          Text('Mở trình duyệt hệ thống tới tsudev.com (Google, GitHub hoặc tài khoản TsuDEV).',
               style: TextStyle(color: p.textMuted, fontSize: 12)),
         ]),
       );

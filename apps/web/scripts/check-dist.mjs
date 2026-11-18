@@ -1,4 +1,4 @@
-// Kiểm bản build (ECOSYSTEM_IDENTITY.md mục 2.2 và 4): title đúng khuôn, og:site_name = tsudev, canonical,
+// Kiểm bản build (ECOSYSTEM_IDENTITY.md mục 2.2 và 4): title đúng khuôn, og:site_name = TsuDEV, canonical,
 // description 120-160 ký tự, KHÔNG script/CSS nội tuyến (CSP script-src/style-src 'self'), theme.js nạp chặn trước
 // stylesheet, bộ chọn giao diện đúng hợp đồng, liên kết mở tab mới có rel đủ, không em-dash/en-dash, liên kết nội bộ không gãy.
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
@@ -18,8 +18,8 @@ function duyet(thuMuc) {
 function kiemTra(tep, html) {
   const ten = tep.slice(dist.length);
   const title = html.match(/<title>([^<]*)<\/title>/)?.[1] ?? '';
-  if (!/^(.+ - )?Sound Db \| tsudev$/.test(title)) loi.push(`${ten}: title sai khuôn: ${title}`);
-  if (!html.includes('<meta property="og:site_name" content="tsudev">')) loi.push(`${ten}: thiếu og:site_name tsudev`);
+  if (!/^(.+ - )?Sound Db \| TsuDEV$/.test(title)) loi.push(`${ten}: title sai khuôn: ${title}`);
+  if (!html.includes('<meta property="og:site_name" content="TsuDEV">')) loi.push(`${ten}: thiếu og:site_name TsuDEV`);
   if (!/<link rel="canonical" href="https:\/\/sounddb\.tsudev\.com\//.test(html)) loi.push(`${ten}: thiếu canonical`);
   const mota = html.match(/<meta name="description" content="([^"]*)"/)?.[1] ?? '';
   const dai = [...mota.replace(/&[a-z#0-9]+;/g, 'x')].length;

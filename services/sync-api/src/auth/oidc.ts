@@ -35,7 +35,7 @@ const JWKS_MIN_REFRESH = 60 * 1000;
 
 async function getJson<T>(url: string, init?: RequestInit): Promise<T> {
   const res = await fetcher(url, { ...init, signal: AbortSignal.timeout(10_000) });
-  if (!res.ok) throw new ApiError(502, 'idp_unavailable', `Máy chủ tài khoản tsudev trả lỗi ${res.status}.`);
+  if (!res.ok) throw new ApiError(502, 'idp_unavailable', `Máy chủ tài khoản TsuDEV trả lỗi ${res.status}.`);
   return (await res.json()) as T;
 }
 

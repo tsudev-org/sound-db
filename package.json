@@ -1,7 +1,7 @@
 {
   "name": "sound-db",
   "private": true,
-  "description": "Sound Db - máy đo âm thanh chính xác của hệ sinh thái tsudev (monorepo)",
+  "description": "Sound Db - máy đo âm thanh chính xác của hệ sinh thái TsuDEV (monorepo)",
   "license": "Apache-2.0",
   "workspaces": [
     "apps/web",
