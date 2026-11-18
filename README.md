@@ -1,9 +1,9 @@
 # Sound Db
 
-Máy đo âm thanh chính xác của hệ sinh thái [tsudev](https://tsudev.com): mức âm (dB) theo IEC 61672-1, phổ
+Máy đo âm thanh chính xác của hệ sinh thái [TsuDEV](https://tsudev.com): mức âm (dB) theo IEC 61672-1, phổ
 tần số FFT, phổ đồ, dải octave 1/1 và 1/3 (IEC 61260-1), cao độ/nốt nhạc, liều tiếp xúc tiếng ồn, bộ phát tín
 hiệu và hiệu chuẩn - trên **Android, iOS, Windows, macOS, Linux** và **trình duyệt**.
-Đăng nhập tài khoản tsudev (không bắt buộc) để đồng bộ lịch sử đo và hiệu chuẩn giữa các thiết bị.
+Đăng nhập tài khoản TsuDEV (không bắt buộc) để đồng bộ lịch sử đo và hiệu chuẩn giữa các thiết bị.
 
 - Website: <https://sounddb.tsudev.com> · máy đo trên web: <https://sounddb.tsudev.com/do/>
 - Hạng sản phẩm: **B - app có kết nối** (`.standards/docs/AUTH_AND_ACCOUNT.md` mục 1): mọi chức năng đo chạy

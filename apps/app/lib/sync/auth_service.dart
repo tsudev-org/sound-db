@@ -41,7 +41,7 @@ class AccountUser {
       {'id': id, 'display_name': name, 'email': email, 'avatar_url': picture, 'email_verified': verified};
 }
 
-/// Đăng nhập tài khoản tsudev cho app.
+/// Đăng nhập tài khoản TsuDEV cho app.
 ///
 /// Luồng (docs/adr/0003-dang-nhap-qua-may-chu-sound-db.md): app mở TRÌNH DUYỆT
 /// HỆ THỐNG tới máy chủ Sound Db, máy chủ đăng nhập với tsudev.com (OIDC + PKCE)

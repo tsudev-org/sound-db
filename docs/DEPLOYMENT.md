@@ -21,7 +21,7 @@ Token Cloudflare cần quyền: Workers Scripts Edit, Workers Routes Edit (zone 
 tsudev.com - để Custom Domain tự tạo bản ghi). Đặt bằng `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID` trong shell,
 không ghi vào tệp.
 
-Đăng ký client OIDC ở tsudev (chỉ OWNER, chèn bảng - tsudev `docs/auth.md` mục 8):
+Đăng ký client OIDC ở TsuDEV (chỉ OWNER, chèn bảng - TsuDEV `docs/auth.md` mục 8):
 
 ```sql
 INSERT INTO "OAuthClient" (id, name, "redirectUris", "postLogoutRedirectUris", scopes)

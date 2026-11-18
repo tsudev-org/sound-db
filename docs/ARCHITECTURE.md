@@ -6,7 +6,7 @@ Cập nhật: 17/11/2026.
 
 ```
              +-------------------- tsudev.com (IdP OIDC) --------------------+
-             |  Google / GitHub / tài khoản tsudev   ·  ES256, PKCE bắt buộc  |
+             |  Google / GitHub / tài khoản TsuDEV   ·  ES256, PKCE bắt buộc  |
              +-------------------------------+-------------------------------+
                                              | Authorization Code + PKCE (máy chủ - máy chủ)
                                              v

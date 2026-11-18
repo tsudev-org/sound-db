@@ -61,7 +61,7 @@ Thước đo âm thanh Đề-xi-ben, Máy đo âm thanh HD, ...). Nhóm tính n�
 | Bộ phát tông/ồn | Sin, vuông, răng cưa, tam giác, ồn trắng/hồng, quét log |
 | Hiệu chuẩn | 3 cách, hồ sơ đồng bộ |
 | Lịch sử, xuất CSV, chia sẻ | Lịch sử phân trang, CSV/JSON, chia sẻ (di động) / lưu tệp (desktop) |
-| Đồng bộ đám mây | Tài khoản tsudev, đa thiết bị + bảng điều khiển web |
+| Đồng bộ đám mây | Tài khoản TsuDEV, đa thiết bị + bảng điều khiển web |
 | Đo trên web | Có (WebAssembly, cùng lõi) |
 
 Khác biệt chủ ý: không quảng cáo, không ghi âm, không xin quyền vị trí, mã nguồn và bộ test độ chính xác công khai.
