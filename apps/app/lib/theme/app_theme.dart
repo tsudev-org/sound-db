@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'tokens.g.dart';
 
 /// Lựa chọn giao diện theo ECOSYSTEM_IDENTITY.md mục 4.1: chỉ Sáng/Tối/Hệ thống,
-/// mặc định Tối; giá trị cũ `warm` đọc thành `light`.
+/// chưa lưu lựa chọn ⇒ Hệ thống (PRODUCT_POLICY mục 1.2); giá trị cũ `warm` đọc thành `light`.
 enum ThemeChoice {
   light('Sáng'),
   dark('Tối'),
@@ -14,8 +14,8 @@ enum ThemeChoice {
 
   static ThemeChoice parse(String? raw) => switch (raw) {
         'light' || 'warm' => ThemeChoice.light,
-        'system' => ThemeChoice.system,
-        _ => ThemeChoice.dark,
+        'dark' => ThemeChoice.dark,
+        _ => ThemeChoice.system,
       };
 
   ThemeMode get mode => switch (this) {
