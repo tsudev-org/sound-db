@@ -10,7 +10,7 @@ class Settings extends ChangeNotifier {
 
   final LocalStore _store;
 
-  ThemeChoice theme = ThemeChoice.dark;
+  ThemeChoice theme = ThemeChoice.system;
   Weighting weighting = Weighting.a;
   TimeWeighting timeWeighting = TimeWeighting.fast;
 
@@ -40,6 +40,7 @@ class Settings extends ChangeNotifier {
     ]) {
       values[key] = await _store.getValue('setting.$key');
     }
+    await _migrateDefaults(values);
     theme = ThemeChoice.parse(values['theme']);
     weighting = Weighting.values.asNameMap()[values['weighting']] ?? Weighting.a;
     timeWeighting = TimeWeighting.values.asNameMap()[values['time_weighting']] ?? TimeWeighting.fast;
@@ -55,6 +56,18 @@ class Settings extends ChangeNotifier {
     offlineMode = values['offline_mode'] == 'true';
     autoSync = values['auto_sync'] != 'false';
     notifyListeners();
+  }
+
+  /// Di trú một lần (PRODUCT_POLICY mục 1.2): máy đã cài bản mặc định Tối mà chưa từng chọn giao diện
+  /// ⇒ ghi lại Tối để không đổi đột ngột. Máy mới (chưa có cài đặt/phiên đo nào) dùng mặc định Hệ thống.
+  Future<void> _migrateDefaults(Map<String, String?> values) async {
+    if (await _store.getValue('setting.defaults_v2') == 'true') return;
+    final installedBefore = values.values.any((v) => v != null) || await _store.countSessions() > 0;
+    if (installedBefore && values['theme'] == null) {
+      values['theme'] = ThemeChoice.dark.name;
+      await _store.setValue('setting.theme', ThemeChoice.dark.name);
+    }
+    await _store.setValue('setting.defaults_v2', 'true');
   }
 
   Future<void> _save(String key, Object value) async {
