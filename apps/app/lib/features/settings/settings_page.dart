@@ -82,6 +82,10 @@ class SettingsPage extends StatelessWidget {
             ),
             header('Giới thiệu'),
             ListTile(
+              leading: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.asset('assets/brand/icon-512.png', width: 40, height: 40, semanticLabel: 'Logo Sound Db'),
+              ),
               title: const Text('Sound Db'),
               subtitle: Text('Phiên bản $appVersion · Một sản phẩm của TsuDEV'),
               onTap: () => launchUrl(Uri.parse(apiBase), mode: LaunchMode.externalApplication),

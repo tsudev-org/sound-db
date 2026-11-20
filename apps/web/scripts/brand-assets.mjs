@@ -52,6 +52,12 @@ const CLEAR = { r: 0, g: 0, b: 0, alpha: 0 };
 
 /** Ô biểu tượng: cắt vuông chính giữa, bo góc (mặt nạ SVG). */
 async function tile(buf) {
+  // `crop` (tuỳ chọn): cắt vùng vuông {left, top, size} TRƯỚC - bỏ phần thừa của ảnh gốc (lề rộng, dấu của công cụ
+  // tạo ảnh) mà không sửa pixel tệp gốc. Vùng nhỏ hơn 1024 ⇒ bản 1024 là phóng to (ghi nợ BRAND_ASSETS mục 15).
+  if (CFG.crop) {
+    const { left, top, size } = CFG.crop;
+    buf = await sharp(buf).extract({ left, top, width: size, height: size }).png().toBuffer();
+  }
   const m = await sharp(buf).metadata();
   const side = Math.min(m.width, m.height);
   const big = 1024;

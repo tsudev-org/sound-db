@@ -67,7 +67,7 @@ npx npm@11 install && npm test && npm run build
 
 | Lệch ở đâu | Vì sao | Kế hoạch |
 | --- | --- | --- |
-| Logo: dùng logo tsudev chung | Chưa có logo riêng được chủ dự án duyệt (`BRAND_ASSETS.md` mục 15) | Có logo duyệt ⇒ thay `assets/brand/source/`, sửa `brand.json`, chạy lại dây chuyền |
+| Logo riêng (20/11/2026, phiếu LG1) cắt vuông 704 px từ ảnh gốc 1024 (`brand.json` `crop`) ⇒ icon 1024 là phóng to | Ảnh gốc có dấu ✦ của công cụ tạo ảnh ở góc phải dưới; không sửa pixel tệp gốc (`BRAND_ASSETS.md` mục 15) | Có bản gốc sạch ≥ 1024 quanh logo ⇒ thay `assets/brand/source/logo-sound-db.png`, bỏ `crop`, chạy lại dây chuyền |
 | Không ghim chứng chỉ (pinning) | Dữ liệu D2, không phải D3 (`LANGUAGE_SELECTION.md` mục 4) | Xét lại nếu dữ liệu nâng lên D3 |
 
 ### B.5. Việc riêng của repo cần biết trước khi sửa
