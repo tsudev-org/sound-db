@@ -23,6 +23,7 @@ class _HistoryPageState extends State<HistoryPage> {
   int _page = 1;
   int _total = 0;
   bool _loading = true;
+  bool _failed = false;
   List<MeasurementSession> _rows = const [];
   bool _initialised = false;
   // Giữ tham chiếu từ didChangeDependencies: tra AppScope trong dispose() là không an toàn.
@@ -51,16 +52,28 @@ class _HistoryPageState extends State<HistoryPage> {
     if (!mounted) return;
     final store = AppScope.of(context).store;
     setState(() => _loading = true);
-    final total = await store.countSessions();
-    final pages = total == 0 ? 1 : (total + _pageSize - 1) ~/ _pageSize;
-    if (_page > pages) _page = pages;
-    final rows = await store.listSessions(limit: _pageSize, offset: (_page - 1) * _pageSize);
-    if (!mounted) return;
-    setState(() {
-      _total = total;
-      _rows = rows;
-      _loading = false;
-    });
+    try {
+      final total = await store.countSessions();
+      final pages = total == 0 ? 1 : (total + _pageSize - 1) ~/ _pageSize;
+      if (_page > pages) _page = pages;
+      final rows = await store.listSessions(limit: _pageSize, offset: (_page - 1) * _pageSize);
+      if (!mounted) return;
+      setState(() {
+        _total = total;
+        _rows = rows;
+        _loading = false;
+        _failed = false;
+      });
+    } catch (e) {
+      // QA-01: lỗi kho (vd. SQLite thiếu hàm) không được để màn trống im lặng.
+      debugPrint('history_load_failed ${e.runtimeType}');
+      if (!mounted) return;
+      setState(() {
+        _rows = const [];
+        _loading = false;
+        _failed = true;
+      });
+    }
   }
 
   @override
@@ -85,7 +98,7 @@ class _HistoryPageState extends State<HistoryPage> {
                       child: Padding(
                         padding: const EdgeInsets.all(SdbSpacing.s6),
                         child: Text(
-                          context.l10n.historyEmpty,
+                          _failed ? context.l10n.historyLoadFailed : context.l10n.historyEmpty,
                           textAlign: TextAlign.center,
                           style: TextStyle(color: p.textMuted),
                         ),

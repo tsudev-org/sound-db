@@ -29,7 +29,7 @@ class LocalStore {
   static Future<LocalStore> openAt(String path) async {
     final db = await openDatabase(
       path,
-      version: 1,
+      version: 2,
       onCreate: (db, version) async {
         for (final table in const ['sessions', 'calibrations']) {
           await db.execute('''
@@ -42,11 +42,37 @@ class LocalStore {
             )''');
           await db.execute('CREATE INDEX ${table}_dirty ON $table(dirty)');
         }
+        await _addStartedAt(db);
         await db.execute('CREATE TABLE kv (key TEXT PRIMARY KEY, value TEXT NOT NULL)');
+      },
+      onUpgrade: (db, from, to) async {
+        if (from < 2) await _addStartedAt(db, backfill: true);
       },
     );
     return LocalStore._(db);
   }
+
+  /// v2 (QA-01): cột `started_at` (ms UTC) để xếp Lịch sử. KHÔNG dùng `json_extract`: SQLite hệ thống của một số máy
+  /// Android (Samsung Android 13) không có JSON1. Điền lại bằng Dart từ `data`.
+  static Future<void> _addStartedAt(DatabaseExecutor db, {bool backfill = false}) async {
+    await db.execute('ALTER TABLE sessions ADD COLUMN started_at INTEGER NOT NULL DEFAULT 0');
+    await db.execute('CREATE INDEX sessions_started ON sessions(deleted, started_at)');
+    if (!backfill) return;
+    final rows = await db.query('sessions', columns: ['id', 'data']);
+    for (final r in rows) {
+      Map<String, Object?> data;
+      try {
+        data = jsonDecode(r['data'] as String) as Map<String, Object?>;
+      } on FormatException {
+        continue;
+      }
+      await db.update('sessions', {'started_at': startedAtMs(data)}, where: 'id = ?', whereArgs: [r['id']]);
+    }
+  }
+
+  /// Mốc bắt đầu (ms UTC) từ dữ liệu phiên; thiếu/hỏng ⇒ 0 (xếp cuối).
+  static int startedAtMs(Map<String, Object?> data) =>
+      DateTime.tryParse(data['started_at'] as String? ?? '')?.millisecondsSinceEpoch ?? 0;
 
   // ---- khóa-giá trị (cài đặt, con trỏ đồng bộ) ----
   Future<String?> getValue(String key) async {
@@ -66,7 +92,7 @@ class LocalStore {
       Sqflite.firstIntValue(await _db.rawQuery('SELECT COUNT(*) FROM sessions WHERE deleted = 0')) ?? 0;
 
   Future<List<MeasurementSession>> listSessions({required int limit, required int offset}) async {
-    final rows = await _db.query('sessions', where: 'deleted = 0', orderBy: "json_extract(data, '\$.started_at') DESC", limit: limit, offset: offset);
+    final rows = await _db.query('sessions', where: 'deleted = 0', orderBy: 'started_at DESC, id DESC', limit: limit, offset: offset);
     return rows.map(_session).toList();
   }
 
@@ -106,6 +132,7 @@ class LocalStore {
           'updated_at': updatedAt.toUtc().millisecondsSinceEpoch,
           'deleted': deleted ? 1 : 0,
           'dirty': dirty ? 1 : 0,
+          if (table == 'sessions') 'started_at': startedAtMs(data),
         },
         conflictAlgorithm: ConflictAlgorithm.replace,
       );

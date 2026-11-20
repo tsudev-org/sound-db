@@ -473,6 +473,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'No sessions yet. Tap \"Save session\" on the Meter screen to keep a result.';
 
   @override
+  String get historyLoadFailed =>
+      'Could not read the measurement history on this device. Your data is still there; tap Reload or update the app.';
+
+  @override
   String get notSynced => ' · not synced';
 
   @override
