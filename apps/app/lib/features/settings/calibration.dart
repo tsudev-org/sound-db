@@ -7,19 +7,25 @@ import 'package:uuid/uuid.dart';
 import '../../app_scope.dart';
 import '../../core/format.dart';
 import '../../data/models.dart';
+import '../../l10n/l10n.dart';
 import '../../services/measurement.dart';
 import '../../theme/tokens.g.dart';
 import '../../widgets/common.dart';
 
 enum CalibrationMethod {
-  calibrator94('Máy hiệu chuẩn 94 dB @ 1 kHz', 94, 'calibrator_94'),
-  calibrator114('Máy hiệu chuẩn 114 dB @ 1 kHz', 114, 'calibrator_114'),
-  reference('So với máy đo chuẩn (nhập số đọc)', null, 'reference_meter');
+  calibrator94(94, 'calibrator_94'),
+  calibrator114(114, 'calibrator_114'),
+  reference(null, 'reference_meter');
 
-  const CalibrationMethod(this.label, this.referenceDb, this.code);
-  final String label;
+  const CalibrationMethod(this.referenceDb, this.code);
   final double? referenceDb;
   final String code;
+
+  String label(AppLocalizations l) => switch (this) {
+        calibrator94 => l.calMethod94,
+        calibrator114 => l.calMethod114,
+        reference => l.calMethodReference,
+      };
 }
 
 /// Hiệu chuẩn: đo LZeq (máy hiệu chuẩn) hoặc LAeq (máy đo chuẩn) trong 10 giây,
@@ -52,7 +58,7 @@ class _CalibrationPageState extends State<CalibrationPage> {
     final m = AppScope.of(context).measurement;
     if (m.state != MeterState.running) await m.start();
     if (m.state != MeterState.running) {
-      if (mounted) showMessage(context, m.error ?? 'Không mở được micro.');
+      if (mounted) showMessage(context, m.error ?? context.l10n.micOpenFailed);
       return;
     }
     m.resetSession();
@@ -83,7 +89,7 @@ class _CalibrationPageState extends State<CalibrationPage> {
       updatedAt: DateTime.now().toUtc(),
     ));
     if (!mounted) return;
-    showMessage(context, 'Đã áp dụng offset ${formatDb(newOffset, digits: 2)}.');
+    showMessage(context, context.l10n.offsetApplied(formatDb(newOffset, digits: 2)));
     Navigator.pop(context);
     unawaited(services.sync.syncNow(onlyIfAuto: true));
   }
@@ -94,10 +100,13 @@ class _CalibrationPageState extends State<CalibrationPage> {
     final current = services.settings.calibrationOffsetDb;
     final reference = _method.referenceDb ?? parseNumber(_referenceController.text);
     final newOffset = (_measured != null && reference != null) ? reference - (_measured! - current) : null;
+    final l = context.l10n;
     return Scaffold(
-      appBar: AppBar(title: const Text('Hiệu chuẩn micro')),
+      appBar: AppBar(title: Text(l.micCalibration)),
       body: ListView(padding: const EdgeInsets.all(SdbSpacing.s4), children: [
-        Text('Offset hiện tại: ${formatDb(current, digits: 2)}${services.settings.calibrated ? '' : ' (mặc định, chưa hiệu chuẩn)'}'),
+        Text(services.settings.calibrated
+            ? l.currentOffset(formatDb(current, digits: 2))
+            : l.currentOffsetDefault(formatDb(current, digits: 2))),
         const SizedBox(height: SdbSpacing.s4),
         RadioGroup<CalibrationMethod>(
           groupValue: _method,
@@ -106,23 +115,21 @@ class _CalibrationPageState extends State<CalibrationPage> {
             _measured = null;
           }),
           child: Column(children: [
-            for (final m in CalibrationMethod.values) RadioListTile<CalibrationMethod>(value: m, title: Text(m.label)),
+            for (final m in CalibrationMethod.values) RadioListTile<CalibrationMethod>(value: m, title: Text(m.label(l))),
           ]),
         ),
         const SizedBox(height: SdbSpacing.s2),
         Text(
           _method == CalibrationMethod.reference
-              ? 'Đặt điện thoại sát máy đo chuẩn, cùng hướng về nguồn ồn ổn định (quạt, ồn hồng). '
-                  'Đo 10 giây rồi nhập LAeq mà máy chuẩn hiển thị trong cùng khoảng thời gian.'
-              : 'Lắp đầu micro vào khớp nối của máy hiệu chuẩn (hoặc áp sát nếu không vừa), bật máy hiệu chuẩn, '
-                  'giữ yên rồi bấm Đo. Kết quả dùng LZeq 10 giây.',
+              ? l.calReferenceHowTo
+              : l.calCalibratorHowTo,
         ),
         if (_method == CalibrationMethod.reference) ...[
           const SizedBox(height: SdbSpacing.s3),
           TextField(
             controller: _referenceController,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            decoration: const InputDecoration(labelText: 'LAeq của máy đo chuẩn (dB)'),
+            decoration: InputDecoration(labelText: l.referenceLaeq),
             onChanged: (_) => setState(() {}),
           ),
         ],
@@ -130,19 +137,19 @@ class _CalibrationPageState extends State<CalibrationPage> {
         FilledButton.icon(
           onPressed: _remaining > 0 ? null : _measure,
           icon: const Icon(Icons.mic),
-          label: Text(_remaining > 0 ? 'Đang đo... còn $_remaining giây' : 'Đo $measureSeconds giây'),
+          label: Text(_remaining > 0 ? l.measuringRemaining('$_remaining') : l.measureSeconds('$measureSeconds')),
         ),
         if (_measured != null) ...[
           const SizedBox(height: SdbSpacing.s3),
-          Text('Đo được: ${formatDb(_measured!, digits: 2)} (với offset cũ)'),
+          Text(l.measuredWithOld(formatDb(_measured!, digits: 2))),
           if (newOffset != null) ...[
-            Text('Offset mới: ${formatDb(newOffset, digits: 2)}', style: const TextStyle(fontWeight: FontWeight.w600)),
+            Text(l.newOffset(formatDb(newOffset, digits: 2)), style: const TextStyle(fontWeight: FontWeight.w600)),
             const SizedBox(height: SdbSpacing.s2),
-            FilledButton(onPressed: () => _apply(newOffset, _method.code), child: const Text('Áp dụng')),
+            FilledButton(onPressed: () => _apply(newOffset, _method.code), child: Text(l.apply)),
           ],
         ],
         const Divider(height: SdbSpacing.s8),
-        const Text('Nhập offset thủ công', style: TextStyle(fontWeight: FontWeight.w600)),
+        Text(l.manualOffset, style: TextStyle(fontWeight: FontWeight.w600)),
         const SizedBox(height: SdbSpacing.s2),
         Row(children: [
           Expanded(
@@ -156,10 +163,10 @@ class _CalibrationPageState extends State<CalibrationPage> {
           OutlinedButton(
             onPressed: () {
               final v = parseNumber(_manualController.text);
-              if (v == null || v < 0 || v > 200) return showMessage(context, 'Offset phải là số trong 0-200 dB.');
+              if (v == null || v < 0 || v > 200) return showMessage(context, l.offsetRange);
               _apply(v, 'manual');
             },
-            child: const Text('Áp dụng'),
+            child: Text(l.apply),
           ),
         ]),
         const SizedBox(height: SdbSpacing.s3),
@@ -168,7 +175,7 @@ class _CalibrationPageState extends State<CalibrationPage> {
             await services.settings.setCalibration(120, calibrated: false);
             if (context.mounted) Navigator.pop(context);
           },
-          child: const Text('Khôi phục mặc định (bỏ hiệu chuẩn)'),
+          child: Text(l.restoreDefault),
         ),
       ]),
     );

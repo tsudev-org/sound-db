@@ -10,6 +10,7 @@ import 'package:app_links/app_links.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 
+import '../l10n/l10n.dart';
 import '../services/settings.dart';
 import 'api_config.dart';
 
@@ -99,7 +100,7 @@ class AuthService extends ChangeNotifier {
 
   void _ensureOnline() {
     if (_settings.offlineMode) {
-      throw AuthException('offline_mode', 'Đang bật Chế độ ngoại tuyến hoàn toàn - tắt nó trong Cài đặt để đăng nhập.');
+      throw AuthException('offline_mode', l10nNow.errOfflineMode);
     }
   }
 
@@ -136,7 +137,7 @@ class AuthService extends ChangeNotifier {
       Uri callback;
       if (useLoopback) {
         if (!await launchUrl(startUrl, mode: LaunchMode.externalApplication)) {
-          throw AuthException('browser', 'Không mở được trình duyệt hệ thống.');
+          throw AuthException('browser', l10nNow.errBrowser);
         }
         callback = await _awaitLoopback(loopback!);
       } else {
@@ -144,13 +145,13 @@ class AuthService extends ChangeNotifier {
       }
       final params = callback.queryParameters;
       if (params['error'] != null) {
-        throw AuthException(params['error']!, params['error_description'] ?? 'Đăng nhập bị hủy hoặc bị từ chối.');
+        throw AuthException(params['error']!, params['error_description'] ?? l10nNow.errLoginCancelled);
       }
       if (params['state'] != state) {
-        throw AuthException('state_mismatch', 'Phản hồi đăng nhập không khớp phiên - đã chặn để an toàn.');
+        throw AuthException('state_mismatch', l10nNow.errStateMismatch);
       }
       final code = params['code'];
-      if (code == null || code.isEmpty) throw AuthException('no_code', 'Máy chủ không trả mã đăng nhập.');
+      if (code == null || code.isEmpty) throw AuthException('no_code', l10nNow.errNoCode);
       await _tokenRequest({
         'grant_type': 'authorization_code',
         'code': code,
@@ -176,11 +177,11 @@ class AuthService extends ChangeNotifier {
     });
     try {
       if (!await launchUrl(startUrl, mode: LaunchMode.externalApplication)) {
-        throw AuthException('browser', 'Không mở được trình duyệt hệ thống.');
+        throw AuthException('browser', l10nNow.errBrowser);
       }
       return await completer.future.timeout(
         const Duration(minutes: 5),
-        onTimeout: () => throw AuthException('timeout', 'Hết 5 phút chờ đăng nhập - hãy thử lại.'),
+        onTimeout: () => throw AuthException('timeout', l10nNow.errLoginTimeout),
       );
     } finally {
       await sub.cancel();
@@ -201,16 +202,16 @@ class AuthService extends ChangeNotifier {
         ..headers.contentType = ContentType.html
         ..headers.set('Cache-Control', 'no-store')
         ..headers.set('Content-Security-Policy', "default-src 'none'; style-src 'unsafe-inline'")
-        ..write('<!doctype html><meta charset="utf-8"><title>Sound Db</title>'
+        ..write('<!doctype html><html lang="${l10nNow.localeName}"><meta charset="utf-8"><title>Sound Db</title>'
             '<body style="font-family:system-ui;background:#0A0A0A;color:#EDEDED;display:grid;place-items:center;height:100vh">'
-            '<p>Đã nhận phản hồi đăng nhập. Bạn có thể đóng thẻ này và quay lại Sound Db.</p>');
+            '<p>${htmlEscape.convert(l10nNow.loopbackDone)}</p>');
       await request.response.close();
       if (!completer.isCompleted) completer.complete(request.uri);
       await sub.cancel();
     });
     return completer.future.timeout(
       const Duration(minutes: 5),
-      onTimeout: () => throw AuthException('timeout', 'Hết 5 phút chờ đăng nhập - hãy thử lại.'),
+      onTimeout: () => throw AuthException('timeout', l10nNow.errLoginTimeout),
     );
   }
 
@@ -222,7 +223,7 @@ class AuthService extends ChangeNotifier {
     final json = _decode(response);
     if (response.statusCode != 200) {
       if (response.statusCode == 400 || response.statusCode == 401) await _clearLocalTokens();
-      throw AuthException(json['code'] as String? ?? 'token_error', json['message'] as String? ?? 'Đăng nhập thất bại.');
+      throw AuthException(json['code'] as String? ?? 'token_error', json['message'] as String? ?? l10nNow.errLoginFailed);
     }
     _accessToken = json['access_token'] as String;
     _accessExpiry = DateTime.now().add(Duration(seconds: (json['expires_in'] as num).toInt() - 30));
@@ -239,7 +240,7 @@ class AuthService extends ChangeNotifier {
     try {
       return jsonDecode(utf8.decode(r.bodyBytes)) as Map<String, Object?>;
     } catch (_) {
-      return {'code': 'bad_response', 'message': 'Máy chủ trả dữ liệu không hợp lệ (HTTP ${r.statusCode}).'};
+      return {'code': 'bad_response', 'message': l10nNow.errBadResponse('${r.statusCode}')};
     }
   }
 
@@ -248,7 +249,7 @@ class AuthService extends ChangeNotifier {
     _ensureOnline();
     if (_accessToken != null && _accessExpiry != null && DateTime.now().isBefore(_accessExpiry!)) return _accessToken!;
     final refresh = await _storage.read(key: _kRefresh);
-    if (refresh == null) throw AuthException('signed_out', 'Chưa đăng nhập.');
+    if (refresh == null) throw AuthException('signed_out', l10nNow.errSignedOut);
     await _tokenRequest({'grant_type': 'refresh_token', 'refresh_token': refresh});
     return _accessToken!;
   }

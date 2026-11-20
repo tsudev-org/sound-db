@@ -1,6 +1,6 @@
 import { SITE } from '../lib/site';
 
-const PAGES = ['/', '/do/', '/tai-ve/', '/huong-dan/', '/bao-mat/'];
+const PAGES = ['/', '/do/', '/tai-ve/', '/huong-dan/', '/bao-mat/'].flatMap((p) => [p, `/en${p}`]);
 
 export function GET() {
   const body = `<?xml version="1.0" encoding="UTF-8"?>

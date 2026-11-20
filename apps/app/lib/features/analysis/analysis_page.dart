@@ -5,6 +5,7 @@ import 'package:sounddb_dsp/sounddb_dsp.dart';
 
 import '../../app_scope.dart';
 import '../../core/format.dart';
+import '../../l10n/l10n.dart';
 import '../../theme/app_theme.dart';
 import '../../theme/tokens.g.dart';
 import '../../widgets/charts.dart';
@@ -21,16 +22,16 @@ class AnalysisPage extends StatelessWidget {
       length: 3,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Phân tích tần số'),
+          title: Text(context.l10n.analysisTitle),
           actions: [
             IconButton(
-              tooltip: 'Thiết lập phổ',
+              tooltip: context.l10n.spectrumSettings,
               icon: const Icon(Icons.tune),
               onPressed: () => showModalBottomSheet<void>(context: context, builder: (_) => const _SpectrumSettings()),
             ),
             const RunButton(),
           ],
-          bottom: const TabBar(tabs: [Tab(text: 'Phổ FFT'), Tab(text: 'Phổ đồ'), Tab(text: 'Dải octave')]),
+          bottom: TabBar(tabs: [Tab(text: context.l10n.tabFft), Tab(text: context.l10n.tabSpectrogram), Tab(text: context.l10n.tabOctave)]),
         ),
         body: const TabBarView(children: [_SpectrumTab(), _SpectrogramTab(), _OctaveTab()]),
       ),
@@ -69,11 +70,11 @@ class _SpectrumTabState extends State<_SpectrumTab> {
           padding: const EdgeInsets.all(SdbSpacing.s4),
           child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
             StatGrid(children: [
-              StatTile(label: 'Tần số trội', value: formatHz(m.peak?.frequencyHz ?? double.nan)),
-              StatTile(label: 'Mức đỉnh', value: formatDb(m.peak?.levelDb ?? double.nan)),
+              StatTile(label: context.l10n.dominantFrequency, value: formatHz(m.peak?.frequencyHz ?? double.nan)),
+              StatTile(label: context.l10n.peakLevel, value: formatDb(m.peak?.levelDb ?? double.nan)),
               StatTile(
-                label: 'Con trỏ',
-                value: _cursorHz == null ? 'Chạm biểu đồ' : '${formatHz(_cursorHz!)} · ${formatNumber(cursorDb ?? double.nan)}',
+                label: context.l10n.cursor,
+                value: _cursorHz == null ? context.l10n.tapChart : '${formatHz(_cursorHz!)} · ${formatNumber(cursorDb ?? double.nan)}',
               ),
             ]),
             const SizedBox(height: SdbSpacing.s3),
@@ -109,13 +110,13 @@ class _SpectrumTabState extends State<_SpectrumTab> {
             const SizedBox(height: SdbSpacing.s2),
             Wrap(spacing: SdbSpacing.s2, runSpacing: SdbSpacing.s2, crossAxisAlignment: WrapCrossAlignment.center, children: [
               FilterChip(
-                label: const Text('Giữ đỉnh'),
+                label: Text(context.l10n.peakHold),
                 selected: _showPeakHold,
                 onSelected: (v) => setState(() => _showPeakHold = v),
               ),
-              OutlinedButton(onPressed: m.clearPeakHold, child: const Text('Xóa đỉnh')),
+              OutlinedButton(onPressed: m.clearPeakHold, child: Text(context.l10n.clearPeak)),
               Text(
-                'FFT ${spectrum.size} · ${spectrum.windowKind.label} · ${formatNumber(spectrum.binHz, digits: 2)} Hz/bin · trọng số ${settings.weighting.label}',
+                context.l10n.fftInfo('${spectrum.size}', windowLabel(context.l10n, spectrum.windowKind), formatNumber(spectrum.binHz, digits: 2), settings.weighting.label),
                 style: TextStyle(color: p.textMuted, fontSize: 12),
               ),
             ]),
@@ -141,7 +142,7 @@ class _SpectrogramTab extends StatelessWidget {
         return Padding(
           padding: const EdgeInsets.all(SdbSpacing.s4),
           child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-            Text('Mỗi hàng là một khung phổ (mới nhất ở trên), trục ngang là tần số log 20 Hz - ${formatHz(nyquist)}.',
+            Text(context.l10n.spectrogramNote(formatHz(nyquist)),
                 style: TextStyle(color: p.textMuted, fontSize: 12)),
             const SizedBox(height: SdbSpacing.s2),
             Expanded(
@@ -211,8 +212,7 @@ class _OctaveTabState extends State<_OctaveTab> {
             if (minBins < 3) ...[
               const SizedBox(height: SdbSpacing.s2),
               NoticeBanner(
-                message: 'Dải thấp nhất chỉ phủ ${formatNumber(minBins)} bin FFT - tăng kích thước FFT '
-                    '(Thiết lập phổ) để dải tần thấp chính xác hơn.',
+                message: context.l10n.lowBandWarning(formatNumber(minBins)),
               ),
             ],
             const SizedBox(height: SdbSpacing.s3),
@@ -229,7 +229,7 @@ class _OctaveTabState extends State<_OctaveTab> {
                 ),
               ),
             ),
-            Text('Mức dải (IEC 61260-1, hệ cơ số 10) trọng số ${services.settings.weighting.label}, từ phổ trung bình.',
+            Text(context.l10n.bandNote(services.settings.weighting.label),
                 style: TextStyle(color: p.textMuted, fontSize: 12)),
           ]),
         );
@@ -248,23 +248,23 @@ class _SpectrumSettings extends StatelessWidget {
       listenable: settings,
       builder: (context, _) => SafeArea(
         child: ListView(shrinkWrap: true, padding: const EdgeInsets.all(SdbSpacing.s4), children: [
-          const Text('Thiết lập phổ', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+          Text(context.l10n.spectrumSettings, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
           const SizedBox(height: SdbSpacing.s3),
           DropdownButtonFormField<int>(
             initialValue: settings.fftSize,
-            decoration: const InputDecoration(labelText: 'Kích thước FFT'),
-            items: [for (final n in Settings.fftSizes) DropdownMenuItem(value: n, child: Text('$n mẫu'))],
+            decoration: InputDecoration(labelText: context.l10n.fftSize),
+            items: [for (final n in Settings.fftSizes) DropdownMenuItem(value: n, child: Text(context.l10n.fftSamples('$n')))],
             onChanged: (v) => settings.setFft(v!, settings.window),
           ),
           const SizedBox(height: SdbSpacing.s3),
           DropdownButtonFormField<WindowKind>(
             initialValue: settings.window,
-            decoration: const InputDecoration(labelText: 'Cửa sổ'),
-            items: [for (final w in WindowKind.values) DropdownMenuItem(value: w, child: Text(w.label))],
+            decoration: InputDecoration(labelText: context.l10n.window),
+            items: [for (final w in WindowKind.values) DropdownMenuItem(value: w, child: Text(windowLabel(context.l10n, w)))],
             onChanged: (v) => settings.setFft(settings.fftSize, v!),
           ),
           const SizedBox(height: SdbSpacing.s3),
-          Text('Thang hiển thị: ${formatNumber(settings.spectrumMinDb, digits: 0)} - ${formatNumber(settings.spectrumMaxDb, digits: 0)} dB'),
+          Text(context.l10n.displayRange(formatNumber(settings.spectrumMinDb, digits: 0), formatNumber(settings.spectrumMaxDb, digits: 0))),
           RangeSlider(
             min: -40,
             max: 160,

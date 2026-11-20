@@ -3,6 +3,7 @@ import 'package:sounddb_dsp/sounddb_dsp.dart';
 
 import '../../app_scope.dart';
 import '../../core/format.dart';
+import '../../l10n/l10n.dart';
 import '../../services/measurement.dart';
 import '../../theme/app_theme.dart';
 import '../../theme/tokens.g.dart';
@@ -21,10 +22,10 @@ class MeterPage extends StatelessWidget {
     final settings = services.settings;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Đo mức âm'),
+        title: Text(context.l10n.meterTitle),
         actions: [
           IconButton(
-            tooltip: 'Mức tham chiếu thường gặp',
+            tooltip: context.l10n.meterReferenceTooltip,
             icon: const Icon(Icons.menu_book_outlined),
             onPressed: () => showModalBottomSheet<void>(context: context, builder: (_) => const _ReferenceSheet()),
           ),
@@ -51,16 +52,13 @@ class MeterPage extends StatelessWidget {
                 const SizedBox(height: SdbSpacing.s3),
               ],
               if (!settings.calibrated) ...[
-                const NoticeBanner(
-                  message: 'Chưa hiệu chuẩn: số đo là ước lượng theo micro điển hình (sai số có thể vài dB). '
-                      'Vào Cài đặt > Hiệu chuẩn để đo chính xác.',
-                ),
+                NoticeBanner(message: context.l10n.meterNotCalibrated),
                 const SizedBox(height: SdbSpacing.s3),
               ],
               Center(
                 child: Semantics(
                   liveRegion: true,
-                  label: 'Mức âm L${w.label}${t.label} ${formatNumber(level)} đề-xi-ben',
+                  label: context.l10n.meterLevelSemantics('L${w.label}${t.label}', formatNumber(level)),
                   child: Column(children: [
                     Text('L${w.label}${t.label}', style: TextStyle(color: p.textMuted, fontSize: 16)),
                     Text(
@@ -89,10 +87,10 @@ class MeterPage extends StatelessWidget {
                     onSelectionChanged: (v) => settings.setWeighting(v.first),
                   ),
                   SegmentedButton<TimeWeighting>(
-                    segments: const [
-                      ButtonSegment(value: TimeWeighting.fast, label: Text('Nhanh'), tooltip: 'F - 125 ms'),
-                      ButtonSegment(value: TimeWeighting.slow, label: Text('Chậm'), tooltip: 'S - 1 s'),
-                      ButtonSegment(value: TimeWeighting.impulse, label: Text('Xung'), tooltip: 'I - 35 ms / 1,5 s'),
+                    segments: [
+                      ButtonSegment(value: TimeWeighting.fast, label: Text(context.l10n.timeFast), tooltip: 'F - 125 ms'),
+                      ButtonSegment(value: TimeWeighting.slow, label: Text(context.l10n.timeSlow), tooltip: 'S - 1 s'),
+                      ButtonSegment(value: TimeWeighting.impulse, label: Text(context.l10n.timeImpulse), tooltip: 'I - 35 ms / ${formatNumber(1.5)} s'),
                     ],
                     selected: {t},
                     onSelectionChanged: (v) => settings.setTimeWeighting(v.first),
@@ -106,18 +104,18 @@ class MeterPage extends StatelessWidget {
                   child: CustomPaint(painter: LevelHistoryPainter(m.levelHistory, p, capacity: MeasurementController.historyLength)),
                 ),
               ),
-              Text('2 phút gần nhất', style: TextStyle(color: p.textMuted, fontSize: 12)),
+              Text(context.l10n.meterLast2Min, style: TextStyle(color: p.textMuted, fontSize: 12)),
               const SizedBox(height: SdbSpacing.s4),
               StatGrid(children: [
-                StatTile(label: 'L${w.label}eq', value: formatNumber(s?.leq[w.index] ?? double.nan), hint: 'Mức tương đương liên tục của cả phiên'),
+                StatTile(label: 'L${w.label}eq', value: formatNumber(s?.leq[w.index] ?? double.nan), hint: context.l10n.meterLeqHint),
                 StatTile(label: 'L${w.label}${t.label}max', value: formatNumber(s?.max[w.index][t.index] ?? double.nan)),
                 StatTile(label: 'L${w.label}${t.label}min', value: formatNumber(s?.min[w.index][t.index] ?? double.nan)),
-                StatTile(label: 'L${w.label}peak', value: formatNumber(s?.peak[w.index] ?? double.nan), hint: 'Đỉnh tức thời'),
-                StatTile(label: 'LAF10', value: formatNumber(s?.percentiles[2] ?? double.nan), hint: 'Mức bị vượt 10% thời gian'),
+                StatTile(label: 'L${w.label}peak', value: formatNumber(s?.peak[w.index] ?? double.nan), hint: context.l10n.meterPeakHint),
+                StatTile(label: 'LAF10', value: formatNumber(s?.percentiles[2] ?? double.nan), hint: context.l10n.meterL10Hint),
                 StatTile(label: 'LAF50', value: formatNumber(s?.percentiles[3] ?? double.nan)),
-                StatTile(label: 'LAF90', value: formatNumber(s?.percentiles[4] ?? double.nan), hint: 'Ồn nền'),
+                StatTile(label: 'LAF90', value: formatNumber(s?.percentiles[4] ?? double.nan), hint: context.l10n.meterL90Hint),
                 StatTile(label: 'LAE (SEL)', value: formatNumber(s?.selA ?? double.nan)),
-                StatTile(label: 'Thời lượng', value: formatDuration(s?.elapsedSeconds ?? 0)),
+                StatTile(label: context.l10n.duration, value: formatDuration(s?.elapsedSeconds ?? 0)),
               ]),
               const SizedBox(height: SdbSpacing.s4),
               _DoseCard(snapshot: s),
@@ -126,12 +124,12 @@ class MeterPage extends StatelessWidget {
                 OutlinedButton.icon(
                   onPressed: s == null ? null : m.resetSession,
                   icon: const Icon(Icons.restart_alt),
-                  label: const Text('Đặt lại phiên'),
+                  label: Text(context.l10n.resetSession),
                 ),
                 FilledButton.icon(
                   onPressed: s == null ? null : () => saveCurrentSession(context),
                   icon: const Icon(Icons.save_outlined),
-                  label: const Text('Lưu phiên đo'),
+                  label: Text(context.l10n.saveSession),
                 ),
               ]),
             ],
@@ -171,12 +169,12 @@ class _DoseCard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(SdbSpacing.s4),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          const Text('Liều tiếp xúc tiếng ồn', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+          Text(context.l10n.doseTitle, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
           const SizedBox(height: SdbSpacing.s2),
-          row('NIOSH', s?.doseNioshPercent ?? 0, s?.twaNiosh ?? double.nan, '85 dBA / 8 giờ, hệ số trao đổi 3 dB'),
-          row('OSHA', s?.doseOshaPercent ?? 0, s?.twaOsha ?? double.nan, '90 dBA / 8 giờ, hệ số trao đổi 5 dB'),
+          row('NIOSH', s?.doseNioshPercent ?? 0, s?.twaNiosh ?? double.nan, context.l10n.doseNioshRule),
+          row('OSHA', s?.doseOshaPercent ?? 0, s?.twaOsha ?? double.nan, context.l10n.doseOshaRule),
           const SizedBox(height: SdbSpacing.s1),
-          Text('Tính trên LAS từ khi bắt đầu phiên. 100% là giới hạn tiếp xúc cho một ngày làm việc.',
+          Text(context.l10n.doseNote,
               style: TextStyle(color: p.textMuted, fontSize: 12)),
         ]),
       ),
@@ -187,29 +185,29 @@ class _DoseCard extends StatelessWidget {
 class _ReferenceSheet extends StatelessWidget {
   const _ReferenceSheet();
 
-  static const _rows = [
-    ('0', 'Ngưỡng nghe'),
-    ('20-30', 'Thì thầm, phòng ngủ yên tĩnh'),
-    ('40-50', 'Thư viện, văn phòng yên tĩnh'),
-    ('60', 'Trò chuyện bình thường'),
-    ('70', 'Máy hút bụi, đường phố đông'),
-    ('85', 'Giao thông dày đặc - ngưỡng tiếp xúc 8 giờ (NIOSH)'),
-    ('95-100', 'Xe máy tăng ga, máy khoan'),
-    ('110', 'Hòa nhạc, vũ trường'),
-    ('120-130', 'Còi xe cứu thương sát tai - ngưỡng đau'),
-  ];
-
   @override
   Widget build(BuildContext context) {
     final p = context.palette;
+    final l = context.l10n;
+    final rows = [
+      ('0', l.ref0),
+      ('20-30', l.ref20),
+      ('40-50', l.ref40),
+      ('60', l.ref60),
+      ('70', l.ref70),
+      ('85', l.ref85),
+      ('95-100', l.ref95),
+      ('110', l.ref110),
+      ('120-130', l.ref120),
+    ];
     return SafeArea(
       child: ListView(
         shrinkWrap: true,
         padding: const EdgeInsets.all(SdbSpacing.s4),
         children: [
-          const Text('Mức âm tham chiếu (dBA)', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+          Text(l.refTitle, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
           const SizedBox(height: SdbSpacing.s2),
-          for (final (db, text) in _rows)
+          for (final (db, text) in rows)
             ListTile(dense: true, leading: SizedBox(width: 64, child: Text(db, style: TextStyle(color: p.textLink))), title: Text(text)),
         ],
       ),

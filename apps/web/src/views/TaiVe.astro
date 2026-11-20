@@ -1,0 +1,63 @@
+---
+import Trang from '../layouts/Trang.astro';
+import goi from '../../../../packaging/package.json';
+import { dien, t, type Lang } from '../i18n';
+import { PHIEN_BAN, REPO_URL } from '../lib/site';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const v = t(lang).taiVe;
+
+// Lệnh cài sinh từ packaging/package.json (PACKAGING.md mục 3): chỉ kênh đã có gói thật ("channels").
+const LENH: Record<string, { ten: string; lenh: string }> = {
+  scoop: { ten: 'Windows - Scoop', lenh: `scoop bucket add tsudev https://github.com/tsudev-org/scoop-bucket\nscoop install tsudev/${goi.name}` },
+  brew: { ten: 'macOS - Homebrew', lenh: `brew install tsudev-org/tap/${goi.name}` },
+};
+// apt/dnf: đọc https://pkg.tsudev.com/catalog.json LÚC BUILD (README linux-packages) - chỉ hiện khi gói có thật
+// trong kho; không tải được thì bỏ khối Linux chứ không làm hỏng bản dựng.
+type GoiKho = { name: string; install?: { apt?: string; dnf?: string } };
+type Kho = { schema: number; setup?: { apt?: string[]; dnf?: string[] }; packages?: GoiKho[] };
+let kho: Kho | undefined;
+if (goi.channels.some((k) => k === 'apt' || k === 'rpm')) {
+  try {
+    const r = await fetch('https://pkg.tsudev.com/catalog.json', { signal: AbortSignal.timeout(15000) });
+    if (r.ok) kho = (await r.json()) as Kho;
+  } catch (e) {
+    console.warn('[tai-ve] không đọc được catalog.json:', e);
+  }
+}
+const goiKho = kho?.schema === 1 ? kho.packages?.find((p) => p.name === goi.name) : undefined;
+if (goiKho?.install?.apt && kho?.setup?.apt) {
+  LENH.apt = { ten: 'Debian, Ubuntu - APT', lenh: [...kho.setup.apt, goiKho.install.apt].join('\n') };
+}
+if (goiKho?.install?.dnf && kho?.setup?.dnf) {
+  LENH.rpm = { ten: 'Fedora, RHEL - DNF', lenh: [...kho.setup.dnf, goiKho.install.dnf].join('\n') };
+}
+const kenh = goi.channels.filter((k) => k in LENH).map((k) => LENH[k]!);
+---
+<Trang lang={lang} tieuDe={v.tieuDe} moTa={v.moTa} duongDan="/tai-ve/">
+  <div class="khung van-ban">
+    <h1>{v.h1}</h1>
+    <p set:html={dien(v.banMoi, { v: PHIEN_BAN })} />
+    <table class="bang">
+      <thead><tr>{v.cot.map((c) => <th scope="col">{c}</th>)}</tr></thead>
+      <tbody>{v.nenTang.map(([a, b, c]) => <tr><td>{a}</td><td>{b}</td><td>{c}</td></tr>)}</tbody>
+    </table>
+    <p><a class="nut nut--chinh" href={`${REPO_URL}/releases`} target="_blank" rel="noopener noreferrer">{v.moPhatHanh}</a></p>
+    <h2>{v.caiBangLenh}</h2>
+    {kenh.map((k) => (
+      <>
+        <p>{k.ten}:</p>
+        <pre tabindex="0" aria-label={`${v.lenhCai} ${k.ten}`}><code>{k.lenh}</code></pre>
+      </>
+    ))}
+    <p>{v.tuCapNhat}</p>
+
+    <h2>{v.kiemChung}</h2>
+    <p set:html={v.kiemChungDan} />
+    <pre tabindex="0" aria-label={v.lenhKiem}><code>sha256sum -c SHA256SUMS --ignore-missing
+gh attestation verify sound-db_{PHIEN_BAN}_x64-linux.tar.gz --repo tsudev-org/sound-db</code></pre>
+    <p>{v.powershell}</p>
+    <pre tabindex="0" aria-label={v.lenhKiemWin}><code>Get-FileHash .\sound-db_{PHIEN_BAN}_x64-windows.zip -Algorithm SHA256</code></pre>
+  </div>
+</Trang>

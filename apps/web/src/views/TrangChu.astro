@@ -1,0 +1,39 @@
+---
+import Trang from '../layouts/Trang.astro';
+import { duongDan as dd, t, type Lang } from '../i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const c = t(lang).chu;
+---
+<Trang lang={lang} moTa={c.moTa} duongDan="/">
+  <section class="hero khung">
+    <span class="nhan">{c.nhan}</span>
+    <h1 set:html={c.tieuDe} />
+    <p>{c.dan}</p>
+    <div class="hang-nut">
+      <a class="nut nut--chinh" href={dd(lang, '/do/')}>{c.doNgay}</a>
+      <a class="nut nut--phu" href={dd(lang, '/tai-ve/')}>{c.taiApp}</a>
+    </div>
+  </section>
+
+  <section class="muc">
+    <div class="khung">
+      <h2>{c.boCongCu}</h2>
+      <p class="dan">{c.boCongCuDan}</p>
+      <div class="luoi">
+        {c.tinhNang.map(([ten, moTa]) => <div class="the"><h3>{ten}</h3><p>{moTa}</p></div>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="muc">
+    <div class="khung">
+      <h2>{c.chinhXac}</h2>
+      <p class="dan">{c.chinhXacDan}</p>
+      <div class="luoi">
+        {c.diemManh.map(([ten, moTa]) => <div class="the"><h3>{ten}</h3><p>{moTa}</p></div>)}
+      </div>
+    </div>
+  </section>
+</Trang>

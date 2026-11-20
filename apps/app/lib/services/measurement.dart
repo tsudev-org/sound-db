@@ -10,6 +10,7 @@ import 'package:wakelock_plus/wakelock_plus.dart';
 import '../data/models.dart';
 import 'audio_input.dart';
 import 'settings.dart';
+import '../l10n/l10n.dart';
 
 enum MeterState { idle, starting, running, paused, error }
 
@@ -96,7 +97,7 @@ class MeasurementController extends ChangeNotifier {
   }
 
   void _onError(Object e) {
-    error = e is AudioInputException ? e.message : 'Không mở được micro: $e';
+    error = e is AudioInputException ? e.message : l10nNow.errMicOpen('$e');
     state = MeterState.error;
     unawaited(_stopInput());
     notifyListeners();

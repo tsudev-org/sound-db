@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:sounddb_dsp/sounddb_dsp.dart';
 
 import '../../core/format.dart';
+import '../../l10n/l10n.dart';
 import '../../theme/app_theme.dart';
 import '../../theme/tokens.g.dart';
 import '../../widgets/common.dart';
@@ -45,7 +46,7 @@ class _GeneratorTabState extends State<GeneratorTab> {
       await _player.setReleaseMode(ReleaseMode.loop);
       await _player.play(BytesSource(wav, mimeType: 'audio/wav'));
     } catch (e) {
-      if (mounted) showMessage(context, 'Không phát được âm thanh: $e');
+      if (mounted) showMessage(context, context.l10n.playFailed('$e'));
       setState(() => _playing = false);
     }
   }
@@ -66,13 +67,13 @@ class _GeneratorTabState extends State<GeneratorTab> {
     final tonal = _generator.waveform.index <= Waveform.triangle.index;
     return ListView(padding: const EdgeInsets.all(SdbSpacing.s4), children: [
       NoticeBanner(
-        message: 'Bắt đầu ở âm lượng nhỏ. Tần số rất cao hoặc âm lượng lớn qua tai nghe có thể gây hại cho thính giác và loa.',
+        message: context.l10n.generatorWarning,
       ),
       const SizedBox(height: SdbSpacing.s4),
       Wrap(spacing: SdbSpacing.s2, runSpacing: SdbSpacing.s2, children: [
         for (final w in Waveform.values)
           ChoiceChip(
-            label: Text(w.label),
+            label: Text(waveformLabel(context.l10n, w)),
             selected: _generator.waveform == w,
             onSelected: (_) {
               setState(() => _generator.waveform = w);
@@ -82,7 +83,7 @@ class _GeneratorTabState extends State<GeneratorTab> {
       ]),
       const SizedBox(height: SdbSpacing.s4),
       if (tonal) ...[
-        Text('Tần số: ${formatHz(_frequency)}', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+        Text(context.l10n.frequencyValue(formatHz(_frequency)), style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
         Slider(
           min: math.log(20),
           max: math.log(20000),
@@ -103,10 +104,10 @@ class _GeneratorTabState extends State<GeneratorTab> {
         ]),
       ],
       if (_generator.waveform == Waveform.logSweep)
-        Text('Quét log 20 Hz - 20 kHz trong ${formatNumber(_generator.sweepSeconds, digits: 0)} giây, lặp lại.',
+        Text(context.l10n.sweepNote(formatNumber(_generator.sweepSeconds, digits: 0)),
             style: TextStyle(color: p.textSecondary)),
       const SizedBox(height: SdbSpacing.s4),
-      Text('Âm lượng tín hiệu: ${formatNumber(_volumeDb, digits: 0)} dBFS'),
+      Text(context.l10n.signalVolume(formatNumber(_volumeDb, digits: 0))),
       Slider(
         min: -60,
         max: 0,
@@ -119,7 +120,7 @@ class _GeneratorTabState extends State<GeneratorTab> {
       FilledButton.icon(
         onPressed: _toggle,
         icon: Icon(_playing ? Icons.stop : Icons.play_arrow),
-        label: Text(_playing ? 'Dừng phát' : 'Phát'),
+        label: Text(_playing ? context.l10n.stopPlaying : context.l10n.play),
       ),
     ]);
   }

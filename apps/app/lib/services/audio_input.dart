@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
 import 'package:record/record.dart';
+import '../l10n/l10n.dart';
 
 class AudioInputException implements Exception {
   AudioInputException(this.message);
@@ -39,7 +40,7 @@ class AudioInput {
   Future<void> start({InputDevice? device}) async {
     _recorderCreated = true;
     if (!await _recorder.hasPermission()) {
-      throw AudioInputException('Sound Db cần quyền dùng micro để đo. Hãy cấp quyền trong cài đặt hệ thống.');
+      throw AudioInputException(l10nNow.errMicPermission);
     }
     final config = RecordConfig(
       encoder: AudioEncoder.pcm16bits,
@@ -53,7 +54,7 @@ class AudioInput {
       iosConfig: const IosRecordConfig(categoryOptions: [IosAudioCategoryOption.allowBluetooth]),
     );
     if (!await _recorder.isEncoderSupported(AudioEncoder.pcm16bits)) {
-      throw AudioInputException('Thiết bị không hỗ trợ thu PCM 16-bit.');
+      throw AudioInputException(l10nNow.errPcm16);
     }
     if (Platform.isIOS) {
       // iOS: tự đặt AVAudioSession mode .measurement (ios/Runner/AppDelegate.swift) thay vì để plugin đặt mode mặc

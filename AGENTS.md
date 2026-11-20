@@ -69,7 +69,7 @@ npx npm@11 install && npm test && npm run build
 | --- | --- | --- |
 | Logo riêng (20/11/2026, phiếu LG1) cắt vuông 704 px từ ảnh gốc 1024 (`brand.json` `crop`) ⇒ icon 1024 là phóng to | Ảnh gốc có dấu ✦ của công cụ tạo ảnh ở góc phải dưới; không sửa pixel tệp gốc (`BRAND_ASSETS.md` mục 15) | Có bản gốc sạch ≥ 1024 quanh logo ⇒ thay `assets/brand/source/logo-sound-db.png`, bỏ `crop`, chạy lại dây chuyền |
 | Bản ghi đồng bộ (chỉ người dùng TsuDEV Pro) chưa mã hoá đầu cuối (PRODUCT_POLICY 7.1 N3) | Bảng điều khiển web đọc dữ liệu ở máy chủ (ADR-0005 mục 3) | Chuyển sang TsuDEV Sync (`tsusync`) khi thư viện Dart ổn định |
-| App/web chỉ tiếng Việt | Chưa làm i18n (PRODUCT_POLICY mục 8) | Tách chuỗi sang ARB + en |
+| Lời xin quyền micro iOS/macOS (`NSMicrophoneUsageDescription`) chỉ tiếng Việt; app/web đã vi + en (20/11/2026) | Bản dịch `InfoPlist.strings` cần thêm nhóm biến thể vào dự án Xcode, không làm được trên máy dev Linux | Thêm `en.lproj/InfoPlist.strings` khi có phiên trên macOS (cùng đợt nộp App Store) |
 | Không ghim chứng chỉ (pinning) | Dữ liệu D2, không phải D3 (`LANGUAGE_SELECTION.md` mục 4) | Xét lại nếu dữ liệu nâng lên D3 |
 
 ### B.5. Việc riêng của repo cần biết trước khi sửa
@@ -86,6 +86,12 @@ npx npm@11 install && npm test && npm run build
   trình duyệt bị chặn CSRF ở local. Chạy `wrangler dev --local-upstream localhost:8787` và đặt
   `PUBLIC_ORIGIN=http://localhost:8787` trong `.dev.vars`.
 - **Cron**: tài khoản Cloudflare đã hết 5 cron Free - đừng thêm `triggers.crons`; việc định kỳ chạy kèm yêu cầu.
+- **i18n** (PRODUCT_POLICY mục 1): app - chuỗi ở `apps/app/lib/l10n/app_{vi,en}.arb` (bản gốc vi, `flutter gen-l10n`
+  sinh `app_localizations*.dart` - commit kèm); trong widget dùng `context.l10n`, ngoài cây widget dùng `l10nNow`;
+  số/ngày qua `core/format.dart` (theo ngôn ngữ đang hiển thị). Web - chuỗi ở `apps/web/src/i18n/{vi,en}.ts`, tiếng
+  Anh ở `/en/` cùng đường dẫn con; `public/lang.js` tự chọn theo trình duyệt ở lần vào đầu. Trang mới ⇒ thêm view ở
+  `src/views/` + hai lớp bọc `src/pages/x.astro`, `src/pages/en/x.astro`. Trang cần header riêng của Worker (như
+  `/do/`) phải thêm cả bản `/en/` vào `run_worker_first`.
 - **Tệp chính của Worker chỉ export handler.** Export hằng/hàm thường từ `src/index.ts` làm workerd từ chối khởi
   động ("Incorrect type for map entry"). Đặt chúng ở module khác (`src/maintenance.ts`).
 - **CSP trang `/do/` do Worker đặt**, không qua `_headers`: hai luật `_headers` trùng khóa bị NỐI bằng dấu phẩy và

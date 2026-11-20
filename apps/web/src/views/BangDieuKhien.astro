@@ -1,0 +1,83 @@
+---
+import Trang from '../layouts/Trang.astro';
+import { duongDan as dd, t, type Lang } from '../i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const v = t(lang).bang;
+---
+<Trang lang={lang} tieuDe={v.tieuDe} moTa={v.moTa} duongDan="/bang-dieu-khien/" anChiMuc>
+  <div class="khung van-ban" id="bang">
+    <h1>{v.h1}</h1>
+    <p id="trang-thai" role="status">{v.dangTai}</p>
+    <p id="thong-bao" class="thong-bao thong-bao--loi" role="alert" hidden></p>
+    <div id="chua-dang-nhap" hidden>
+      <p>{v.chuaDangNhap}</p>
+      <p><a class="nut nut--chinh" href={dd(lang, '/dang-nhap/')}>{v.dangNhap}</a></p>
+    </div>
+    <div id="da-dang-nhap" hidden>
+      <p><strong id="ten"></strong> · <span id="email"></span></p>
+      <p id="thong-ke"></p>
+
+      <section class="goi-pro" aria-labelledby="tieu-de-pro">
+        <h2 id="tieu-de-pro">{v.goi}</h2>
+        <p id="trang-thai-pro" role="status">{v.dangKiemPro}</p>
+        <p id="han-xoa" hidden></p>
+        <p class="mo">{v.mienPhi}</p>
+        <p class="dieu-khoan" id="dieu-khoan-pro">{v.dieuKhoan}</p>
+        <p class="hang-nut">
+          <a id="nut-pro" class="nut nut--chinh nut--nho" href="https://tsudev.com/pro?app=sounddb" target="_blank" rel="noopener noreferrer">{v.xemPro}</a>
+          <a class="nut nut--phu nut--nho" href="https://tsudev.com/ung-ho?app=sounddb" target="_blank" rel="noopener noreferrer">{v.ungHo}</a>
+        </p>
+      </section>
+      <p class="hang-nut">
+        <button id="nut-xuat" class="nut nut--phu nut--nho" type="button">{v.taiJson}</button>
+        <button id="nut-dang-xuat" class="nut nut--phu nut--nho" type="button">{v.dangXuat}</button>
+      </p>
+
+      <h2>{v.phienDo}</h2>
+      <p><label class="an-di" for="tim">{v.timTheoTen}</label>
+        <input id="tim" class="o-tim" type="search" placeholder={v.timTheoTen} maxlength="100"></p>
+      <div class="vung-ban-ghi">
+        <div class="cuon-ngang" tabindex="0" role="region" aria-label={v.bangPhien}>
+        <table class="bang">
+          <thead><tr><th scope="col">{v.cotPhien[0]}</th><th scope="col">{v.cotPhien[1]}</th><th scope="col" class="so">{v.cotPhien[2]}</th><th scope="col" class="so">LAeq</th><th scope="col" class="so">LAFmax</th><th scope="col"><span class="an-di">{v.thaoTac}</span></th></tr></thead>
+          <tbody id="dong-phien"></tbody>
+        </table>
+        </div>
+        <div class="chan-ban-ghi">
+          <label class="an-di" for="so-dong">{v.soDong}</label>
+          <select id="so-dong">
+            <option>10</option><option>20</option><option>50</option><option>100</option><option>200</option>
+          </select>
+          <span class="mo">{v.moiTrang}</span>
+          <span class="mo giua" id="tom-tat">0-0 / 0</span>
+          <button id="truoc" class="nut nut--phu nut--nho" type="button" aria-label={v.truoc}>‹</button>
+          <span class="mo" id="so-trang">1 / 1</span>
+          <button id="sau" class="nut nut--phu nut--nho" type="button" aria-label={v.sau}>›</button>
+        </div>
+      </div>
+
+      <h2>{v.thietBi}</h2>
+      <div class="cuon-ngang" tabindex="0" role="region" aria-label={v.bangThietBi}>
+      <table class="bang">
+        <thead><tr>{v.cotThietBi.map((c) => <th scope="col">{c}</th>)}<th scope="col"><span class="an-di">{v.thaoTac}</span></th></tr></thead>
+        <tbody id="dong-thiet-bi"></tbody>
+      </table>
+      </div>
+
+      <h2>{v.hoatDong}</h2>
+      <div class="cuon-ngang" tabindex="0" role="region" aria-label={v.bangHoatDong}>
+      <table class="bang">
+        <thead><tr>{v.cotHoatDong.map((c) => <th scope="col">{c}</th>)}</tr></thead>
+        <tbody id="dong-hoat-dong"></tbody>
+      </table>
+      </div>
+
+      <h2>{v.xoaDuLieu}</h2>
+      <p>{v.xoaDan}</p>
+      <p><button id="nut-xoa" class="nut nut--nguy nut--nho" type="button">{v.nutXoa}</button></p>
+    </div>
+  </div>
+  <script src="../scripts/bang-dieu-khien.ts"></script>
+</Trang>

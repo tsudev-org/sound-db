@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../app_scope.dart';
 import '../../core/format.dart';
+import '../../l10n/l10n.dart';
 import '../../data/models.dart';
 import '../../theme/app_theme.dart';
 import '../../theme/tokens.g.dart';
@@ -68,9 +69,9 @@ class _HistoryPageState extends State<HistoryPage> {
     final services = AppScope.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Lịch sử đo'),
+        title: Text(context.l10n.historyTitle),
         actions: [
-          IconButton(tooltip: 'Tải lại', onPressed: _reload, icon: const Icon(Icons.refresh)),
+          IconButton(tooltip: context.l10n.reload, onPressed: _reload, icon: const Icon(Icons.refresh)),
         ],
       ),
       body: Padding(
@@ -84,7 +85,7 @@ class _HistoryPageState extends State<HistoryPage> {
                       child: Padding(
                         padding: const EdgeInsets.all(SdbSpacing.s6),
                         child: Text(
-                          'Chưa có phiên đo nào. Bấm "Lưu phiên đo" ở màn hình Đo mức để lưu lại kết quả.',
+                          context.l10n.historyEmpty,
                           textAlign: TextAlign.center,
                           style: TextStyle(color: p.textMuted),
                         ),
@@ -102,7 +103,7 @@ class _HistoryPageState extends State<HistoryPage> {
                             title: Text(s.label, maxLines: 1, overflow: TextOverflow.ellipsis),
                             subtitle: Text(
                               '${formatDateTime(s.startedAt)} · ${formatDuration(s.durationSeconds)}'
-                              '${s.dirty && services.auth.signedIn ? ' · chưa đồng bộ' : ''}',
+                              '${s.dirty && services.auth.signedIn ? context.l10n.notSynced : ''}',
                               style: TextStyle(color: p.textMuted),
                             ),
                             trailing: Text('${formatNumber(s.summary['laeq'] ?? double.nan)} dBA',

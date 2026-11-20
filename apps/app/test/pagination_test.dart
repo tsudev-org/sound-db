@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sound_db/l10n/l10n.dart';
 import 'package:sound_db/theme/app_theme.dart';
 import 'package:sound_db/widgets/pagination_footer.dart';
 
@@ -19,6 +20,9 @@ void main() {
   testWidgets('chân bảng: bộ chọn trái, tóm tắt giữa, phân trang phải', (tester) async {
     int? picked;
     await tester.pumpWidget(MaterialApp(
+      locale: const Locale('vi'),
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       theme: buildTheme(Brightness.dark),
       home: Scaffold(
         body: PaginationFooter(
