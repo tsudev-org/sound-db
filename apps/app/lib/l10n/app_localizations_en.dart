@@ -687,7 +687,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get proFeatures =>
-      '• Sync measurement history and calibration profiles across devices on the same account.\n• Cloud backup, view and download on the web (sounddb.tsudev.com).\n• A Pro badge next to your account name. One plan shared by every TsuDEV product.';
+      '• Sync measurement history and calibration profiles across devices on the same account.\n• Cloud backup, view and download on the web (sound.tsudev.com).\n• A Pro badge next to your account name. One plan shared by every TsuDEV product.';
 
   @override
   String get proPlaySoon =>

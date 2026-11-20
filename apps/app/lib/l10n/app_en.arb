@@ -194,7 +194,7 @@
   "proExpiredLine": "TsuDEV Pro expired on {date}. Your cloud copy can be downloaded until {deleteDate}.",
   "proFreeLine": "Free version: every measuring feature is available; data is stored only on this device and never sent to the internet.",
   "proFeaturesTitle": "What Pro includes",
-  "proFeatures": "• Sync measurement history and calibration profiles across devices on the same account.\n• Cloud backup, view and download on the web (sounddb.tsudev.com).\n• A Pro badge next to your account name. One plan shared by every TsuDEV product.",
+  "proFeatures": "• Sync measurement history and calibration profiles across devices on the same account.\n• Cloud backup, view and download on the web (sound.tsudev.com).\n• A Pro badge next to your account name. One plan shared by every TsuDEV product.",
   "proPlaySoon": "Buying TsuDEV Pro in Google Play is coming in the next update.",
   "proRenewWeb": "Renew on tsudev.com",
   "proBuyWeb": "Buy TsuDEV Pro on tsudev.com",

@@ -4,7 +4,7 @@
 
 | Thành phần | Ở đâu | Lệnh |
 | --- | --- | --- |
-| Website + API | Cloudflare Worker `sound-db`, Custom Domain `sounddb.tsudev.com` | `npm run deploy` |
+| Website + API | Cloudflare Worker `sound-db`, Custom Domain `sound.tsudev.com` | `npm run deploy` |
 | Cơ sở dữ liệu | Cloudflare D1 `sound-db`, vùng `apac` | migration tự áp trong `deploy` |
 | App | GitHub Releases (`.github/workflows/release.yml`) | đẩy tag `v<phiên bản>` |
 
@@ -25,17 +25,17 @@ không ghi vào tệp.
 
 ```sql
 INSERT INTO "OAuthClient" (id, name, "redirectUris", "postLogoutRedirectUris", scopes)
-VALUES ('sounddb', 'Sound Db', ARRAY['https://sounddb.tsudev.com/auth/callback'], ARRAY['https://sounddb.tsudev.com/'], ARRAY['profile', 'email']);
+VALUES ('sounddb', 'Sound Db', ARRAY['https://sound.tsudev.com/auth/callback', 'https://sounddb.tsudev.com/auth/callback'], ARRAY['https://sound.tsudev.com/'], ARRAY['profile', 'email']);
 ```
 
 ## 3. Nghiệm thu sau mỗi lần triển khai
 
 ```bash
-curl -s https://sounddb.tsudev.com/api/v1/health                     # {"ok":true,...}
-curl -sI https://sounddb.tsudev.com/do/ | grep -i content-security   # có 'wasm-unsafe-eval', đúng MỘT dòng
-curl -sI https://sounddb.tsudev.com/ | grep -i content-security      # KHÔNG có wasm-unsafe-eval
-curl -s -o /dev/null -w '%{http_code}\n' https://sounddb.tsudev.com/api/v1/me   # 401
-curl -sI https://sounddb.tsudev.com/auth/web/start | grep -i '^location: https://tsudev'   # (sau khi đăng ký client)
+curl -s https://sound.tsudev.com/api/v1/health                     # {"ok":true,...}
+curl -sI https://sound.tsudev.com/do/ | grep -i content-security   # có 'wasm-unsafe-eval', đúng MỘT dòng
+curl -sI https://sound.tsudev.com/ | grep -i content-security      # KHÔNG có wasm-unsafe-eval
+curl -s -o /dev/null -w '%{http_code}\n' https://sound.tsudev.com/api/v1/me   # 401
+curl -sI https://sound.tsudev.com/auth/web/start | grep -i '^location: https://tsudev'   # (sau khi đăng ký client)
 ```
 
 Mã 200 không chứng minh trang có nội dung: mở `/do/`, bấm Bắt đầu đo, thấy số nhảy.

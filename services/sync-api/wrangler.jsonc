@@ -1,4 +1,4 @@
-// sounddb.tsudev.com: MỘT Worker phục vụ cả website tĩnh (apps/web/dist) lẫn API.
+// sound.tsudev.com: MỘT Worker phục vụ cả website tĩnh (apps/web/dist) lẫn API.
 // /api/* và /auth/* chạy mã Worker trước; mọi đường khác là tệp tĩnh (0 lượt gọi Worker
 // tính phí). Cùng khung với lotus/swico/trafficmonitor.tsudev.com (Workers Static Assets,
 // Custom Domain tự tạo DNS + chứng chỉ trong zone tsudev.com).
@@ -24,9 +24,9 @@
     }
   ],
   "vars": {
-    "PUBLIC_ORIGIN": "https://sounddb.tsudev.com",
-    // Host mới (ADR-0007): bước B đảo PUBLIC_ORIGIN sang sound.tsudev.com sau khi tsudev đăng ký callback mới.
-    "ALIAS_ORIGINS": "https://sound.tsudev.com",
+    "PUBLIC_ORIGIN": "https://sound.tsudev.com",
+    // Host cũ (ADR-0007): giữ VĨNH VIỄN cho app đã cài (API), /auth/* chuyển về host chuẩn, trang tự chuyển (theme.js).
+    "ALIAS_ORIGINS": "https://sounddb.tsudev.com",
     "OIDC_ISSUER": "https://tsudev.com/oidc",
     "OIDC_CLIENT_ID": "sounddb"
   },
@@ -37,7 +37,7 @@
   "workers_dev": false,
   "preview_urls": false,
   "routes": [
-    { "pattern": "sounddb.tsudev.com", "custom_domain": true },
-    { "pattern": "sound.tsudev.com", "custom_domain": true }
+    { "pattern": "sound.tsudev.com", "custom_domain": true },
+    { "pattern": "sounddb.tsudev.com", "custom_domain": true }
   ]
 }

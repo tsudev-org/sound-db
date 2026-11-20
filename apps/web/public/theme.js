@@ -1,7 +1,10 @@
-// Giao diện của sounddb.tsudev.com (sao từ lotus.tsudev.com), cùng hợp đồng với tsudev.com (phiếu logs/handover/20261110-05 mục 3):
+// Giao diện của sound.tsudev.com (sao từ lotus.tsudev.com), cùng hợp đồng với tsudev.com (phiếu logs/handover/20261110-05 mục 3):
 // localStorage "tsudev-theme" = light|dark|system; giá trị cũ "warm" đọc thành "light"; không có/không đọc được -> "system" (theo hệ điều hành).
 // Nạp CHẶN trong <head>, sau <meta name="theme-color"> và trước stylesheet (không defer/async/module): đặt data-theme
 // và màu thanh địa chỉ trước khung hình đầu, không nháy màu. Tệp tĩnh cùng nguồn nên CSP chỉ cần script-src 'self'.
+// Tên miền cũ (ADR-0007): trang tĩnh ở sounddb.tsudev.com chuyển sang sound.tsudev.com cùng đường dẫn (API/app cũ vẫn
+// chạy ở tên cũ). Làm ở đây vì trang tĩnh không qua Worker; <link rel="canonical"> cũng trỏ tên mới.
+if (location.hostname === 'sounddb.tsudev.com') location.replace('https://sound.tsudev.com' + location.pathname + location.search + location.hash);
 (function () {
   'use strict';
   var KHOA = 'tsudev-theme';

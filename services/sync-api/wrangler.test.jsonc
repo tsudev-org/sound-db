@@ -6,8 +6,8 @@
   "compatibility_flags": ["nodejs_compat"],
   "d1_databases": [{ "binding": "DB", "database_name": "sound-db-test", "database_id": "test", "migrations_dir": "migrations" }],
   "vars": {
-    "PUBLIC_ORIGIN": "https://sounddb.tsudev.com",
-    "ALIAS_ORIGINS": "https://sound.tsudev.com",
+    "PUBLIC_ORIGIN": "https://sound.tsudev.com",
+    "ALIAS_ORIGINS": "https://sounddb.tsudev.com",
     "OIDC_ISSUER": "https://idp.test/oidc",
     "OIDC_CLIENT_ID": "sounddb"
   }

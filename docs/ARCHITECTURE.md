@@ -11,7 +11,7 @@ Cập nhật: 17/11/2026.
                                              | Authorization Code + PKCE (máy chủ - máy chủ)
                                              v
   +-----------------------------------------------------------------------------------+
-  | sounddb.tsudev.com - MỘT Cloudflare Worker                                         |
+  | sound.tsudev.com (+ tên cũ sounddb.tsudev.com) - MỘT Cloudflare Worker             |
   |   tệp tĩnh (Astro): trang giới thiệu, /do/ máy đo WASM, /bang-dieu-khien/           |
   |   /auth/*   : RP OIDC, cấp mã một lần cho app, cookie phiên web                      |
   |   /api/v1/* : token app, đồng bộ, hồ sơ, thiết bị, xuất/xóa dữ liệu                  |

@@ -1,4 +1,4 @@
-// Chuỗi giao diện tiếng Việt của sounddb.tsudev.com (PRODUCT_POLICY mục 1: không viết cứng trong mã).
+// Chuỗi giao diện tiếng Việt của sound.tsudev.com (PRODUCT_POLICY mục 1: không viết cứng trong mã).
 // Bản gốc: mọi khoá phải có trong en.ts (kiểu `Dict` bắt buộc). Chuỗi có HTML chỉ là nội dung tĩnh của dự án,
 // KHÔNG bao giờ chèn dữ liệu người dùng/máy chủ vào chúng.
 import { REPO_URL } from '../lib/site';

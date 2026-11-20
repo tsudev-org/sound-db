@@ -1,4 +1,4 @@
-// Ngôn ngữ của sounddb.tsudev.com (PRODUCT_POLICY mục 1): tiếng Việt ở `/`, tiếng Anh ở `/en/`.
+// Ngôn ngữ của sound.tsudev.com (PRODUCT_POLICY mục 1): tiếng Việt ở `/`, tiếng Anh ở `/en/`.
 // - Lần vào đầu (chưa lưu lựa chọn): theo ngôn ngữ trình duyệt (`navigator.languages`, cùng nguồn với Accept-Language);
 //   có tiếng Việt đứng trước ⇒ vi, ngôn ngữ khác/chưa hỗ trợ ⇒ en. Lưu ngay để chỉ tự chọn MỘT lần.
 // - Đã lưu (bấm bộ chọn ngôn ngữ ở chân trang) ⇒ lựa chọn đó thắng.

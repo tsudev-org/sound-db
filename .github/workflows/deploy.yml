@@ -1,4 +1,4 @@
-# Triển khai sounddb.tsudev.com (Worker + D1 + tệp tĩnh) sau khi CI xanh trên main.
+# Triển khai sound.tsudev.com (Worker + D1 + tệp tĩnh) sau khi CI xanh trên main.
 # Cần secret ở Environment "production" (bật Required reviewers): CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID.
 name: Deploy
 # Secret đặt 17/11/2026; chạy tay lần đầu (run 44090540556) đạt nghiệm thu ⇒ bật triển khai tự động khi đẩy main.
@@ -15,7 +15,7 @@ jobs:
   deploy:
     runs-on: ubuntu-24.04
     timeout-minutes: 25
-    environment: { name: production, url: 'https://sounddb.tsudev.com' }
+    environment: { name: production, url: 'https://sound.tsudev.com' }
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with: { persist-credentials: false }
@@ -35,6 +35,9 @@ jobs:
         run: |
           set -euo pipefail
           sleep 10
+          curl -fsS https://sound.tsudev.com/api/v1/health | grep -q '"ok":true'
+          test "$(curl -sI https://sound.tsudev.com/do/ | grep -ci '^content-security-policy:.*wasm-unsafe-eval')" = 1
+          test "$(curl -s -o /dev/null -w '%{http_code}' https://sound.tsudev.com/api/v1/me)" = 401
+          # Tên cũ giữ vĩnh viễn cho app đã cài (ADR-0007): API còn chạy, /auth/* về tên mới.
           curl -fsS https://sounddb.tsudev.com/api/v1/health | grep -q '"ok":true'
-          test "$(curl -sI https://sounddb.tsudev.com/do/ | grep -ci '^content-security-policy:.*wasm-unsafe-eval')" = 1
-          test "$(curl -s -o /dev/null -w '%{http_code}' https://sounddb.tsudev.com/api/v1/me)" = 401
+          curl -sI https://sounddb.tsudev.com/auth/web/start | grep -qi '^location: https://sound.tsudev.com/auth/web/start'

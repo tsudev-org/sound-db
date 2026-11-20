@@ -2,7 +2,7 @@
   "name": "@sound-db/web",
   "private": true,
   "type": "module",
-  "description": "Website sounddb.tsudev.com (Astro, trang tĩnh) + máy đo trên trình duyệt (WASM) + bảng điều khiển tài khoản",
+  "description": "Website sound.tsudev.com (Astro, trang tĩnh) + máy đo trên trình duyệt (WASM) + bảng điều khiển tài khoản",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build && node scripts/check-dist.mjs",
