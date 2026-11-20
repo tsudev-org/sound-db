@@ -34,7 +34,8 @@ double nominalFrequency(double centerHz) {
 List<Band> octaveBands(int fraction, double minHz, double maxHz) {
   assert(fraction == 1 || fraction == 3);
   final half = math.pow(octaveRatio, 1 / (2 * fraction)).toDouble();
-  final (from, to) = fraction == 1 ? (-6, 4) : (-30, 13);
+  // 1/3: x = -20 là 10 Hz (QA-02: -30 = 1 Hz bị làm tròn danh định thành 10). Khớp packages/dsp-core.
+  final (from, to) = fraction == 1 ? (-6, 4) : (-20, 13);
   final out = <Band>[];
   for (var x = from; x <= to; x++) {
     final center = 1000 * math.pow(octaveRatio, x / fraction).toDouble();
