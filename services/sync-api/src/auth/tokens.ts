@@ -2,6 +2,7 @@ import { SignJWT, jwtVerify } from 'jose';
 
 import type { Env } from '../env';
 import { ApiError } from '../lib/errors';
+import { acceptedIssuers } from '../lib/hosts';
 import { randomToken, sha256Hex } from '../lib/crypto';
 
 export const ACCESS_TTL_S = 15 * 60;
@@ -32,7 +33,7 @@ export async function issueAccessToken(env: Env, userId: string, deviceId: strin
 export async function verifyAccessToken(env: Env, token: string): Promise<{ userId: string; deviceId: string }> {
   try {
     const { payload } = await jwtVerify(token, key(env), {
-      issuer: env.PUBLIC_ORIGIN,
+      issuer: acceptedIssuers(env),
       audience: AUDIENCE,
       algorithms: ['HS256'],
       typ: 'at+jwt',
