@@ -1,0 +1,19 @@
+---
+import Trang from '../layouts/Trang.astro';
+import { duongDan as dd, t, type Lang } from '../i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const v = t(lang).dangNhap;
+const veDau = encodeURIComponent(dd(lang, '/bang-dieu-khien/'));
+---
+<Trang lang={lang} tieuDe={v.tieuDe} moTa={v.moTa} duongDan="/dang-nhap/" anChiMuc>
+  <div class="khung van-ban">
+    <h1>{v.tieuDe}</h1>
+    <p id="thong-bao-loi" class="thong-bao thong-bao--loi" role="alert" hidden>{v.loi}</p>
+    <p set:html={v.dan} />
+    <p><a class="nut nut--chinh" href={`/auth/web/start?return_to=${veDau}`}>{v.tiepTuc}</a></p>
+    <p set:html={v.chuaCo} />
+  </div>
+  <script src="../scripts/dang-nhap.ts"></script>
+</Trang>

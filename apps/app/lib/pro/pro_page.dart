@@ -3,6 +3,8 @@ import 'package:tsudev_ui/tsudev_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../app_scope.dart';
+import '../core/format.dart';
+import '../l10n/l10n.dart';
 import '../theme/app_theme.dart';
 import '../theme/tokens.g.dart';
 import 'pro_service.dart';
@@ -19,11 +21,7 @@ String proTerms(String price, {bool english = false}) => english
         'chưa gia hạn, ứng dụng trở về bản miễn phí và ngừng đồng bộ lên đám mây; dữ liệu trên thiết bị vẫn giữ nguyên, bản sao '
         'trên đám mây còn tải về được 90 ngày rồi bị xoá.';
 
-String _date(DateTime d) {
-  final l = d.toLocal();
-  String two(int v) => v.toString().padLeft(2, '0');
-  return '${two(l.day)}/${two(l.month)}/${l.year}';
-}
+String _date(DateTime d) => formatDate(d.toLocal());
 
 /// Màn Pro / Ủng hộ (PRODUCT_POLICY 3.3, 7.2, 7.5). Ngoài cửa hàng ⇒ mua trên tsudev.com (không nhúng thanh toán vào
 /// app). Bản Play ⇒ không dẫn ra web (Play Billing nối sau, B2).
@@ -35,6 +33,7 @@ class ProPage extends StatelessWidget {
     final services = AppScope.of(context);
     final pro = services.pro;
     final p = context.palette;
+    final l = context.l10n;
     return Scaffold(
       appBar: AppBar(title: const Text('TsuDEV Pro')),
       body: ListenableBuilder(
@@ -44,45 +43,42 @@ class ProPage extends StatelessWidget {
           final active = pro.isPro;
           return ListView(padding: const EdgeInsets.all(SdbSpacing.s4), children: [
             Row(children: [
-              const Expanded(child: Text('Trạng thái', style: TextStyle(fontWeight: FontWeight.w600))),
+              Expanded(child: Text(l.proStatus, style: const TextStyle(fontWeight: FontWeight.w600))),
               TsuBadge(kind: pro.state.badge),
             ]),
             const SizedBox(height: SdbSpacing.s2),
             Text(
               active
-                  ? 'TsuDEV Pro tới ${_date(until!)}: đồng bộ và sao lưu đám mây đang bật.'
+                  ? l.proActiveLine(_date(until!))
                   : until != null && until.millisecondsSinceEpoch > 0
-                      ? 'TsuDEV Pro đã hết hạn ngày ${_date(until)}. Bản sao trên đám mây còn tải về được tới ngày '
-                          '${_date(until.add(const Duration(days: 90)))}.'
-                      : 'Bản miễn phí: mọi chức năng đo đều mở; dữ liệu chỉ lưu trên thiết bị này, không gửi lên internet.',
+                      ? l.proExpiredLine(_date(until), _date(until.add(const Duration(days: 90))))
+                      : l.proFreeLine,
               style: TextStyle(color: p.textSecondary),
             ),
             const SizedBox(height: SdbSpacing.s6),
-            const Text('Pro có gì', style: TextStyle(fontWeight: FontWeight.w600)),
+            Text(l.proFeaturesTitle, style: const TextStyle(fontWeight: FontWeight.w600)),
             const SizedBox(height: SdbSpacing.s2),
-            const Text('• Đồng bộ lịch sử đo và hồ sơ hiệu chuẩn giữa các thiết bị cùng tài khoản.\n'
-                '• Sao lưu lên đám mây, xem và tải về trên web (sounddb.tsudev.com).\n'
-                '• Huy hiệu Pro cạnh tên tài khoản. Một gói dùng chung cho mọi sản phẩm TsuDEV.'),
+            Text(l.proFeatures),
             const SizedBox(height: SdbSpacing.s6),
-            Text(proTerms(proPriceVnd), key: const Key('pro-terms'), style: TextStyle(color: p.textSecondary, fontSize: 13)),
+            Text(proTerms(proPriceVnd, english: l.localeName == 'en'), key: const Key('pro-terms'), style: TextStyle(color: p.textSecondary, fontSize: 13)),
             const SizedBox(height: SdbSpacing.s4),
             if (isPlayBuild)
-              Text('Mua TsuDEV Pro trong Google Play sẽ có ở bản cập nhật tới.', style: TextStyle(color: p.textMuted))
+              Text(l.proPlaySoon, style: TextStyle(color: p.textMuted))
             else ...[
               FilledButton.icon(
                 key: const Key('pro-buy'),
                 onPressed: () => launchUrl(proBuyUrl, mode: LaunchMode.externalApplication),
                 icon: const Icon(Icons.workspace_premium_outlined),
-                label: Text(active ? 'Gia hạn trên tsudev.com' : 'Mua TsuDEV Pro trên tsudev.com'),
+                label: Text(active ? l.proRenewWeb : l.proBuyWeb),
               ),
               const SizedBox(height: SdbSpacing.s2),
               OutlinedButton.icon(
                 onPressed: () => launchUrl(donateUrl, mode: LaunchMode.externalApplication),
                 icon: const Icon(Icons.favorite_outline),
-                label: const Text('Ủng hộ TsuDEV'),
+                label: Text(l.supportTsudev),
               ),
               const SizedBox(height: SdbSpacing.s2),
-              Text('Thanh toán trên tsudev.com bằng VietQR. Mua xong, mở lại app hoặc bấm Kiểm tra lại.',
+              Text(l.proPayNote,
                   style: TextStyle(color: p.textMuted, fontSize: 12)),
             ],
             const SizedBox(height: SdbSpacing.s4),
@@ -90,7 +86,7 @@ class ProPage extends StatelessWidget {
               TextButton.icon(
                 onPressed: () => pro.refresh(),
                 icon: const Icon(Icons.refresh),
-                label: const Text('Kiểm tra lại gói Pro'),
+                label: Text(l.proCheckAgain),
               ),
           ]);
         },

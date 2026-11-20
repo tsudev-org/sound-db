@@ -5,12 +5,9 @@ import 'tokens.g.dart';
 /// Lựa chọn giao diện theo ECOSYSTEM_IDENTITY.md mục 4.1: chỉ Sáng/Tối/Hệ thống,
 /// chưa lưu lựa chọn ⇒ Hệ thống (PRODUCT_POLICY mục 1.2); giá trị cũ `warm` đọc thành `light`.
 enum ThemeChoice {
-  light('Sáng'),
-  dark('Tối'),
-  system('Hệ thống');
-
-  const ThemeChoice(this.label);
-  final String label;
+  light,
+  dark,
+  system;
 
   static ThemeChoice parse(String? raw) => switch (raw) {
         'light' || 'warm' => ThemeChoice.light,

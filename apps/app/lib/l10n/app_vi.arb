@@ -1,0 +1,470 @@
+{
+  "@@locale": "vi",
+  "navMeter": "Đo mức",
+  "navAnalysis": "Phân tích",
+  "navTools": "Công cụ",
+  "navHistory": "Lịch sử",
+  "navSettings": "Cài đặt",
+  "meterTitle": "Đo mức âm",
+  "meterReferenceTooltip": "Mức tham chiếu thường gặp",
+  "meterNotCalibrated": "Chưa hiệu chuẩn: số đo là ước lượng theo micro điển hình (sai số có thể vài dB). Vào Cài đặt > Hiệu chuẩn để đo chính xác.",
+  "meterLevelSemantics": "Mức âm {name} {value} đề-xi-ben",
+  "@meterLevelSemantics": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "timeFast": "Nhanh",
+  "timeSlow": "Chậm",
+  "timeImpulse": "Xung",
+  "meterLast2Min": "2 phút gần nhất",
+  "meterLeqHint": "Mức tương đương liên tục của cả phiên",
+  "meterPeakHint": "Đỉnh tức thời",
+  "meterL10Hint": "Mức bị vượt 10% thời gian",
+  "meterL90Hint": "Ồn nền",
+  "duration": "Thời lượng",
+  "resetSession": "Đặt lại phiên",
+  "saveSession": "Lưu phiên đo",
+  "doseTitle": "Liều tiếp xúc tiếng ồn",
+  "doseNioshRule": "85 dBA / 8 giờ, hệ số trao đổi 3 dB",
+  "doseOshaRule": "90 dBA / 8 giờ, hệ số trao đổi 5 dB",
+  "doseNote": "Tính trên LAS từ khi bắt đầu phiên. 100% là giới hạn tiếp xúc cho một ngày làm việc.",
+  "refTitle": "Mức âm tham chiếu (dBA)",
+  "ref0": "Ngưỡng nghe",
+  "ref20": "Thì thầm, phòng ngủ yên tĩnh",
+  "ref40": "Thư viện, văn phòng yên tĩnh",
+  "ref60": "Trò chuyện bình thường",
+  "ref70": "Máy hút bụi, đường phố đông",
+  "ref85": "Giao thông dày đặc - ngưỡng tiếp xúc 8 giờ (NIOSH)",
+  "ref95": "Xe máy tăng ga, máy khoan",
+  "ref110": "Hòa nhạc, vũ trường",
+  "ref120": "Còi xe cứu thương sát tai - ngưỡng đau",
+  "defaultSessionLabel": "Phiên đo {time}",
+  "@defaultSessionLabel": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionFallback": "Phiên đo",
+  "sessionName": "Tên phiên",
+  "cancel": "Hủy",
+  "save": "Lưu",
+  "sessionTooShort": "Phiên quá ngắn để lưu (cần ít nhất 1 giây).",
+  "savedLabel": "Đã lưu \"{label}\".",
+  "@savedLabel": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsTitle": "Cài đặt",
+  "sectionAccount": "Tài khoản và đồng bộ",
+  "sectionCalibration": "Hiệu chuẩn",
+  "micCalibration": "Hiệu chuẩn micro",
+  "calibratedOffset": "Đã hiệu chuẩn · offset {offset}",
+  "@calibratedOffset": {
+    "placeholders": {
+      "offset": {
+        "type": "String"
+      }
+    }
+  },
+  "notCalibratedOffset": "Chưa hiệu chuẩn · dùng offset ước lượng {offset}",
+  "@notCalibratedOffset": {
+    "placeholders": {
+      "offset": {
+        "type": "String"
+      }
+    }
+  },
+  "sectionTheme": "Giao diện",
+  "themeLight": "Sáng",
+  "themeDark": "Tối",
+  "themeSystem": "Hệ thống",
+  "sectionLanguage": "Ngôn ngữ",
+  "languageSystem": "Theo hệ thống",
+  "sectionMeasurement": "Đo lường",
+  "keepScreenOn": "Giữ màn hình sáng khi đang đo",
+  "a4Reference": "Tần số chuẩn A4",
+  "sectionPrivacy": "Quyền riêng tư",
+  "offlineMode": "Chế độ ngoại tuyến hoàn toàn",
+  "offlineModeHint": "Chặn mọi kết nối ra ngoài, kể cả đăng nhập và đồng bộ. Đo lường vẫn chạy đủ.",
+  "audioNeverLeaves": "Âm thanh không bao giờ rời thiết bị",
+  "audioNeverLeavesHint": "Sound Db chỉ xử lý âm thanh trong bộ nhớ, không ghi âm. Bản miễn phí không gửi dữ liệu đo lên internet; khi đồng bộ (TsuDEV Pro), chỉ các con số đo được gửi đi.",
+  "sectionAbout": "Giới thiệu",
+  "logoSemantics": "Logo Sound Db",
+  "versionLine": "Phiên bản {version} · Một sản phẩm của TsuDEV",
+  "@versionLine": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "proUntil": "TsuDEV Pro tới {date}",
+  "@proUntil": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "freePlan": "Bản miễn phí",
+  "proTileOn": "Đồng bộ và sao lưu đám mây đang bật.",
+  "proTileOff": "Dữ liệu chỉ lưu trên thiết bị. Xem gói TsuDEV Pro để đồng bộ giữa các thiết bị, hoặc ủng hộ TsuDEV.",
+  "guestMode": "Bạn đang dùng ở chế độ khách - mọi chức năng đo đều mở.",
+  "signInFailed": "Đăng nhập thất bại: {error}",
+  "@signInFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "signInButton": "Đăng nhập tài khoản TsuDEV",
+  "signInHint": "Mở trình duyệt hệ thống tới tsudev.com (Google, GitHub hoặc tài khoản TsuDEV). Đăng nhập để dùng gói TsuDEV Pro (đồng bộ và sao lưu đám mây) và huy hiệu; bản miễn phí không cần đăng nhập.",
+  "syncNow": "Đồng bộ ngay",
+  "autoSync": "Tự đồng bộ khi mở app và sau khi lưu",
+  "manageOnWeb": "Quản lý thiết bị và dữ liệu trên web",
+  "signOut": "Đăng xuất",
+  "signOutWipe": "Đăng xuất và xóa dữ liệu cục bộ",
+  "signOutWipeHint": "Xóa lịch sử, hiệu chuẩn và cài đặt trên máy này. Bản sao đã đồng bộ (nếu có) vẫn còn trên tài khoản.",
+  "wipeConfirmTitle": "Xóa dữ liệu trên máy này?",
+  "wipeConfirmBody": "Bản ghi chưa đồng bộ sẽ mất vĩnh viễn.",
+  "delete": "Xóa",
+  "calMethod94": "Máy hiệu chuẩn 94 dB @ 1 kHz",
+  "calMethod114": "Máy hiệu chuẩn 114 dB @ 1 kHz",
+  "calMethodReference": "So với máy đo chuẩn (nhập số đọc)",
+  "micOpenFailed": "Không mở được micro.",
+  "offsetApplied": "Đã áp dụng offset {offset}.",
+  "@offsetApplied": {
+    "placeholders": {
+      "offset": {
+        "type": "String"
+      }
+    }
+  },
+  "currentOffset": "Offset hiện tại: {offset}",
+  "@currentOffset": {
+    "placeholders": {
+      "offset": {
+        "type": "String"
+      }
+    }
+  },
+  "currentOffsetDefault": "Offset hiện tại: {offset} (mặc định, chưa hiệu chuẩn)",
+  "@currentOffsetDefault": {
+    "placeholders": {
+      "offset": {
+        "type": "String"
+      }
+    }
+  },
+  "calReferenceHowTo": "Đặt điện thoại sát máy đo chuẩn, cùng hướng về nguồn ồn ổn định (quạt, ồn hồng). Đo 10 giây rồi nhập LAeq mà máy chuẩn hiển thị trong cùng khoảng thời gian.",
+  "calCalibratorHowTo": "Lắp đầu micro vào khớp nối của máy hiệu chuẩn (hoặc áp sát nếu không vừa), bật máy hiệu chuẩn, giữ yên rồi bấm Đo. Kết quả dùng LZeq 10 giây.",
+  "referenceLaeq": "LAeq của máy đo chuẩn (dB)",
+  "measuringRemaining": "Đang đo... còn {seconds} giây",
+  "@measuringRemaining": {
+    "placeholders": {
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "measureSeconds": "Đo {seconds} giây",
+  "@measureSeconds": {
+    "placeholders": {
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "measuredWithOld": "Đo được: {level} (với offset cũ)",
+  "@measuredWithOld": {
+    "placeholders": {
+      "level": {
+        "type": "String"
+      }
+    }
+  },
+  "newOffset": "Offset mới: {offset}",
+  "@newOffset": {
+    "placeholders": {
+      "offset": {
+        "type": "String"
+      }
+    }
+  },
+  "apply": "Áp dụng",
+  "manualOffset": "Nhập offset thủ công",
+  "offsetRange": "Offset phải là số trong 0-200 dB.",
+  "restoreDefault": "Khôi phục mặc định (bỏ hiệu chuẩn)",
+  "analysisTitle": "Phân tích tần số",
+  "spectrumSettings": "Thiết lập phổ",
+  "tabFft": "Phổ FFT",
+  "tabSpectrogram": "Phổ đồ",
+  "tabOctave": "Dải octave",
+  "dominantFrequency": "Tần số trội",
+  "peakLevel": "Mức đỉnh",
+  "cursor": "Con trỏ",
+  "tapChart": "Chạm biểu đồ",
+  "peakHold": "Giữ đỉnh",
+  "clearPeak": "Xóa đỉnh",
+  "fftInfo": "FFT {size} · {window} · {binHz} Hz/bin · trọng số {weighting}",
+  "@fftInfo": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      },
+      "window": {
+        "type": "String"
+      },
+      "binHz": {
+        "type": "String"
+      },
+      "weighting": {
+        "type": "String"
+      }
+    }
+  },
+  "spectrogramNote": "Mỗi hàng là một khung phổ (mới nhất ở trên), trục ngang là tần số log 20 Hz - {nyquist}.",
+  "@spectrogramNote": {
+    "placeholders": {
+      "nyquist": {
+        "type": "String"
+      }
+    }
+  },
+  "lowBandWarning": "Dải thấp nhất chỉ phủ {bins} bin FFT - tăng kích thước FFT (Thiết lập phổ) để dải tần thấp chính xác hơn.",
+  "@lowBandWarning": {
+    "placeholders": {
+      "bins": {
+        "type": "String"
+      }
+    }
+  },
+  "bandNote": "Mức dải (IEC 61260-1, hệ cơ số 10) trọng số {weighting}, từ phổ trung bình.",
+  "@bandNote": {
+    "placeholders": {
+      "weighting": {
+        "type": "String"
+      }
+    }
+  },
+  "fftSize": "Kích thước FFT",
+  "fftSamples": "{n} mẫu",
+  "@fftSamples": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "window": "Cửa sổ",
+  "windowRectangular": "Chữ nhật",
+  "displayRange": "Thang hiển thị: {min} - {max} dB",
+  "@displayRange": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "savedFile": "Đã lưu {name}",
+  "@savedFile": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteSessionTitle": "Xóa phiên đo?",
+  "deleteSessionBody": "Phiên sẽ bị xóa trên máy này và trên mọi thiết bị đã đồng bộ.",
+  "actions": "Thao tác",
+  "exportCsv": "Xuất CSV",
+  "exportJson": "Xuất JSON",
+  "deleteSession": "Xóa phiên",
+  "doseNiosh": "Liều NIOSH",
+  "doseOsha": "Liều OSHA",
+  "laeqOverTime": "LAeq theo thời gian",
+  "thirdOctaveAvg": "Phổ 1/3 octave trung bình (LZeq)",
+  "calOffsetAtMeasure": "Offset hiệu chuẩn khi đo: {offset}",
+  "@calOffsetAtMeasure": {
+    "placeholders": {
+      "offset": {
+        "type": "String"
+      }
+    }
+  },
+  "historyTitle": "Lịch sử đo",
+  "reload": "Tải lại",
+  "historyEmpty": "Chưa có phiên đo nào. Bấm \"Lưu phiên đo\" ở màn hình Đo mức để lưu lại kết quả.",
+  "notSynced": " · chưa đồng bộ",
+  "toolsTitle": "Công cụ",
+  "tabPitch": "Tần số & cao độ",
+  "tabGenerator": "Phát tín hiệu",
+  "pitchNotDetected": "Chưa nhận ra cao độ",
+  "noteSemantics": "Nốt {note}, lệch {cents} cent",
+  "@noteSemantics": {
+    "placeholders": {
+      "note": {
+        "type": "String"
+      },
+      "cents": {
+        "type": "String"
+      }
+    }
+  },
+  "noPitchedSound": "Chưa nhận ra âm có cao độ",
+  "deviation": "Lệch",
+  "clarity": "Độ rõ",
+  "dominantFft": "Tần số trội (FFT)",
+  "dominantLevel": "Mức trội",
+  "a4Standard": "A4 chuẩn",
+  "pitchNote": "Cao độ dùng thuật toán McLeod (NSDF) trên khung 4096 mẫu, sai số < 1 cent với âm có họa âm. Tần số trội lấy trọng tâm công suất quanh đỉnh FFT - đúng cho cả tông thuần không có họa âm.",
+  "playFailed": "Không phát được âm thanh: {error}",
+  "@playFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "generatorWarning": "Bắt đầu ở âm lượng nhỏ. Tần số rất cao hoặc âm lượng lớn qua tai nghe có thể gây hại cho thính giác và loa.",
+  "frequencyValue": "Tần số: {hz}",
+  "@frequencyValue": {
+    "placeholders": {
+      "hz": {
+        "type": "String"
+      }
+    }
+  },
+  "sweepNote": "Quét log 20 Hz - 20 kHz trong {seconds} giây, lặp lại.",
+  "@sweepNote": {
+    "placeholders": {
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "signalVolume": "Âm lượng tín hiệu: {db} dBFS",
+  "@signalVolume": {
+    "placeholders": {
+      "db": {
+        "type": "String"
+      }
+    }
+  },
+  "stopPlaying": "Dừng phát",
+  "play": "Phát",
+  "waveSine": "Sin",
+  "waveSquare": "Vuông",
+  "waveSawtooth": "Răng cưa",
+  "waveTriangle": "Tam giác",
+  "waveWhite": "Ồn trắng",
+  "wavePink": "Ồn hồng",
+  "waveSweep": "Quét tần số",
+  "pause": "Tạm dừng",
+  "resume": "Tiếp tục",
+  "startMeasuring": "Bắt đầu đo",
+  "error": "Lỗi",
+  "notice": "Lưu ý",
+  "perPage": "/ trang",
+  "previousPage": "Trang trước",
+  "nextPage": "Trang sau",
+  "errOfflineMode": "Đang bật Chế độ ngoại tuyến hoàn toàn - tắt nó trong Cài đặt để đăng nhập.",
+  "errBrowser": "Không mở được trình duyệt hệ thống.",
+  "errLoginCancelled": "Đăng nhập bị hủy hoặc bị từ chối.",
+  "errStateMismatch": "Phản hồi đăng nhập không khớp phiên - đã chặn để an toàn.",
+  "errNoCode": "Máy chủ không trả mã đăng nhập.",
+  "errLoginTimeout": "Hết 5 phút chờ đăng nhập - hãy thử lại.",
+  "loopbackDone": "Đã nhận phản hồi đăng nhập. Bạn có thể đóng thẻ này và quay lại Sound Db.",
+  "errLoginFailed": "Đăng nhập thất bại.",
+  "errBadResponse": "Máy chủ trả dữ liệu không hợp lệ (HTTP {status}).",
+  "@errBadResponse": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "errSignedOut": "Chưa đăng nhập.",
+  "syncRunning": "Đang đồng bộ...",
+  "syncFreePlan": "Bản miễn phí: dữ liệu chỉ lưu trên thiết bị này. Đồng bộ lên đám mây cần TsuDEV Pro.",
+  "syncError": "Lỗi đồng bộ: {error}",
+  "@syncError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "syncNever": "Chưa đồng bộ lần nào",
+  "syncLast": "Đồng bộ lúc {time}",
+  "@syncLast": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "syncRejected": "máy chủ từ chối {count} bản ghi",
+  "@syncRejected": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "errMicPermission": "Sound Db cần quyền dùng micro để đo. Hãy cấp quyền trong cài đặt hệ thống.",
+  "errPcm16": "Thiết bị không hỗ trợ thu PCM 16-bit.",
+  "errMicOpen": "Không mở được micro: {error}",
+  "@errMicOpen": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "windowFlatTop": "Đỉnh phẳng",
+  "proStatus": "Trạng thái",
+  "proActiveLine": "TsuDEV Pro tới {date}: đồng bộ và sao lưu đám mây đang bật.",
+  "@proActiveLine": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "proExpiredLine": "TsuDEV Pro đã hết hạn ngày {date}. Bản sao trên đám mây còn tải về được tới ngày {deleteDate}.",
+  "@proExpiredLine": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "deleteDate": {
+        "type": "String"
+      }
+    }
+  },
+  "proFreeLine": "Bản miễn phí: mọi chức năng đo đều mở; dữ liệu chỉ lưu trên thiết bị này, không gửi lên internet.",
+  "proFeaturesTitle": "Pro có gì",
+  "proFeatures": "• Đồng bộ lịch sử đo và hồ sơ hiệu chuẩn giữa các thiết bị cùng tài khoản.\n• Sao lưu lên đám mây, xem và tải về trên web (sounddb.tsudev.com).\n• Huy hiệu Pro cạnh tên tài khoản. Một gói dùng chung cho mọi sản phẩm TsuDEV.",
+  "proPlaySoon": "Mua TsuDEV Pro trong Google Play sẽ có ở bản cập nhật tới.",
+  "proRenewWeb": "Gia hạn trên tsudev.com",
+  "proBuyWeb": "Mua TsuDEV Pro trên tsudev.com",
+  "supportTsudev": "Ủng hộ TsuDEV",
+  "proPayNote": "Thanh toán trên tsudev.com bằng VietQR. Mua xong, mở lại app hoặc bấm Kiểm tra lại.",
+  "proCheckAgain": "Kiểm tra lại gói Pro"
+}

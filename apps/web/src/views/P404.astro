@@ -1,0 +1,19 @@
+---
+import Trang from '../layouts/Trang.astro';
+import { t, type Lang } from '../i18n';
+
+// Một trang 404 dùng chung (not_found_handling của Worker) ⇒ hiện cả hai ngôn ngữ, không chuyển ngôn ngữ.
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const [a, b] = lang === 'en' ? [t('en'), t('vi')] : [t('vi'), t('en')];
+---
+<Trang lang={lang} tieuDe={a.p404.tieuDe} moTa={a.p404.moTa} duongDan="/404/" anChiMuc motNgonNgu>
+  <div class="khung van-ban">
+    <h1>{a.p404.tieuDe}</h1>
+    <p lang={lang === 'en' ? 'vi' : 'en'}>{b.p404.tieuDe}</p>
+    <p class="hang-nut">
+      <a class="nut nut--chinh" href="/">{t('vi').p404.veTrangChu}</a>
+      <a class="nut nut--phu" href="/en/" lang="en">{t('en').p404.veTrangChu}</a>
+    </p>
+  </div>
+</Trang>

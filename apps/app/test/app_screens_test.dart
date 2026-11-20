@@ -58,6 +58,11 @@ void main() {
       tester.view.physicalSize = size;
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.reset);
+      // Luồng đầy đủ bằng tiếng Việt (máy mới theo ngôn ngữ hệ thống - PRODUCT_POLICY 1.1).
+      tester.platformDispatcher.localeTestValue = const Locale('vi', 'VN');
+      tester.platformDispatcher.localesTestValue = const [Locale('vi', 'VN')];
+      addTearDown(tester.platformDispatcher.clearLocaleTestValue);
+      addTearDown(tester.platformDispatcher.clearLocalesTestValue);
       final s = await tester.runAsync(services);
       await tester.pumpWidget(SoundDbApp(services: s!));
       await tester.pumpAndSettle();

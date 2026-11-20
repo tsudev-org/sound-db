@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:sounddb_dsp/sounddb_dsp.dart';
 
 import '../data/database.dart';
@@ -11,6 +11,10 @@ class Settings extends ChangeNotifier {
   final LocalStore _store;
 
   ThemeChoice theme = ThemeChoice.system;
+
+  /// Ngôn ngữ đã chọn (`vi`/`en`); null = theo hệ thống (PRODUCT_POLICY mục 1.1).
+  String? localeCode;
+  Locale? get locale => localeCode == null ? null : Locale(localeCode!);
   Weighting weighting = Weighting.a;
   TimeWeighting timeWeighting = TimeWeighting.fast;
 
@@ -30,18 +34,21 @@ class Settings extends ChangeNotifier {
   bool autoSync = true;
 
   static const double defaultOffsetDb = 120;
+  static const supportedLocaleCodes = ['vi', 'en'];
   static const fftSizes = [1024, 2048, 4096, 8192, 16384, 32768];
 
   Future<void> load() async {
     final values = <String, String?>{};
     for (final key in const [
-      'theme', 'weighting', 'time_weighting', 'calibration_offset_db', 'calibrated', 'fft_size', 'window', //
+      'theme', 'locale', 'weighting', 'time_weighting', 'calibration_offset_db', 'calibrated', 'fft_size', 'window', //
       'spectrum_min_db', 'spectrum_max_db', 'a4_hz', 'keep_screen_on', 'offline_mode', 'auto_sync',
     ]) {
       values[key] = await _store.getValue('setting.$key');
     }
+    await _migrateLocale(values);
     await _migrateDefaults(values);
     theme = ThemeChoice.parse(values['theme']);
+    localeCode = supportedLocaleCodes.contains(values['locale']) ? values['locale'] : null;
     weighting = Weighting.values.asNameMap()[values['weighting']] ?? Weighting.a;
     timeWeighting = TimeWeighting.values.asNameMap()[values['time_weighting']] ?? TimeWeighting.fast;
     calibrationOffsetDb = double.tryParse(values['calibration_offset_db'] ?? '') ?? defaultOffsetDb;
@@ -70,6 +77,20 @@ class Settings extends ChangeNotifier {
     await _store.setValue('setting.defaults_v2', 'true');
   }
 
+  /// Di trú một lần khi thêm tiếng Anh: máy đã cài bản chỉ tiếng Việt mà chưa từng chọn ngôn ngữ ⇒ ghi lại `vi`
+  /// để giao diện không đổi đột ngột sau cập nhật. Máy mới theo ngôn ngữ hệ thống.
+  Future<void> _migrateLocale(Map<String, String?> values) async {
+    if (await _store.getValue('setting.locale_v1') == 'true') return;
+    final installedBefore = await _store.getValue('setting.defaults_v2') == 'true' ||
+        values.values.any((v) => v != null) ||
+        await _store.countSessions() > 0;
+    if (installedBefore && values['locale'] == null) {
+      values['locale'] = 'vi';
+      await _store.setValue('setting.locale', 'vi');
+    }
+    await _store.setValue('setting.locale_v1', 'true');
+  }
+
   Future<void> _save(String key, Object value) async {
     await _store.setValue('setting.$key', value is Enum ? value.name : '$value');
     notifyListeners();
@@ -78,6 +99,17 @@ class Settings extends ChangeNotifier {
   Future<void> setTheme(ThemeChoice v) {
     theme = v;
     return _save('theme', v);
+  }
+
+  /// null = theo hệ thống.
+  Future<void> setLocaleCode(String? code) async {
+    localeCode = supportedLocaleCodes.contains(code) ? code : null;
+    if (localeCode == null) {
+      await _store.removeValue('setting.locale');
+      notifyListeners();
+      return;
+    }
+    return _save('locale', localeCode!);
   }
 
   Future<void> setWeighting(Weighting v) {

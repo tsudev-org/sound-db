@@ -8,6 +8,7 @@ import 'package:share_plus/share_plus.dart';
 
 import '../../app_scope.dart';
 import '../../core/format.dart';
+import '../../l10n/l10n.dart';
 import '../../data/models.dart';
 import '../../theme/app_theme.dart';
 import '../../theme/tokens.g.dart';
@@ -46,18 +47,18 @@ class _SessionDetailPageState extends State<SessionDetailPage> {
     final location = await getSaveLocation(suggestedName: name);
     if (location == null) return;
     await XFile.fromData(bytes, name: name, mimeType: mime).saveTo(location.path);
-    if (mounted) showMessage(context, 'Đã lưu $name');
+    if (mounted) showMessage(context, context.l10n.savedFile(name));
   }
 
   Future<void> _delete() async {
     final ok = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Xóa phiên đo?'),
-        content: const Text('Phiên sẽ bị xóa trên máy này và trên mọi thiết bị đã đồng bộ.'),
+        title: Text(context.l10n.deleteSessionTitle),
+        content: Text(context.l10n.deleteSessionBody),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Hủy')),
-          FilledButton(onPressed: () => Navigator.pop(context, true), child: const Text('Xóa')),
+          TextButton(onPressed: () => Navigator.pop(context, false), child: Text(context.l10n.cancel)),
+          FilledButton(onPressed: () => Navigator.pop(context, true), child: Text(context.l10n.delete)),
         ],
       ),
     );
@@ -78,16 +79,16 @@ class _SessionDetailPageState extends State<SessionDetailPage> {
     final p = context.palette;
     return Scaffold(
       appBar: AppBar(
-        title: Text(s?.label ?? 'Phiên đo'),
+        title: Text(s?.label ?? context.l10n.sessionFallback),
         actions: [
           if (s != null)
             PopupMenuButton<String>(
-              tooltip: 'Thao tác',
+              tooltip: context.l10n.actions,
               onSelected: (v) => v == 'delete' ? _delete() : _export(v),
-              itemBuilder: (_) => const [
-                PopupMenuItem(value: 'csv', child: Text('Xuất CSV')),
-                PopupMenuItem(value: 'json', child: Text('Xuất JSON')),
-                PopupMenuItem(value: 'delete', child: Text('Xóa phiên')),
+              itemBuilder: (_) => [
+                PopupMenuItem(value: 'csv', child: Text(context.l10n.exportCsv)),
+                PopupMenuItem(value: 'json', child: Text(context.l10n.exportJson)),
+                PopupMenuItem(value: 'delete', child: Text(context.l10n.deleteSession)),
               ],
             ),
         ],
@@ -104,11 +105,11 @@ class _SessionDetailPageState extends State<SessionDetailPage> {
                   ('lcpeak', 'LCpeak'), ('l10', 'LAF10'), ('l50', 'LAF50'), ('l90', 'LAF90'), ('sel_a', 'LAE'),
                 ])
                   StatTile(label: label, value: formatNumber(s.summary[key] ?? double.nan)),
-                StatTile(label: 'Liều NIOSH', value: formatPercent(s.summary['dose_niosh'] ?? double.nan, digits: 2)),
-                StatTile(label: 'Liều OSHA', value: formatPercent(s.summary['dose_osha'] ?? double.nan, digits: 2)),
+                StatTile(label: context.l10n.doseNiosh, value: formatPercent(s.summary['dose_niosh'] ?? double.nan, digits: 2)),
+                StatTile(label: context.l10n.doseOsha, value: formatPercent(s.summary['dose_osha'] ?? double.nan, digits: 2)),
               ]),
               const SizedBox(height: SdbSpacing.s4),
-              const Text('LAeq theo thời gian', style: TextStyle(fontWeight: FontWeight.w600)),
+              Text(context.l10n.laeqOverTime, style: TextStyle(fontWeight: FontWeight.w600)),
               const SizedBox(height: SdbSpacing.s2),
               SizedBox(
                 height: 180,
@@ -116,7 +117,7 @@ class _SessionDetailPageState extends State<SessionDetailPage> {
               ),
               if (s.thirdOctaveLzeq.isNotEmpty) ...[
                 const SizedBox(height: SdbSpacing.s4),
-                const Text('Phổ 1/3 octave trung bình (LZeq)', style: TextStyle(fontWeight: FontWeight.w600)),
+                Text(context.l10n.thirdOctaveAvg, style: TextStyle(fontWeight: FontWeight.w600)),
                 const SizedBox(height: SdbSpacing.s2),
                 SizedBox(
                   height: 200,
@@ -135,7 +136,7 @@ class _SessionDetailPageState extends State<SessionDetailPage> {
                 ),
               ],
               const SizedBox(height: SdbSpacing.s3),
-              Text('Offset hiệu chuẩn khi đo: ${formatDb(s.calibrationOffsetDb)}', style: TextStyle(color: p.textMuted, fontSize: 12)),
+              Text(context.l10n.calOffsetAtMeasure(formatDb(s.calibrationOffsetDb)), style: TextStyle(color: p.textMuted, fontSize: 12)),
             ]),
     );
   }

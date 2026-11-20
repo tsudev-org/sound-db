@@ -46,6 +46,7 @@ dependencies:
   wakelock_plus: ^1.8.2
   sounddb_dsp:
     path: ../../packages/dsp-dart
+  intl: ^0.20.2
   flutter_localizations:
     sdk: flutter
   path: ^1.9.1
@@ -73,6 +74,7 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
+  generate: true
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

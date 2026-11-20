@@ -1,5 +1,8 @@
 // Bảng điều khiển: gọi API cùng gốc bằng cookie phiên (HttpOnly). Mọi lệnh ghi gửi header chống CSRF.
 // Chữ từ máy chủ chỉ gán qua textContent, không bao giờ qua innerHTML.
+import { d, den, dien, lang, ngay as ngayX, ngayGio, thapPhan } from './i18n';
+
+const j = d.js;
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 const SIZES = [10, 20, 50, 100, 200];
 const KHOA_SO_DONG = 'tsudev.pagesize.sound-db-sessions';
@@ -15,15 +18,16 @@ async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
   if (init.method && init.method !== 'GET') headers.set('X-Sdb-Csrf', '1');
   const res = await fetch(path, { ...init, headers, credentials: 'same-origin' });
   if (res.status === 204) return undefined as T;
-  const body = await res.json().catch(() => ({ message: `Lỗi HTTP ${res.status}` }));
-  if (!res.ok) throw Object.assign(new Error(body.message ?? 'Lỗi'), { status: res.status });
+  const body = await res.json().catch(() => ({ message: dien(j.loiHttp, { x: res.status }) }));
+  // Thông báo lỗi của máy chủ là tiếng Việt ⇒ trang tiếng Anh dùng câu chung kèm mã lỗi.
+  const msg = lang === 'vi' ? body.message : body.code ? `${j.thatBai} (${body.code})` : undefined;
+  if (!res.ok) throw Object.assign(new Error(msg ?? j.loi), { status: res.status });
   return body as T;
 }
 
 const hai = (n: number) => String(n).padStart(2, '0');
-const ngayGio = (d: Date) => `${hai(d.getHours())}:${hai(d.getMinutes())} ${hai(d.getDate())}/${hai(d.getMonth() + 1)}/${d.getFullYear()}`;
-const so = (v: number | null) => (v === null || !Number.isFinite(v) ? '-' : v.toFixed(1).replace('.', ','));
-const ngay = (s: number) => { const d = new Date(s * 1000); return `${hai(d.getDate())}/${hai(d.getMonth() + 1)}/${d.getFullYear()}`; };
+const so = (v: number | null) => (v === null || !Number.isFinite(v) ? '-' : thapPhan(v, 1));
+const ngay = (s: number) => ngayX(new Date(s * 1000));
 const thoiLuong = (s: number) => `${Math.floor(s / 3600)}:${hai(Math.floor((s % 3600) / 60))}:${hai(Math.floor(s % 60))}`;
 
 function o(text: string, cls?: string) {
@@ -38,9 +42,9 @@ let luotTai = 0; // chỉ hiển thị phản hồi của lượt tải MỚI NH
 
 function baoLoi(e: unknown) {
   const el = $('thong-bao');
-  el.textContent = (e as Error)?.message || 'Thao tác thất bại. Hãy thử lại.';
+  el.textContent = (e as Error)?.message || j.thatBai;
   el.hidden = false;
-  if ((e as { status?: number }).status === 401) location.href = '/dang-nhap/';
+  if ((e as { status?: number }).status === 401) location.href = den('/dang-nhap/');
 }
 
 /** Bọc thao tác của người dùng: lỗi hiện thành thông báo, không thành lỗi ngầm. */
@@ -75,14 +79,14 @@ async function taiPhien() {
     body.replaceChildren(
       ...r.items.map((s) => {
         const tr = document.createElement('tr');
-        tr.append(o(s.label || 'Phiên đo'), o(ngayGio(new Date(s.started_at))), o(thoiLuong(s.duration_s), 'so'), o(so(s.laeq), 'so'), o(so(s.lafmax), 'so'));
+        tr.append(o(s.label || j.phienDo), o(ngayGio(new Date(s.started_at))), o(thoiLuong(s.duration_s), 'so'), o(so(s.laeq), 'so'), o(so(s.lafmax), 'so'));
         const td = document.createElement('td');
         const xoa = document.createElement('button');
         xoa.className = 'nut nut--phu nut--nho';
         xoa.type = 'button';
-        xoa.textContent = 'Xóa';
+        xoa.textContent = j.xoa;
         xoa.addEventListener('click', an(async () => {
-          if (!confirm(`Xóa phiên "${s.label}" trên mọi thiết bị?`)) return;
+          if (!confirm(dien(j.xacNhanXoaPhien, { x: s.label }))) return;
           await api(`/api/v1/sessions/${encodeURIComponent(s.id)}`, { method: 'DELETE' });
           await taiPhien();
         }));
@@ -93,7 +97,7 @@ async function taiPhien() {
     );
     if (!r.items.length) {
       const tr = document.createElement('tr');
-      const td = o(state.q ? 'Không có phiên nào khớp.' : 'Chưa có phiên đo nào được đồng bộ.');
+      const td = o(state.q ? j.khongKhop : j.chuaCoPhien);
       td.colSpan = 6;
       tr.append(td);
       body.append(tr);
@@ -119,9 +123,9 @@ async function taiThietBi() {
       const b = document.createElement('button');
       b.className = 'nut nut--phu nut--nho';
       b.type = 'button';
-      b.textContent = 'Đăng xuất thiết bị';
+      b.textContent = j.dangXuatThietBi;
       b.addEventListener('click', an(async () => {
-        if (!confirm(`Đăng xuất "${d.name}" khỏi tài khoản?`)) return;
+        if (!confirm(dien(j.xacNhanDangXuat, { x: d.name }))) return;
         await api(`/api/v1/me/devices/${encodeURIComponent(d.id)}`, { method: 'DELETE' });
         await Promise.all([taiThietBi(), taiHoatDong()]);
       }));
@@ -132,13 +136,7 @@ async function taiThietBi() {
   );
 }
 
-const TEN_SU_KIEN: Record<string, string> = {
-  login: 'Đăng nhập',
-  device_added: 'Thêm thiết bị',
-  device_revoked: 'Thu hồi thiết bị',
-  logout: 'Đăng xuất thiết bị',
-  refresh_reuse_revoked: 'Phát hiện token bị dùng lại - đã thu hồi thiết bị',
-};
+const TEN_SU_KIEN = j.suKien;
 
 async function taiHoatDong() {
   const r = await api<{ events: { event: string; at: number }[] }>('/api/v1/me/activity');
@@ -155,19 +153,19 @@ async function taiHoatDong() {
 function hienPro(pro: Pro | null, coDuLieu: boolean) {
   const el = $('trang-thai-pro');
   if (!pro) {
-    el.textContent = 'Chưa kiểm tra được gói TsuDEV Pro lúc này. Dữ liệu trên thiết bị không bị ảnh hưởng.';
+    el.textContent = j.proLoi;
     return;
   }
   const bayGio = Date.now() / 1000;
   if (pro.active) {
-    el.textContent = `TsuDEV Pro tới ${ngay(pro.pro_until)}: đồng bộ và sao lưu đám mây đang bật.`;
-    $('nut-pro').textContent = 'Gia hạn';
+    el.textContent = dien(j.proToi, { x: ngay(pro.pro_until) });
+    $('nut-pro').textContent = j.giaHan;
   } else {
-    el.textContent = 'Bản miễn phí: đồng bộ lên đám mây đang tắt. Bạn vẫn xem, tải về và xoá được dữ liệu đã có trên đám mây.';
+    el.textContent = j.proMienPhi;
   }
   if (!pro.active && coDuLieu && pro.cloud_delete_after && pro.cloud_delete_after > bayGio) {
     const xoa = $('han-xoa');
-    xoa.textContent = `Bản sao trên đám mây còn tải về được tới ngày ${ngay(pro.cloud_delete_after)}.`;
+    xoa.textContent = dien(j.hanXoa, { x: ngay(pro.cloud_delete_after) });
     xoa.hidden = false;
   }
 }
@@ -185,7 +183,7 @@ async function khoiDong() {
     $('da-dang-nhap').hidden = false;
     $('ten').textContent = me.display_name;
     $('email').textContent = me.email ?? '';
-    $('thong-ke').textContent = `${me.stats.sessions} phiên đo · ${me.stats.calibrations} hồ sơ hiệu chuẩn · ${thoiLuong(me.stats.measured_seconds)} đã đo`;
+    $('thong-ke').textContent = dien(j.thongKe, { a: me.stats.sessions, b: me.stats.calibrations, c: thoiLuong(me.stats.measured_seconds) });
     hienPro(me.pro, me.stats.sessions + me.stats.calibrations > 0);
     state.size = docSoDong();
     state.page = Math.max(1, Number(new URLSearchParams(location.search).get('page')) || 1);
@@ -196,7 +194,7 @@ async function khoiDong() {
       $('trang-thai').hidden = true;
       $('chua-dang-nhap').hidden = false;
     } else {
-      $('trang-thai').textContent = `Không tải được dữ liệu: ${(e as Error).message}`;
+      $('trang-thai').textContent = dien(j.khongTai, { x: (e as Error).message });
     }
   }
 }
@@ -227,13 +225,13 @@ $('tim').addEventListener('input', (ev) => {
 $('nut-xuat').addEventListener('click', () => { location.href = '/api/v1/me/export'; });
 $('nut-dang-xuat').addEventListener('click', an(async () => {
   await api('/api/v1/auth/web-logout', { method: 'POST' });
-  location.href = '/';
+  location.href = den('/');
 }));
 $('nut-xoa').addEventListener('click', an(async () => {
-  const go = prompt('Gõ "xoa-vinh-vien" để xác nhận xóa toàn bộ dữ liệu Sound Db:');
+  const go = prompt(j.nhapXacNhan);
   if (go === null) return;
-  if (go.trim() !== 'xoa-vinh-vien') throw new Error('Chuỗi xác nhận không đúng - dữ liệu chưa bị xóa.');
+  if (go.trim() !== 'xoa-vinh-vien') throw new Error(j.sai);
   await api('/api/v1/me', { method: 'DELETE', headers: { 'X-Sdb-Confirm': 'xoa-vinh-vien' } });
-  location.href = '/';
+  location.href = den('/');
 }));
 void khoiDong();

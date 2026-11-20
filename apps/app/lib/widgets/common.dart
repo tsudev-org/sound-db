@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../app_scope.dart';
+import '../l10n/l10n.dart';
 import '../services/measurement.dart';
 import '../theme/app_theme.dart';
 import '../theme/tokens.g.dart';
@@ -22,7 +23,7 @@ class RunButton extends StatelessWidget {
           child: FilledButton.icon(
             onPressed: starting ? null : (running ? m.pause : m.start),
             icon: Icon(running ? Icons.pause : Icons.mic),
-            label: Text(running ? 'Tạm dừng' : (m.state == MeterState.paused ? 'Tiếp tục' : 'Bắt đầu đo')),
+            label: Text(running ? context.l10n.pause : (m.state == MeterState.paused ? context.l10n.resume : context.l10n.startMeasuring)),
           ),
         );
       },
@@ -101,7 +102,7 @@ class NoticeBanner extends StatelessWidget {
         color: p.bgSurface,
       ),
       child: Row(children: [
-        Icon(danger ? Icons.error_outline : Icons.info_outline, color: color, semanticLabel: danger ? 'Lỗi' : 'Lưu ý'),
+        Icon(danger ? Icons.error_outline : Icons.info_outline, color: color, semanticLabel: danger ? context.l10n.error : context.l10n.notice),
         const SizedBox(width: SdbSpacing.s3),
         Expanded(child: Text(message, style: TextStyle(color: p.textPrimary))),
         ?action,

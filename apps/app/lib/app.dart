@@ -4,6 +4,7 @@ import 'package:tsudev_ui/tsudev_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'app_scope.dart';
+import 'l10n/l10n.dart';
 import 'features/analysis/analysis_page.dart';
 import 'features/history/history_page.dart';
 import 'features/meter/meter_page.dart';
@@ -27,12 +28,20 @@ class SoundDbApp extends StatelessWidget {
         builder: (context, _) => MaterialApp(
           title: 'Sound Db',
           debugShowCheckedModeBanner: false,
+          builder: (context, child) {
+            // Chuỗi/định dạng dùng ngoài cây widget (dịch vụ, format.dart) theo đúng ngôn ngữ đang hiển thị.
+            setActiveLocale(Localizations.localeOf(context));
+            return child!;
+          },
           theme: buildTheme(Brightness.light),
           darkTheme: buildTheme(Brightness.dark),
           themeMode: services.settings.theme.mode,
-          locale: const Locale('vi'),
-          supportedLocales: const [Locale('vi')],
+          // null = theo hệ thống; hệ thống dùng ngôn ngữ chưa hỗ trợ ⇒ tiếng Anh (PRODUCT_POLICY mục 1.1).
+          locale: services.settings.locale,
+          localeResolutionCallback: (device, _) => resolveAppLocale(device),
+          supportedLocales: AppLocalizations.supportedLocales,
           localizationsDelegates: const [
+            AppLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
@@ -46,19 +55,25 @@ class SoundDbApp extends StatelessWidget {
 
 class _Destination {
   const _Destination(this.label, this.icon, this.selectedIcon, this.page);
-  final String label;
+  final String Function(AppLocalizations l) label;
   final IconData icon;
   final IconData selectedIcon;
   final Widget page;
 }
 
 const _destinations = [
-  _Destination('Đo mức', Icons.speed_outlined, Icons.speed, MeterPage()),
-  _Destination('Phân tích', Icons.graphic_eq_outlined, Icons.graphic_eq, AnalysisPage()),
-  _Destination('Công cụ', Icons.tune_outlined, Icons.tune, ToolsPage()),
-  _Destination('Lịch sử', Icons.history_outlined, Icons.history, HistoryPage()),
-  _Destination('Cài đặt', Icons.settings_outlined, Icons.settings, SettingsPage()),
+  _Destination(_navMeter, Icons.speed_outlined, Icons.speed, MeterPage()),
+  _Destination(_navAnalysis, Icons.graphic_eq_outlined, Icons.graphic_eq, AnalysisPage()),
+  _Destination(_navTools, Icons.tune_outlined, Icons.tune, ToolsPage()),
+  _Destination(_navHistory, Icons.history_outlined, Icons.history, HistoryPage()),
+  _Destination(_navSettings, Icons.settings_outlined, Icons.settings, SettingsPage()),
 ];
+
+String _navMeter(AppLocalizations l) => l.navMeter;
+String _navAnalysis(AppLocalizations l) => l.navAnalysis;
+String _navTools(AppLocalizations l) => l.navTools;
+String _navHistory(AppLocalizations l) => l.navHistory;
+String _navSettings(AppLocalizations l) => l.navSettings;
 
 class HomeShell extends StatefulWidget {
   const HomeShell({super.key});
@@ -142,7 +157,7 @@ class _HomeShellState extends State<HomeShell> {
             ),
             destinations: [
               for (final d in _destinations)
-                NavigationRailDestination(icon: Icon(d.icon), selectedIcon: Icon(d.selectedIcon), label: Text(d.label)),
+                NavigationRailDestination(icon: Icon(d.icon), selectedIcon: Icon(d.selectedIcon), label: Text(d.label(context.l10n))),
             ],
           ),
           const VerticalDivider(width: 1),
@@ -157,7 +172,7 @@ class _HomeShellState extends State<HomeShell> {
         onDestinationSelected: (i) => setState(() => _index = i),
         destinations: [
           for (final d in _destinations)
-            NavigationDestination(icon: Icon(d.icon), selectedIcon: Icon(d.selectedIcon), label: d.label),
+            NavigationDestination(icon: Icon(d.icon), selectedIcon: Icon(d.selectedIcon), label: d.label(context.l10n)),
         ],
       ),
     );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../l10n/l10n.dart';
 import '../../widgets/common.dart';
 import 'generator_tab.dart';
 import 'tuner_tab.dart';
@@ -13,9 +14,9 @@ class ToolsPage extends StatelessWidget {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Công cụ'),
+          title: Text(context.l10n.toolsTitle),
           actions: const [RunButton()],
-          bottom: const TabBar(tabs: [Tab(text: 'Tần số & cao độ'), Tab(text: 'Phát tín hiệu')]),
+          bottom: TabBar(tabs: [Tab(text: context.l10n.tabPitch), Tab(text: context.l10n.tabGenerator)]),
         ),
         body: const TabBarView(children: [TunerTab(), GeneratorTab()]),
       ),

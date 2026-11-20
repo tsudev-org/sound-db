@@ -1,4 +1,4 @@
-import { Hono } from 'hono';
+import { Hono, type Context } from 'hono';
 import { HTTPException } from 'hono/http-exception';
 
 import { authRoutes } from './auth/routes';
@@ -27,7 +27,8 @@ app.use('*', async (c, next) => {
   if (!h.has('Content-Security-Policy')) h.set('Content-Security-Policy', "default-src 'none'; frame-ancestors 'none'");
 });
 
-app.get('/do/*', async (c) => {
+// Máy đo trên trình duyệt (vi `/do/`, en `/en/do/`) cần micro + WebAssembly.
+const meterPage = async (c: Context<AppEnv>) => {
   if (!c.env.ASSETS) return c.notFound();
   const asset = await c.env.ASSETS.fetch(c.req.raw);
   const res = new Response(asset.body, asset);
@@ -38,7 +39,9 @@ app.get('/do/*', async (c) => {
   );
   res.headers.set('Cache-Control', 'public, max-age=300');
   return res;
-});
+};
+app.get('/do/*', meterPage);
+app.get('/en/do/*', meterPage);
 
 app.get('/api/v1/health', (c) => c.json({ ok: true, service: 'sound-db', time: new Date().toISOString() }));
 

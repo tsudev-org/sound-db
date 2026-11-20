@@ -7,6 +7,7 @@ import '../services/settings.dart';
 import '../core/format.dart';
 import '../pro/pro_service.dart';
 import 'auth_service.dart';
+import '../l10n/l10n.dart';
 
 /// Đồng bộ hai chiều theo con trỏ phiên bản máy chủ (`rev`).
 ///
@@ -43,13 +44,13 @@ class SyncService extends ChangeNotifier {
   }
 
   String get statusText {
-    if (running) return 'Đang đồng bộ...';
+    if (running) return l10nNow.syncRunning;
     if (!_pro.isPro || _pro.serverSaysProRequired) {
-      return 'Bản miễn phí: dữ liệu chỉ lưu trên thiết bị này. Đồng bộ lên đám mây cần TsuDEV Pro.';
+      return l10nNow.syncFreePlan;
     }
-    if (lastError != null) return 'Lỗi đồng bộ: $lastError';
-    if (lastSyncAt == null) return 'Chưa đồng bộ lần nào';
-    return 'Đồng bộ lúc ${formatDateTime(lastSyncAt!)}';
+    if (lastError != null) return l10nNow.syncError('$lastError');
+    if (lastSyncAt == null) return l10nNow.syncNever;
+    return l10nNow.syncLast(formatDateTime(lastSyncAt!));
   }
 
   /// Trả về `true` nếu chạy xong không lỗi.
@@ -103,7 +104,7 @@ class SyncService extends ChangeNotifier {
         }
       }
       pushed += progressed;
-      if (progressed == 0) throw Exception('máy chủ từ chối ${dirty.length} bản ghi');
+      if (progressed == 0) throw Exception(l10nNow.syncRejected('${dirty.length}'));
     }
   }
 

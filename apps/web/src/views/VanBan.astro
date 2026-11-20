@@ -1,0 +1,15 @@
+---
+// Trang văn bản tĩnh (Hướng dẫn, Bảo mật): nội dung HTML của dự án nằm trong tệp dịch.
+import Trang from '../layouts/Trang.astro';
+import { t, type Lang } from '../i18n';
+
+interface Props { lang: Lang; trang: 'huongDan' | 'baoMat'; duongDan: string }
+const { lang, trang, duongDan } = Astro.props;
+const v = t(lang)[trang];
+---
+<Trang lang={lang} tieuDe={v.tieuDe} moTa={v.moTa} duongDan={duongDan}>
+  <article class="khung van-ban">
+    <h1>{v.tieuDe}</h1>
+    <Fragment set:html={v.noiDung} />
+  </article>
+</Trang>

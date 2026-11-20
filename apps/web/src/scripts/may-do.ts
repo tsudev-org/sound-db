@@ -1,5 +1,6 @@
 // Máy đo trên trình duyệt (/do/): micro → AudioWorklet → lõi DSP WebAssembly → giao diện.
 import { decodeLevels, loadEngine, type WasmEngine } from './dsp';
+import { d, thapPhan } from './i18n';
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 const KHOA_OFFSET = 'sounddb.web.offset';
@@ -23,7 +24,7 @@ function docOffset(): number {
   }
 }
 
-const so = (v: number | undefined, d = 1) => (v === undefined || !Number.isFinite(v) ? '-' : v.toFixed(d).replace('.', ','));
+const so = (v: number | undefined, chuSo = 1) => (v === undefined || !Number.isFinite(v) ? '-' : thapPhan(v, chuSo));
 const hz = (v: number) => (!Number.isFinite(v) ? '-' : v >= 1000 ? `${so(v / 1000, 3)} kHz` : `${so(v, 1)} Hz`);
 const thoiLuong = (s: number) => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
 
@@ -47,7 +48,7 @@ async function batDau() {
     const nut2 = new AudioWorkletNode(ctx, 'thu-am');
     nut2.port.onmessage = (e: MessageEvent<Float32Array>) => engine?.push(e.data);
     nguon.connect(nut2);
-    nut.textContent = 'Dừng đo';
+    nut.textContent = d.do.dung;
     nut.disabled = false;
     $<HTMLButtonElement>('nut-dat-lai').disabled = false;
     requestAnimationFrame(ve);
@@ -56,10 +57,10 @@ async function batDau() {
     const ten = (e as DOMException).name;
     baoLoi(
       ten === 'NotAllowedError'
-        ? 'Trình duyệt chưa cho phép dùng micro. Hãy cấp quyền micro cho trang này rồi thử lại.'
+        ? d.do.loiQuyen
         : ten === 'NotFoundError'
-          ? 'Không tìm thấy micro nào.'
-          : 'Không khởi động được máy đo trên trình duyệt này.',
+          ? d.do.loiKhongMicro
+          : d.do.loiKhoiDong,
     );
     await dung();
   }
@@ -72,7 +73,7 @@ async function dung() {
   ctx = null;
   engine?.free();
   engine = null;
-  $('nut-do').textContent = 'Bắt đầu đo';
+  $('nut-do').textContent = d.do.batDau;
   $<HTMLButtonElement>('nut-dat-lai').disabled = true;
 }
 
@@ -184,7 +185,7 @@ chonNhom('data-trong-so', (v) => (trongSo = v));
 chonNhom('data-thoi-gian', (v) => (thoiGian = v));
 $('nut-offset').addEventListener('click', () => {
   const v = Number($<HTMLInputElement>('offset').value.replace(',', '.'));
-  if (!Number.isFinite(v) || v <= 0 || v >= 200) return baoLoi('Offset phải là số trong khoảng 0-200 dB.');
+  if (!Number.isFinite(v) || v <= 0 || v >= 200) return baoLoi(d.do.loiOffset);
   try {
     localStorage.setItem(KHOA_OFFSET, String(v));
   } catch {
@@ -194,6 +195,6 @@ $('nut-offset').addEventListener('click', () => {
   $('offset-hien').textContent = so(v);
 });
 if (!window.isSecureContext || !navigator.mediaDevices || !('AudioWorkletNode' in window)) {
-  baoLoi('Trình duyệt này không hỗ trợ đo bằng micro (cần HTTPS và trình duyệt mới).');
+  baoLoi(d.do.loiKhongHoTro);
   $<HTMLButtonElement>('nut-do').disabled = true;
 }

@@ -3,6 +3,7 @@ import 'package:sounddb_dsp/sounddb_dsp.dart';
 
 import '../../app_scope.dart';
 import '../../core/format.dart';
+import '../../l10n/l10n.dart';
 import '../../theme/app_theme.dart';
 import '../../theme/tokens.g.dart';
 import '../../widgets/common.dart';
@@ -28,11 +29,11 @@ class TunerTab extends StatelessWidget {
           Center(
             child: Semantics(
               liveRegion: true,
-              label: note == null ? 'Chưa nhận ra cao độ' : 'Nốt ${note.name}, lệch ${formatNumber(cents)} cent',
+              label: note == null ? context.l10n.pitchNotDetected : context.l10n.noteSemantics(note.name, formatNumber(cents)),
               child: Column(children: [
                 Text(note?.name ?? '-',
                     style: TextStyle(fontSize: 96, fontWeight: FontWeight.w600, color: inTune ? p.chartLevelSafe : p.textPrimary)),
-                Text(reliable ? formatHz(pitch.frequencyHz) : 'Chưa nhận ra âm có cao độ',
+                Text(reliable ? formatHz(pitch.frequencyHz) : context.l10n.noPitchedSound,
                     style: TextStyle(fontSize: 22, color: p.textSecondary, fontFeatures: const [FontFeature.tabularFigures()])),
               ]),
             ),
@@ -41,17 +42,16 @@ class TunerTab extends StatelessWidget {
           _CentsMeter(cents: note == null ? null : cents),
           const SizedBox(height: SdbSpacing.s4),
           StatGrid(children: [
-            StatTile(label: 'Lệch', value: note == null ? '-' : '${cents >= 0 ? '+' : ''}${formatNumber(cents)} cent'),
-            StatTile(label: 'Độ rõ', value: pitch == null ? '-' : formatPercent(pitch.clarity * 100, digits: 0)),
+            StatTile(label: context.l10n.deviation, value: note == null ? '-' : '${cents >= 0 ? '+' : ''}${formatNumber(cents)} cent'),
+            StatTile(label: context.l10n.clarity, value: pitch == null ? '-' : formatPercent(pitch.clarity * 100, digits: 0)),
             StatTile(label: 'MIDI', value: note == null ? '-' : '${note.midi}'),
-            StatTile(label: 'Tần số trội (FFT)', value: formatHz(m.peak?.frequencyHz ?? double.nan)),
-            StatTile(label: 'Mức trội', value: formatDb(m.peak?.levelDb ?? double.nan)),
-            StatTile(label: 'A4 chuẩn', value: formatHz(services.settings.a4Hz)),
+            StatTile(label: context.l10n.dominantFft, value: formatHz(m.peak?.frequencyHz ?? double.nan)),
+            StatTile(label: context.l10n.dominantLevel, value: formatDb(m.peak?.levelDb ?? double.nan)),
+            StatTile(label: context.l10n.a4Standard, value: formatHz(services.settings.a4Hz)),
           ]),
           const SizedBox(height: SdbSpacing.s3),
           Text(
-            'Cao độ dùng thuật toán McLeod (NSDF) trên khung 4096 mẫu, sai số < 1 cent với âm có họa âm. '
-            'Tần số trội lấy trọng tâm công suất quanh đỉnh FFT - đúng cho cả tông thuần không có họa âm.',
+            context.l10n.pitchNote,
             style: TextStyle(color: p.textMuted, fontSize: 12),
           ),
         ]);
