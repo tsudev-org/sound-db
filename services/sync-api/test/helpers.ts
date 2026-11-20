@@ -26,6 +26,8 @@ export interface FakeEntitlementState {
   grant: boolean;
   status?: 'ok' | 'deleted' | 'unknown_subject' | 'error';
   jwsOverride?: (sign: (claims: Record<string, unknown>, opts?: { aud?: string; typ?: string; iat?: number; exp?: number; foreignKey?: boolean }) => Promise<string>) => Promise<string>;
+  /** Kênh RP/trạng thái trả 302 (kiểm máy chủ KHÔNG đi theo chuyển hướng). */
+  redirectRp?: boolean;
   rpCalls: number;
   statusCalls: number;
   assertions: Record<string, unknown>[];
@@ -72,6 +74,12 @@ export async function fakeIdp(opts: { sub?: string; tamperNonce?: boolean; wrong
     state.lastHeaders = h;
   };
   setOidcFetcher(async (url, init) => {
+    // Dựng Request thật của workerd để tuỳ chọn fetch bị runtime từ chối cũng làm test đỏ (sự cố 21/11: `redirect:
+    // 'error'` chạy qua IdP giả nhưng Workers ném "Invalid redirect value" ở production).
+    new Request(url, init);
+    if (state.redirectRp && url.startsWith(`${TSUDEV}/api/rp/entitlements`)) {
+      return new Response(null, { status: 302, headers: { location: 'https://evil.test/' } });
+    }
     const json = (v: unknown, status = 200) => new Response(JSON.stringify(v), { status, headers: { 'content-type': 'application/json' } });
     if (url.startsWith(`${TSUDEV}/api/rp/entitlements/`) && url !== `${TSUDEV}/api/rp/entitlements/status`) {
       state.rpCalls++;
