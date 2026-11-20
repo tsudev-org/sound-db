@@ -5,6 +5,7 @@
   **7.6**, 8. Lệch giữa phiếu và PRODUCT_POLICY ⇒ PRODUCT_POLICY thắng.
 - **Thay phần tương ứng** của phiếu `20261119-PRO1` trong repo này (giá tháng/năm, mã `thang`, "tự gia hạn").
 - **Người làm**: phiên sound-db
+- **Trạng thái**: ĐÓNG 20/11/2026 (`sound-db-67`) - còn nghiệm thu 👤 bằng tài khoản thật, theo dõi ở `logs/STATE.md`
 
 ## 1. Bối cảnh (chủ dự án 20/11/2026)
 
@@ -85,4 +86,10 @@
   👤 OWNER chạy trên Neon production (tsudev ADR-0002 mục b1):
   `UPDATE "OAuthClient" SET "rpPublicJwk" = '<JWK trên>'::jsonb WHERE id = 'sounddb';`
   Chưa chạy ⇒ không ai được coi là Pro (đẩy bị chặn), đường xoá ở trạng thái HOÃN - đúng yêu cầu 2.3.
+- 20/11/2026 - `sound-db-67`: **rpPublicJwk đã được đăng ký** - đo bằng chính khoá riêng của Worker (client assertion
+  ES256, `kid` `sounddb-rp-svyC6wj_SJbp`) gọi `POST https://tsudev.com/api/rp/entitlements/status` với `sub` giả ⇒
+  **HTTP 200** `{"results":{"<sub>":{"status":"unknown_subject"}}}` (khoá chưa đăng ký sẽ là 401). Production D1: `users`
+  = 0, `entitlements` = 0 ⇒ chưa ai đăng nhập web, nên bước "Tài khoản hiện trạng thái Pro" và `wrangler tail` không
+  có lượt gọi thật để đo; chuyển thành việc nghiệm thu 👤 (đăng nhập bằng tài khoản tsudev thật) ở STATE. Phần việc của
+  agent trong phiếu này: **XONG - ĐÓNG PHIẾU**.
 
