@@ -1,7 +1,10 @@
 export interface Env {
   DB: D1Database;
   ASSETS?: Fetcher;
+  /** Host chuẩn (ADR-0007). */
   PUBLIC_ORIGIN: string;
+  /** Host phụ, phân cách bằng dấu phẩy: vẫn phục vụ API; `/auth/*` chuyển về host chuẩn. */
+  ALIAS_ORIGINS?: string;
   OIDC_ISSUER: string;
   OIDC_CLIENT_ID: string;
   /** HMAC ký access token của app. >= 32 byte ngẫu nhiên, wrangler secret. */

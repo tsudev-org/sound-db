@@ -4,6 +4,7 @@ import { HTTPException } from 'hono/http-exception';
 import { authRoutes } from './auth/routes';
 import type { AppEnv, Env } from './env';
 import { ApiError, errorResponse } from './lib/errors';
+import { authOnCanonicalHost } from './lib/hosts';
 import { meRoutes } from './me/routes';
 import { syncRoutes } from './sync/routes';
 import { METER_CSP, cleanup } from './maintenance';
@@ -26,6 +27,8 @@ app.use('*', async (c, next) => {
   h.set('Cross-Origin-Resource-Policy', 'same-origin');
   if (!h.has('Content-Security-Policy')) h.set('Content-Security-Policy', "default-src 'none'; frame-ancestors 'none'");
 });
+
+app.use('/auth/*', authOnCanonicalHost);
 
 // Máy đo trên trình duyệt (vi `/do/`, en `/en/do/`) cần micro + WebAssembly.
 const meterPage = async (c: Context<AppEnv>) => {

@@ -1,0 +1,38 @@
+// sounddb.tsudev.com: MỘT Worker phục vụ cả website tĩnh (apps/web/dist) lẫn API.
+// /api/* và /auth/* chạy mã Worker trước; mọi đường khác là tệp tĩnh (0 lượt gọi Worker
+// tính phí). Cùng khung với lotus/swico/trafficmonitor.tsudev.com (Workers Static Assets,
+// Custom Domain tự tạo DNS + chứng chỉ trong zone tsudev.com).
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "sound-db",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-11-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": "../../apps/web/dist",
+    "binding": "ASSETS",
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash",
+    "run_worker_first": true
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "sound-db",
+      "database_id": "cfcceb24-bbaf-4ba3-b1bb-31102a086dec",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "vars": {
+    "PUBLIC_ORIGIN": "https://sounddb.tsudev.com",
+    "OIDC_ISSUER": "https://tsudev.com/oidc",
+    "OIDC_CLIENT_ID": "sounddb"
+  },
+  // Secret (wrangler secret put): SESSION_SECRET (>= 32 byte ngẫu nhiên), IP_HASH_SALT.
+  // KHÔNG dùng cron: tài khoản đã hết 5 cron của gói Free (đo 17/11/2026). Dọn dữ liệu hết hạn chạy kèm ~1%
+  // yêu cầu /api (src/index.ts, waitUntil - không chặn phản hồi).
+  "observability": { "enabled": true },
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [{ "pattern": "sounddb.tsudev.com", "custom_domain": true }]
+}

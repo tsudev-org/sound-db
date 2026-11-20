@@ -25,6 +25,8 @@
   ],
   "vars": {
     "PUBLIC_ORIGIN": "https://sounddb.tsudev.com",
+    // Host mới (ADR-0007): bước B đảo PUBLIC_ORIGIN sang sound.tsudev.com sau khi tsudev đăng ký callback mới.
+    "ALIAS_ORIGINS": "https://sound.tsudev.com",
     "OIDC_ISSUER": "https://tsudev.com/oidc",
     "OIDC_CLIENT_ID": "sounddb"
   },
@@ -34,5 +36,8 @@
   "observability": { "enabled": true },
   "workers_dev": false,
   "preview_urls": false,
-  "routes": [{ "pattern": "sounddb.tsudev.com", "custom_domain": true }]
+  "routes": [
+    { "pattern": "sounddb.tsudev.com", "custom_domain": true },
+    { "pattern": "sound.tsudev.com", "custom_domain": true }
+  ]
 }
