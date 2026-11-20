@@ -30,8 +30,8 @@ pub fn bands(fraction: u32, min_hz: f64, max_hz: f64) -> Vec<Band> {
     let b = fraction as f64;
     let half = G.powf(1.0 / (2.0 * b));
     let mut out = Vec::new();
-    // 1/1: x = -6..4 (16 Hz..16 kHz); 1/3: x = -30..13 (10 Hz..20 kHz).
-    let range = if fraction == 1 { -6i32..=4 } else { -30i32..=13 };
+    // 1/1: x = -6..4 (16 Hz..16 kHz); 1/3: x = -20..13 (10 Hz..20 kHz). QA-02: -30 (1 Hz) làm tròn danh định thành 10.
+    let range = if fraction == 1 { -6i32..=4 } else { -20i32..=13 };
     for x in range {
         let center = 1000.0 * G.powf(x as f64 / b);
         let label = nominal(center);
@@ -63,4 +63,28 @@ pub fn min_fft_size(lowest: &Band, sample_rate: f64, min_bins: f64) -> usize {
     let width = lowest.upper_hz - lowest.lower_hz;
     let needed = (min_bins * sample_rate / width).ceil() as usize;
     needed.next_power_of_two().clamp(64, 65_536)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// QA-02 (21/11/2026): dải 1/3 octave bắt đầu từ tâm 1 Hz; mọi tâm < 10 Hz bị làm tròn danh định thành 10 ⇒
+    /// 10 dải trùng nhãn "10", rộng < 1 bin FFT, cảnh báo "0,0 bin".
+    #[test]
+    fn dai_khong_trung_danh_dinh_va_bat_dau_dung_10_hz() {
+        for (fraction, min, first) in [(3, 10.0, 10.0), (1, 15.0, 16.0)] {
+            let bs = bands(fraction, min, 20_000.0);
+            assert_eq!(bs[0].nominal_hz, first, "1/{fraction}");
+            for w in bs.windows(2) {
+                assert!(w[1].nominal_hz > w[0].nominal_hz, "1/{fraction}: danh định trùng {}", w[0].nominal_hz);
+            }
+            for b in &bs {
+                let ratio = (b.center_hz / b.nominal_hz).log10().abs();
+                assert!(ratio < 0.02, "1/{fraction}: tâm {} lệch danh định {}", b.center_hz, b.nominal_hz);
+            }
+        }
+        assert_eq!(bands(3, 10.0, 20_000.0).len(), 34);
+        assert_eq!(bands(1, 15.0, 20_000.0).len(), 11);
+    }
 }
