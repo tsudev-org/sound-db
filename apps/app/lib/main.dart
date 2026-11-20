@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'app.dart';
 import 'app_scope.dart';
 import 'data/database.dart';
+import 'pro/pro_service.dart';
 import 'services/measurement.dart';
 import 'services/settings.dart';
 import 'sync/auth_service.dart';
@@ -18,7 +19,9 @@ Future<void> main() async {
   await settings.load();
   final auth = AuthService(settings);
   await auth.load();
-  final sync = SyncService(store, auth, settings);
+  final pro = ProService(store, auth, settings);
+  await pro.load();
+  final sync = SyncService(store, auth, settings, pro);
   await sync.load();
   final services = AppServices(
     store: store,
@@ -26,11 +29,13 @@ Future<void> main() async {
     measurement: MeasurementController(settings),
     auth: auth,
     sync: sync,
+    pro: pro,
     deviceModel: await _deviceModel(),
   );
   runApp(SoundDbApp(services: services));
-  // Đồng bộ khi mở app (không chặn giao diện, bỏ qua nếu khách/ngoại tuyến).
-  sync.syncNow(onlyIfAuto: true);
+  // Làm mới quyền lợi Pro rồi đồng bộ khi mở app (không chặn giao diện, bỏ qua nếu khách/ngoại tuyến).
+  // Hộp thoại nhắc Pro (7.3, 7.6) do HomeShell hiện sau khi quyền lợi đã làm mới.
+  pro.refresh().whenComplete(() => sync.syncNow(onlyIfAuto: true));
 }
 
 Future<String> _deviceModel() async {

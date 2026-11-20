@@ -28,7 +28,13 @@ Xem phiếu gốc mục 8 (giá Pro, ân hạn, nơi đặt dịch vụ đồng 
 
 ## 4. Kết quả xử lý (phiên nhận điền)
 
--
+- 20/11/2026 - `sound-db-28` (cùng PR với PRO2, ADR-0005): kiểm kê - dữ liệu rời thiết bị = bản ghi `session`
+  (tóm tắt, chuỗi LAeq/giây, phổ 1/3 octave) + `calibration` + tên/nền tảng thiết bị, ở D1 `sound-db` (`records`,
+  `devices`); chưa có người dùng thật ⇒ tắt đồng bộ miễn phí thẳng (Q2). Máy chủ: gate `402 pro_required` cho đẩy + sửa
+  từ web; quyền lợi qua kênh RP tsudev (`private_key_jwt`). App: `tsudev_ui` v0.2.0 (`EntitlementsRepository`, `ProNotice`,
+  `ProRenewal`, `TsuBadge`, `InstallationId`), không đẩy khi không có JWS Pro còn hạn, màn Pro/Ủng hộ (điều khoản 7.5
+  nguyên văn). Còn: 👤 đăng ký `rpPublicJwk` (phiếu PRO2 mục 5), Play Billing (chờ B2), i18n en, mã hoá đầu cuối (ADR-0005
+  mục 3).
 
 ## 5. Đã chốt (19/11/2026, bổ sung sau khi mở phiếu)
 

@@ -73,3 +73,16 @@
 
 ## 5. Kết quả xử lý (mỗi phiên ghi một dòng)
 
+- 20/11/2026 - `sound-db-28`: xong mã + test (ADR-0005; sync quy ước **v4.1.0** cùng PR thay v4.0.0 vì v4.1.0 đã phát
+  hành). 2.1: một lựa chọn 490.000 ₫/1 năm, không còn `thang`, điều khoản nguyên văn (test app so `.standards` vi + en;
+  web: cổng `check-dist`). 2.2: `ProRenewalNotice` của `tsudev_ui` v0.2.0 (6 test bắt buộc ở gói chung), nối vòng đời app.
+  2.3: `services/sync-api/src/pro/purge.ts` - 6 test (hết hạn thật ⇒ xoá; gia hạn trên web không mở app ⇒ giữ + cập nhật;
+  lỗi ⇒ hoãn 24 giờ; `unknown_subject` ⇒ hoãn; `deleted` ⇒ xoá; chưa có khoá ⇒ không xoá) + test client assertion
+  (`iss`/`sub`/`aud`/`kid`, `jti` không lặp). JWS từ app: không áp dụng (máy chủ không nhận JWS làm thẻ).
+  Khoá RP đã sinh: riêng tư `~/.config/tsudev/sounddb/rp-private.jwk` (600) → secret Worker `RP_PRIVATE_JWK`;
+  công khai (kid `sounddb-rp-svyC6wj_SJbp`):
+  `{"kty":"EC","x":"dN_4PvVpj7HuRz_I83SDifV4LZNPqo0zljTFMtMgGSQ","y":"ztA-zD8bBoez6T2qOz0NnmFv9-VxOhLRUnX_1dFvQJA","crv":"P-256","kid":"sounddb-rp-svyC6wj_SJbp","alg":"ES256","use":"sig"}`.
+  👤 OWNER chạy trên Neon production (tsudev ADR-0002 mục b1):
+  `UPDATE "OAuthClient" SET "rpPublicJwk" = '<JWK trên>'::jsonb WHERE id = 'sounddb';`
+  Chưa chạy ⇒ không ai được coi là Pro (đẩy bị chặn), đường xoá ở trạng thái HOÃN - đúng yêu cầu 2.3.
+

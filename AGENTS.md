@@ -68,6 +68,8 @@ npx npm@11 install && npm test && npm run build
 | Lệch ở đâu | Vì sao | Kế hoạch |
 | --- | --- | --- |
 | Logo riêng (20/11/2026, phiếu LG1) cắt vuông 704 px từ ảnh gốc 1024 (`brand.json` `crop`) ⇒ icon 1024 là phóng to | Ảnh gốc có dấu ✦ của công cụ tạo ảnh ở góc phải dưới; không sửa pixel tệp gốc (`BRAND_ASSETS.md` mục 15) | Có bản gốc sạch ≥ 1024 quanh logo ⇒ thay `assets/brand/source/logo-sound-db.png`, bỏ `crop`, chạy lại dây chuyền |
+| Bản ghi đồng bộ (chỉ người dùng TsuDEV Pro) chưa mã hoá đầu cuối (PRODUCT_POLICY 7.1 N3) | Bảng điều khiển web đọc dữ liệu ở máy chủ (ADR-0005 mục 3) | Chuyển sang TsuDEV Sync (`tsusync`) khi thư viện Dart ổn định |
+| App/web chỉ tiếng Việt | Chưa làm i18n (PRODUCT_POLICY mục 8) | Tách chuỗi sang ARB + en |
 | Không ghim chứng chỉ (pinning) | Dữ liệu D2, không phải D3 (`LANGUAGE_SELECTION.md` mục 4) | Xét lại nếu dữ liệu nâng lên D3 |
 
 ### B.5. Việc riêng của repo cần biết trước khi sửa
@@ -90,5 +92,8 @@ npx npm@11 install && npm test && npm run build
   trình duyệt áp cả hai CSP (WebAssembly bị chặn im lặng).
 - **Bộ test máy chủ chạy trên workerd của vitest-pool-workers**, `compatibility_date` của `wrangler.test.jsonc`
   không được mới hơn bản workerd đi kèm.
+- **TsuDEV Pro** (ADR-0005): đẩy dữ liệu = Pro, máy chủ kiểm qua kênh RP tsudev bằng secret `RP_PRIVATE_JWK` (khoá
+  ở `~/.config/tsudev/sounddb/`); JWK công khai phải nằm ở `OAuthClient.rpPublicJwk` của client `sounddb` trên tsudev.
+  Xoá dữ liệu đám mây vì hết Pro CHỈ qua `src/pro/purge.ts` (hỏi kênh trạng thái trước khi xoá).
 - Đăng nhập: client OIDC `sounddb` phải được đăng ký trong bảng `OAuthClient` của tsudev với redirect DUY NHẤT
   `https://sounddb.tsudev.com/auth/callback` (phiếu `logs/handover/20261117-01_*`).

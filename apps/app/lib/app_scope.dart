@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import 'data/database.dart';
+import 'pro/pro_service.dart';
 import 'services/measurement.dart';
 import 'services/settings.dart';
 import 'sync/auth_service.dart';
@@ -15,6 +16,7 @@ class AppServices {
     required this.measurement,
     required this.auth,
     required this.sync,
+    required this.pro,
     required this.deviceModel,
   });
 
@@ -23,6 +25,7 @@ class AppServices {
   final MeasurementController measurement;
   final AuthService auth;
   final SyncService sync;
+  final ProService pro;
   final String deviceModel;
 }
 

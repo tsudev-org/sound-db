@@ -50,6 +50,14 @@ if (/'unsafe-(inline|eval)'/.test(csp)) loi.push(`_headers: CSP không được 
 for (const f of ['theme.js', 'wasm/sounddb_dsp.js', 'wasm/sounddb_dsp_bg.wasm', 'worklet/thu-am.js', 'favicon.ico', 'favicon-96x96.png', 'apple-touch-icon.png', 'og-image.png', '.well-known/security.txt']) {
   if (!existsSync(join(dist, f))) loi.push(`thiếu dist/${f}`);
 }
+// Điều khoản Pro đứng trước nút mua, NGUYÊN VĂN PRODUCT_POLICY mục 7.5 (vi), {giá} = 490.000 ₫ (mục 7.2).
+const chinhSach = readFileSync(join(dirname(fileURLToPath(import.meta.url)), '../../../.standards/docs/PRODUCT_POLICY.md'), 'utf8');
+const dieuKhoan = chinhSach.match(/nguyên văn \(vi\): "([^"]+)"/)?.[1]?.replace(/\s*\n\s*/g, ' ').replace('{giá}', '490.000 ₫');
+const bang = readFileSync(join(dist, 'bang-dieu-khien/index.html'), 'utf8');
+const dk = bang.match(/<p class="dieu-khoan" id="dieu-khoan-pro">([^<]*)<\/p>/)?.[1];
+if (!dieuKhoan) loi.push('PRODUCT_POLICY: không tìm thấy điều khoản 7.5 (vi)');
+else if (dk !== dieuKhoan) loi.push(`bang-dieu-khien: điều khoản Pro lệch nguyên văn 7.5:\n    trang:  ${dk}\n    chuẩn: ${dieuKhoan}`);
+else if (bang.indexOf('id="dieu-khoan-pro"') > bang.indexOf('id="nut-pro"')) loi.push('bang-dieu-khien: điều khoản Pro phải đứng TRƯỚC nút mua');
 const DONG = ['/auth/', '/api/'];
 for (const [ten, duong] of lienKet) {
   if (DONG.some((d) => duong.startsWith(d))) continue;

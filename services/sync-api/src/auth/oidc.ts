@@ -145,6 +145,37 @@ export async function exchangeCode(env: Env, code: string, verifier: string, non
   };
 }
 
+/**
+ * Kiểm JWS quyền lợi do tsudev.com ký (PRODUCT_POLICY 7.4): ES256, `typ` = `tsu-ent+jwt`, `iss` = issuer OIDC,
+ * `aud` = client của Sound Db, còn hạn, `exp` ≤ `iat` + 7 ngày. Khoá lấy từ cùng JWKS với id_token.
+ */
+export async function verifyEntitlementJws(env: Env, jws: string): Promise<JWTPayload> {
+  const d = await discovery(env);
+  const verify = async (force: boolean) =>
+    (
+      await jwtVerify(jws, createLocalJWKSet(await jwks(d.jwks_uri, force)), {
+        issuer: env.OIDC_ISSUER,
+        audience: env.OIDC_CLIENT_ID,
+        algorithms: ['ES256'],
+        typ: 'tsu-ent+jwt',
+        requiredClaims: ['sub', 'iat', 'exp'],
+        clockTolerance: 30,
+      })
+    ).payload;
+  let p: JWTPayload;
+  try {
+    p = await verify(false);
+  } catch (e) {
+    if ((e as { code?: string }).code !== 'ERR_JWKS_NO_MATCHING_KEY') throw e;
+    p = await verify(true);
+  }
+  if (p.exp! > p.iat! + 7 * 24 * 3600) throw new Error('entitlement_exp_too_long');
+  return p;
+}
+
+/** fetch dùng chung với OIDC (test thay bằng IdP giả qua `setOidcFetcher`). */
+export const idpFetch: Fetcher = (input, init) => fetcher(input, init);
+
 function invalidToken() {
   return new ApiError(401, 'invalid_id_token', 'Không xác minh được danh tính trả về từ tsudev.com.');
 }

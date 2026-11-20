@@ -254,9 +254,10 @@ class AuthService extends ChangeNotifier {
   }
 
   /// Gọi API kèm Bearer; 401 thì xoay token một lần rồi thử lại.
-  Future<http.Response> authorized(String method, String path, {Object? body}) async {
+  Future<http.Response> authorized(String method, String path, {Object? body, Map<String, String>? headers}) async {
     Future<http.Response> send(String token) {
       final request = http.Request(method, Uri.parse('$apiBase$path'))
+        ..headers.addAll(headers ?? const {})
         ..headers['Authorization'] = 'Bearer $token'
         ..headers['Accept'] = 'application/json';
       if (body != null) {

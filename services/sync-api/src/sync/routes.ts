@@ -6,6 +6,7 @@ import { requireUser } from '../auth/middleware';
 import type { AppEnv } from '../env';
 import { ApiError } from '../lib/errors';
 import { rateLimit } from '../lib/ratelimit';
+import { requirePro } from '../pro/entitlements';
 import { MAX_RECORD_BYTES, pushBody, validateData, type Kind } from './schema';
 
 interface RecordRow {
@@ -52,6 +53,8 @@ syncRoutes.use('/api/v1/sync/*', requireUser);
 syncRoutes.post('/api/v1/sync/push', bodyLimit({ maxSize: 4 * 1024 * 1024 }), async (c) => {
   const { userId, deviceId } = c.get('auth');
   await rateLimit(c.env.DB, `push:${userId}`, 120, 60_000);
+  // Đẩy lên đám mây là Pro (PRODUCT_POLICY 7.1 N3/N4): kiểm ở MÁY CHỦ trước khi đọc thân yêu cầu.
+  await requirePro(c.env, userId);
   const parsed = pushBody.safeParse(await c.req.json().catch(() => null));
   if (!parsed.success) throw new ApiError(400, 'invalid_request', 'Gói đồng bộ không hợp lệ.');
   const maxFuture = Date.now() + 24 * 3600 * 1000;
@@ -84,6 +87,7 @@ syncRoutes.post('/api/v1/sync/push', bodyLimit({ maxSize: 4 * 1024 * 1024 }), as
   return c.json({ results });
 });
 
+// Kéo không cần Pro: hết Pro vẫn kéo/xuất được bản sao đám mây cho tới khi bị xoá có xác minh (7.2, 90 ngày).
 syncRoutes.get('/api/v1/sync/pull', async (c) => {
   const { userId } = c.get('auth');
   const q = z
