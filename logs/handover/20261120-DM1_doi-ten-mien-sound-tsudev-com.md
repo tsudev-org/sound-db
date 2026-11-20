@@ -31,3 +31,7 @@ nguyên vì là lịch sử).
   sound.tsudev.com `/auth/web/start` → tsudev `/oidc/auth` với `redirect_uri` tên mới → 303 `/oidc/interaction`;
   sounddb.tsudev.com health 200, `/auth/web/start` 307 → tên mới, `theme.js` có lệnh chuyển; canonical tên mới. Đã nhắn
   tsudev-0a làm SDB2 mục 1.2.
+- 21/11/2026 - tsudev-0a báo SDB2 mục 1.2: scoop-bucket #26, homebrew-tap #13 đổi homepage (đã gộp); tsudev PR #348
+  (ecosystem.ts website mới + `oldWebsites`, logo URL mới) chờ CI. Gói APT/RPM giữ homepage cũ tới bản phát hành kế
+  tiếp của sound-db (pkg.tsudev.com chỉ dựng lại khi có phiên bản mới). Callback cũ giữ trong client `sounddb`.
+  Phiếu đóng khi #348 gộp và bản phát hành kế tiếp ra.

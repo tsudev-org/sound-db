@@ -18,7 +18,8 @@
   D1 có 1 tài khoản (tạo 23:01, 1 phiên web) nhưng bảng `entitlements` RỖNG ⇒ chưa từng gọi `/api/v1/me` thành công
   hoặc kênh RP lỗi; tail 30 phút không có lượt mở trang Tài khoản. Từ bước B đổi tên miền: đăng nhập lại ở sound.tsudev.com.
 - [ ] GP1 Google Play Console (`logs/handover/20261120-GP1_*`): 2.1 kiểm mã micro ĐẠT; bước 1-7 trên Play Console chưa làm.
-- [ ] DM1 đổi tên miền: báo tsudev làm SDB2 mục 1.2 (đã báo); phiếu homepage cho scoop-bucket/homebrew-tap/linux-packages.
+- [ ] DM1 đổi tên miền: scoop-bucket #26 + homebrew-tap #13 đã đổi homepage; tsudev PR #348 (thẻ tsudev.com/apps, logo) chờ
+  CI. Homepage trong .deb/.rpm (pkg.tsudev.com) tự đổi ở bản phát hành KẾ TIẾP - không cần làm gì thêm.
 - [ ] Play Billing `tsudev_pro`/`nam` + ủng hộ trong app bản Play (chờ tsudev B2).
 - [ ] `NSMicrophoneUsageDescription` tiếng Anh (`en.lproj/InfoPlist.strings`) - cần phiên trên macOS (AGENTS.md B.4).
 - [ ] TR1-b: hồ sơ OpenSSF Best Practices cho sound-db (bestpractices.dev, cần đăng nhập GitHub của chủ dự án).
