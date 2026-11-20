@@ -9,10 +9,13 @@
 
 ## Hàng đợi task (làm từ trên xuống)
 
-- [ ] 👤 **Đăng ký khoá RP của Sound Db trên tsudev (Neon production)** - lệnh SQL + JWK ở phiếu
-  `logs/handover/20261120-PRO2_*` mục 5. Xong ⇒ đo: đăng nhập web → Tài khoản hiện "Bản miễn phí"/"TsuDEV Pro tới ...".
-- [ ] Play Billing `tsudev_pro`/`nam` + ủng hộ trong app bản Play (chờ tsudev B2); i18n en; mã hoá đầu cuối qua
-  `tsusync` (ADR-0005 mục 3).
+- [ ] 👤 **Duyệt ADR-0006** (chuyển đồng bộ sang tsusync, mã hoá đầu cuối, mật khẩu đồng bộ riêng) + duyệt triển khai
+  tsusync với `NAMESPACES` gồm `sounddb`. Kế hoạch E1-E5 + điều kiện P1-P4: phiếu `logs/handover/20261120-E2E1_*`.
+  Chưa đủ P1-P3 ⇒ KHÔNG bắt đầu E1.
+- [ ] 👤 Nghiệm thu Pro bằng tài khoản tsudev thật: đăng nhập web → Tài khoản hiện "Bản miễn phí"/"TsuDEV Pro tới ...";
+  `wrangler tail` không có `entitlements_unavailable`. (Khoá RP đã đăng ký - đo 20/11, phiếu PRO2 mục 5.)
+- [ ] Play Billing `tsudev_pro`/`nam` + ủng hộ trong app bản Play (chờ tsudev B2).
+- [ ] `NSMicrophoneUsageDescription` tiếng Anh (`en.lproj/InfoPlist.strings`) - cần phiên trên macOS (AGENTS.md B.4).
 - [ ] TR1-b: hồ sơ OpenSSF Best Practices cho sound-db (bestpractices.dev, cần đăng nhập GitHub của chủ dự án).
 
 - [ ] **ƯU TIÊN 1 - Kiểm thử toàn diện trên smartphone thật qua adb** (5 phase: kết nối + smoke, chức năng từng tab,
@@ -34,6 +37,12 @@
 | --- | --- | --- |
 
 ## Đã hoàn thành (mới nhất trên cùng)
+
+- 20/11/2026 - `sound-db-67`: **i18n tiếng Anh** cho app + web (PR #22): ARB vi/en 202 khoá, lần đầu theo ngôn ngữ
+  hệ thống (chưa hỗ trợ ⇒ en), Cài đặt → Ngôn ngữ, máy đã cài giữ vi; web `/en/*` + `lang.js` tự chọn lần đầu, hreflang,
+  `/en/do/` qua Worker. Sửa tràn 12 px chân bảng ở màn 360 px. App 30 test, web check-dist kiểm điều khoản Pro vi + en.
+  **Khoá RP `sounddb` trên tsudev đã đăng ký** (kênh trạng thái 200), phiếu PRO2 đóng; production D1 chưa có người dùng.
+  **ADR-0006 + phiếu E2E1** (ĐỀ XUẤT): chuyển đồng bộ sang tsusync. adb: chưa có thiết bị ghép.
 
 - 20/11/2026 - `sound-db-28`: **PRO1 + PRO2** (ADR-0005, quy ước v4.1.0): đồng bộ đám mây là TsuDEV Pro - gate
   `402 pro_required` ở máy chủ, quyền lợi qua kênh RP tsudev (`private_key_jwt`, đệm 24 giờ, JWS kiểm đủ), xoá có xác
@@ -96,6 +105,8 @@
 - 17/11/2026 - App dùng bản Dart khớp vector đối chiếu thay vì Rust FFI: `docs/adr/0002-*`
 - 17/11/2026 - Đăng nhập đi qua máy chủ Sound Db (IdP tsudev dùng token mờ, tắt CORS, chưa có client native): `docs/adr/0003-*`
 - 17/11/2026 - Đồng bộ ghi sau thắng, con trỏ `rev`: `docs/adr/0004-*`
+- 20/11/2026 - TsuDEV Pro: gate 402 máy chủ, kênh RP, xoá có xác minh: `docs/adr/0005-*`
+- 20/11/2026 - (ĐỀ XUẤT) Đồng bộ sang tsusync, mã hoá đầu cuối: `docs/adr/0006-*`
 - 17/11/2026 - Dùng logo tsudev chung cho tới khi có logo riêng được duyệt.
 
 ## Sự cố bảo mật
