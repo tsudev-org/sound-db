@@ -7,11 +7,14 @@ export class ApiError extends Error {
     readonly status: ContentfulStatusCode,
     readonly code: string,
     message: string,
+    readonly retryAfter?: number,
   ) {
     super(message);
   }
 }
 
 export function errorResponse(c: Context, err: ApiError) {
-  return c.json({ code: err.code, message: err.message }, err.status);
+  // `error` theo hợp đồng chung (PRODUCT_POLICY 7.4: `402 {"error":"pro_required"}`); `code` giữ cho client cũ.
+  if (err.retryAfter) c.header('Retry-After', String(err.retryAfter));
+  return c.json({ error: err.code, code: err.code, message: err.message }, err.status);
 }

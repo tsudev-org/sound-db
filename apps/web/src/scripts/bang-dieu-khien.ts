@@ -4,7 +4,8 @@ const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as 
 const SIZES = [10, 20, 50, 100, 200];
 const KHOA_SO_DONG = 'tsudev.pagesize.sound-db-sessions';
 
-interface Me { display_name: string; email: string | null; stats: { sessions: number; calibrations: number; measured_seconds: number } }
+interface Pro { active: boolean; pro_until: number; cloud_delete_after: number | null; badge: string }
+interface Me { display_name: string; email: string | null; stats: { sessions: number; calibrations: number; measured_seconds: number }; pro: Pro | null }
 interface SessionRow { id: string; label: string; started_at: string; duration_s: number; laeq: number | null; lafmax: number | null }
 interface Device { id: string; name: string; platform: string; last_seen_at: number }
 
@@ -22,6 +23,7 @@ async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
 const hai = (n: number) => String(n).padStart(2, '0');
 const ngayGio = (d: Date) => `${hai(d.getHours())}:${hai(d.getMinutes())} ${hai(d.getDate())}/${hai(d.getMonth() + 1)}/${d.getFullYear()}`;
 const so = (v: number | null) => (v === null || !Number.isFinite(v) ? '-' : v.toFixed(1).replace('.', ','));
+const ngay = (s: number) => { const d = new Date(s * 1000); return `${hai(d.getDate())}/${hai(d.getMonth() + 1)}/${d.getFullYear()}`; };
 const thoiLuong = (s: number) => `${Math.floor(s / 3600)}:${hai(Math.floor((s % 3600) / 60))}:${hai(Math.floor(s % 60))}`;
 
 function o(text: string, cls?: string) {
@@ -149,6 +151,27 @@ async function taiHoatDong() {
   );
 }
 
+/** Trạng thái TsuDEV Pro (PRODUCT_POLICY 7.2): mua/gia hạn ở tsudev.com, không nhúng thanh toán vào trang này. */
+function hienPro(pro: Pro | null, coDuLieu: boolean) {
+  const el = $('trang-thai-pro');
+  if (!pro) {
+    el.textContent = 'Chưa kiểm tra được gói TsuDEV Pro lúc này. Dữ liệu trên thiết bị không bị ảnh hưởng.';
+    return;
+  }
+  const bayGio = Date.now() / 1000;
+  if (pro.active) {
+    el.textContent = `TsuDEV Pro tới ${ngay(pro.pro_until)}: đồng bộ và sao lưu đám mây đang bật.`;
+    $('nut-pro').textContent = 'Gia hạn';
+  } else {
+    el.textContent = 'Bản miễn phí: đồng bộ lên đám mây đang tắt. Bạn vẫn xem, tải về và xoá được dữ liệu đã có trên đám mây.';
+  }
+  if (!pro.active && coDuLieu && pro.cloud_delete_after && pro.cloud_delete_after > bayGio) {
+    const xoa = $('han-xoa');
+    xoa.textContent = `Bản sao trên đám mây còn tải về được tới ngày ${ngay(pro.cloud_delete_after)}.`;
+    xoa.hidden = false;
+  }
+}
+
 async function khoiDong() {
   try {
     const trangThai = await api<{ signed_in: boolean }>('/api/v1/auth/status');
@@ -163,6 +186,7 @@ async function khoiDong() {
     $('ten').textContent = me.display_name;
     $('email').textContent = me.email ?? '';
     $('thong-ke').textContent = `${me.stats.sessions} phiên đo · ${me.stats.calibrations} hồ sơ hiệu chuẩn · ${thoiLuong(me.stats.measured_seconds)} đã đo`;
+    hienPro(me.pro, me.stats.sessions + me.stats.calibrations > 0);
     state.size = docSoDong();
     state.page = Math.max(1, Number(new URLSearchParams(location.search).get('page')) || 1);
     $<HTMLSelectElement>('so-dong').value = String(state.size);

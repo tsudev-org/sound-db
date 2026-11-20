@@ -9,6 +9,12 @@
 
 ## Hàng đợi task (làm từ trên xuống)
 
+- [ ] 👤 **Đăng ký khoá RP của Sound Db trên tsudev (Neon production)** - lệnh SQL + JWK ở phiếu
+  `logs/handover/20261120-PRO2_*` mục 5. Xong ⇒ đo: đăng nhập web → Tài khoản hiện "Bản miễn phí"/"TsuDEV Pro tới ...".
+- [ ] Play Billing `tsudev_pro`/`nam` + ủng hộ trong app bản Play (chờ tsudev B2); i18n en; mã hoá đầu cuối qua
+  `tsusync` (ADR-0005 mục 3).
+- [ ] TR1-b: hồ sơ OpenSSF Best Practices cho sound-db (bestpractices.dev, cần đăng nhập GitHub của chủ dự án).
+
 - [ ] **ƯU TIÊN 1 - Kiểm thử toàn diện trên smartphone thật qua adb** (5 phase: kết nối + smoke, chức năng từng tab,
   phi chức năng + bảo mật, sửa lỗi + chuẩn hoá mã, phát hành bản sửa). Kế hoạch + lệnh + tiêu chí:
   `logs/handover/20261117-06_ke-hoach-kiem-thu-smartphone-adb.md`. 👤 cần bật Gỡ lỗi không dây và chạy `adb pair`.
@@ -17,7 +23,6 @@
   (sounddb.tsudev.com → Đăng nhập) + app, rồi đồng bộ hai thiết bị. Agent không có tài khoản ⇒ không tự làm được.
 - [ ] 👤 Required reviewers cho Environment `release` và `production` (tài khoản `tsudev-tsudev` không có quyền admin
   repo - HTTP 403). Lệnh: phiếu `20261117-05` mục 3.
-- [ ] 👤 Chọn logo riêng (phiếu `logs/handover/20261117-04_de-xuat-logo-rieng-sound-db.md`, 3 phương án SVG).
 - [ ] 👤 Duyệt `xuat-ban` của linux-packages khi có run mới cho 26.11.1705.
 - [ ] Phiếu V1 (khuôn phiên bản thống nhất): chờ `tsudev-standards` v3.7.0 ⇒ sync, bản chuyển tiếp phát hành cả
   tên tệp cũ + mới (`{os}-{arch}`, `SHA256SUMS.txt`), phiếu cho scoop-bucket + homebrew-tap. Kế hoạch: phiếu V1 mục 6.
@@ -29,6 +34,12 @@
 | --- | --- | --- |
 
 ## Đã hoàn thành (mới nhất trên cùng)
+
+- 20/11/2026 - `sound-db-28`: **PRO1 + PRO2** (ADR-0005, quy ước v4.1.0): đồng bộ đám mây là TsuDEV Pro - gate
+  `402 pro_required` ở máy chủ, quyền lợi qua kênh RP tsudev (`private_key_jwt`, đệm 24 giờ, JWS kiểm đủ), xoá có xác
+  minh qua kênh trạng thái; app `tsudev_ui` v0.2.0 (không đẩy khi miễn phí, màn Pro/Ủng hộ, nhắc gia hạn 7.6, nhiều
+  thiết bị 7.3, huy hiệu); web khối Gói Pro. Máy chủ 36 test, app 20 test. **LG1**: logo riêng Sound Db (PR #20) cho
+  web + icon mọi nền tảng, dây chuyền `crop` bỏ dấu ✦.
 
 - 17/11/2026 - Cài thử APK `sound-db_26.11.1705_x64-setup.apk` (SHA256 khớp) trên emulator Android 16 x86_64 (AVD
   `sounddb36`): cài đạt, versionName 26.11.1705 / versionCode 26115705, app mở màn Đo mức đúng giao diện, không lỗi

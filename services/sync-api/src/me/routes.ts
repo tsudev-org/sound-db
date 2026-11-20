@@ -8,6 +8,8 @@ import { SESSION_COOKIE } from '../auth/tokens';
 import type { AppEnv } from '../env';
 import { audit } from '../lib/audit';
 import { ApiError } from '../lib/errors';
+import { rateLimit } from '../lib/ratelimit';
+import { GRACE_MS, getEntitlement, requirePro, rpConfigured, type Entitlement } from '../pro/entitlements';
 import { recordJson, writeRecord } from '../sync/routes';
 import { sessionData } from '../sync/schema';
 
@@ -38,9 +40,16 @@ meRoutes.get('/api/v1/me', async (c) => {
     )
     .bind(userId)
     .first<{ sessions: number | null; calibrations: number | null; seconds: number }>();
+  let ent: Entitlement | null = null;
+  try {
+    ent = await getEntitlement(c.env, userId);
+  } catch {
+    // tsudev.com tạm không trả lời: trang vẫn hiện, phần Pro để trống.
+  }
   return c.json({
     ...userJson(user),
     current_device_id: deviceId,
+    pro: ent ? proJson(c.env, ent) : null,
     stats: { sessions: stats?.sessions ?? 0, calibrations: stats?.calibrations ?? 0, measured_seconds: stats?.seconds ?? 0 },
   });
 });
@@ -77,6 +86,37 @@ meRoutes.get('/api/v1/me/activity', async (c) => {
   return c.json({ events: rows.results });
 });
 
+function proJson(env: AppEnv['Bindings'], e: Entitlement, now = Date.now()) {
+  return {
+    active: e.proUntil > now,
+    pro_until: Math.floor(e.proUntil / 1000),
+    // Hết Pro: bản sao đám mây còn kéo/xuất được tới mốc này rồi bị xoá có xác minh (PRODUCT_POLICY 7.2).
+    cloud_delete_after: e.proUntil > 0 ? Math.floor((e.proUntil + GRACE_MS) / 1000) : null,
+    badge: e.badge,
+    devices_30d: e.devices30d,
+    checked_at: e.fetchedAt ? Math.floor(e.fetchedAt / 1000) : null,
+    available: rpConfigured(env),
+    buy_url: `https://tsudev.com/pro?app=${encodeURIComponent(env.OIDC_CLIENT_ID)}`,
+    donate_url: `https://tsudev.com/ung-ho?app=${encodeURIComponent(env.OIDC_CLIENT_ID)}`,
+  };
+}
+
+/**
+ * Quyền lợi TsuDEV Pro (PRODUCT_POLICY 7.4) - app gọi khi mở app/đăng nhập, gửi `X-Tsu-Installation` (mã cài đặt
+ * 128 bit) + `X-Tsu-Platform` để tsudev.com đếm `devices_30d`. Luôn hỏi lại tsudev.com (đệm chỉ dùng khi tsudev.com
+ * lỗi). `jws` là JWS gốc do tsudev.com ký - app tự kiểm chữ ký bằng JWKS (`tsudev_ui`), không tin máy chủ này.
+ */
+meRoutes.get('/api/v1/me/entitlements', async (c) => {
+  const { userId } = c.get('auth');
+  await rateLimit(c.env.DB, `ent:${userId}`, 30, 60_000);
+  const e = await getEntitlement(c.env, userId, {
+    force: true,
+    installation: c.req.header('X-Tsu-Installation'),
+    platform: c.req.header('X-Tsu-Platform'),
+  });
+  return c.json({ jws: e.jws && e.jwsExp > Date.now() ? e.jws : null, ...proJson(c.env, e) });
+});
+
 /** Tải toàn bộ dữ liệu (quyền mang dữ liệu đi). */
 meRoutes.get('/api/v1/me/export', async (c) => {
   const { userId } = c.get('auth');
@@ -97,6 +137,7 @@ meRoutes.delete('/api/v1/me', async (c) => {
   }
   await c.env.DB.batch([
     c.env.DB.prepare('DELETE FROM records WHERE user_id = ?').bind(userId),
+    c.env.DB.prepare('DELETE FROM entitlements WHERE user_id = ?').bind(userId),
     c.env.DB.prepare('DELETE FROM refresh_tokens WHERE user_id = ?').bind(userId),
     c.env.DB.prepare('DELETE FROM web_sessions WHERE user_id = ?').bind(userId),
     c.env.DB.prepare('DELETE FROM devices WHERE user_id = ?').bind(userId),
@@ -163,6 +204,7 @@ meRoutes.patch('/api/v1/sessions/:id', async (c) => {
     .object({ label: z.string().trim().min(1).max(120).optional(), note: z.string().max(2000).optional() })
     .safeParse(await c.req.json().catch(() => null));
   if (!body.success) throw new ApiError(400, 'invalid_request', 'Dữ liệu sửa không hợp lệ.');
+  await requirePro(c.env, userId);
   const row = await c.env.DB.prepare(
     "SELECT data FROM records WHERE user_id = ? AND kind = 'session' AND id = ? AND deleted = 0",
   )

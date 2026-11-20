@@ -9,6 +9,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:sound_db/app.dart';
 import 'package:sound_db/app_scope.dart';
 import 'package:sound_db/data/database.dart';
+import 'package:sound_db/pro/pro_service.dart';
 import 'package:sound_db/services/measurement.dart';
 import 'package:sound_db/services/settings.dart';
 import 'package:sound_db/sync/auth_service.dart';
@@ -26,13 +27,15 @@ Future<AppServices> services() async {
   final settings = Settings(store);
   await settings.load();
   final auth = AuthService(settings);
-  final sync = SyncService(store, auth, settings);
+  final pro = ProService(store, auth, settings);
+  final sync = SyncService(store, auth, settings, pro);
   return AppServices(
     store: store,
     settings: settings,
     measurement: MeasurementController(settings),
     auth: auth,
     sync: sync,
+    pro: pro,
     deviceModel: 'Máy thử',
   );
 }
@@ -69,6 +72,8 @@ void main() {
       expect(find.text('LAF'), findsOneWidget);
 
       Future<void> go(String label) async {
+        await tester.ensureVisible(find.text(label).last);
+        await tester.pumpAndSettle();
         await tester.tap(find.text(label).last);
         await tester.pumpAndSettle();
       }
@@ -91,6 +96,10 @@ void main() {
       expect(find.textContaining('Đăng nhập tài khoản TsuDEV'), findsOneWidget);
       await go('Sáng');
       expect(s.settings.theme.name, 'light');
+      // Danh sách Cài đặt dài (có ô TsuDEV Pro): cuộn ngược lên tới mục Hiệu chuẩn.
+      final caiDat = find.ancestor(of: find.text('Sáng').last, matching: find.byType(Scrollable)).first;
+      await tester.scrollUntilVisible(find.text('Hiệu chuẩn micro'), -100, scrollable: caiDat);
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Hiệu chuẩn micro'));
       await tester.pumpAndSettle();
       expect(find.text('Đo 10 giây'), findsOneWidget);

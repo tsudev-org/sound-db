@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:tsudev_ui/tsudev_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../app_scope.dart';
 import '../../core/format.dart';
+import '../../pro/pro_page.dart';
 import '../../sync/api_config.dart';
 import '../../sync/auth_service.dart';
 import '../../theme/app_theme.dart';
@@ -22,7 +24,7 @@ class SettingsPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Cài đặt')),
       body: ListenableBuilder(
-        listenable: Listenable.merge([settings, services.auth, services.sync]),
+        listenable: Listenable.merge([settings, services.auth, services.sync, services.pro]),
         builder: (context, _) {
           final p = context.palette;
           Widget header(String text) => Padding(
@@ -78,7 +80,8 @@ class SettingsPage extends StatelessWidget {
             const ListTile(
               leading: Icon(Icons.shield_outlined),
               title: Text('Âm thanh không bao giờ rời thiết bị'),
-              subtitle: Text('Sound Db chỉ xử lý âm thanh trong bộ nhớ, không ghi âm. Khi đồng bộ, chỉ các con số đo được gửi đi.'),
+              subtitle: Text('Sound Db chỉ xử lý âm thanh trong bộ nhớ, không ghi âm. Bản miễn phí không gửi dữ liệu đo lên internet; '
+                  'khi đồng bộ (TsuDEV Pro), chỉ các con số đo được gửi đi.'),
             ),
             header('Giới thiệu'),
             ListTile(
@@ -98,6 +101,29 @@ class SettingsPage extends StatelessWidget {
           ]);
         },
       ),
+    );
+  }
+}
+
+/// Ô trạng thái TsuDEV Pro, mở màn Pro / Ủng hộ.
+class _ProTile extends StatelessWidget {
+  const _ProTile();
+
+  @override
+  Widget build(BuildContext context) {
+    final pro = AppScope.of(context).pro;
+    final until = pro.proUntil;
+    String two(int v) => v.toString().padLeft(2, '0');
+    final date = until == null ? '' : '${two(until.toLocal().day)}/${two(until.toLocal().month)}/${until.toLocal().year}';
+    return ListTile(
+      key: const Key('pro-tile'),
+      leading: const Icon(Icons.workspace_premium_outlined),
+      title: Text(pro.isPro ? 'TsuDEV Pro tới $date' : 'Bản miễn phí'),
+      subtitle: Text(pro.isPro
+          ? 'Đồng bộ và sao lưu đám mây đang bật.'
+          : 'Dữ liệu chỉ lưu trên thiết bị. Xem gói TsuDEV Pro để đồng bộ giữa các thiết bị, hoặc ủng hộ TsuDEV.'),
+      trailing: const Icon(Icons.chevron_right),
+      onTap: () => Navigator.push(context, MaterialPageRoute<void>(builder: (_) => const ProPage())),
     );
   }
 }
@@ -123,6 +149,7 @@ class _AccountSection extends StatelessWidget {
                 : () async {
                     try {
                       await auth.signIn(deviceName: services.deviceModel);
+                      await services.pro.refresh();
                       await sync.syncNow();
                     } on AuthException catch (e) {
                       if (context.mounted) showMessage(context, e.message);
@@ -131,11 +158,14 @@ class _AccountSection extends StatelessWidget {
                     }
                   },
             icon: const Icon(Icons.login),
-            label: const Text('Đăng nhập tài khoản TsuDEV để đồng bộ lịch sử đo và hiệu chuẩn'),
+            label: const Text('Đăng nhập tài khoản TsuDEV'),
           ),
           const SizedBox(height: SdbSpacing.s2),
-          Text('Mở trình duyệt hệ thống tới tsudev.com (Google, GitHub hoặc tài khoản TsuDEV).',
+          Text('Mở trình duyệt hệ thống tới tsudev.com (Google, GitHub hoặc tài khoản TsuDEV). Đăng nhập để dùng gói '
+              'TsuDEV Pro (đồng bộ và sao lưu đám mây) và huy hiệu; bản miễn phí không cần đăng nhập.',
               style: TextStyle(color: p.textMuted, fontSize: 12)),
+          const SizedBox(height: SdbSpacing.s2),
+          const _ProTile(),
         ]),
       );
     }
@@ -146,9 +176,10 @@ class _AccountSection extends StatelessWidget {
           backgroundColor: p.bgHover,
           child: Text(user.name.isEmpty ? '?' : user.name.characters.first.toUpperCase(), style: TextStyle(color: p.textPrimary)),
         ),
-        title: Text(user.name),
+        title: TsuNameWithBadge(name: user.name, badge: services.pro.state.badge),
         subtitle: Text(user.email),
       ),
+      const _ProTile(),
       ListTile(
         leading: sync.running
             ? const SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2))
@@ -172,13 +203,14 @@ class _AccountSection extends StatelessWidget {
         title: const Text('Đăng xuất'),
         onTap: () async {
           await auth.signOut();
+          await services.pro.clear();
           await sync.resetCursor();
         },
       ),
       ListTile(
         leading: Icon(Icons.delete_forever_outlined, color: p.danger),
         title: const Text('Đăng xuất và xóa dữ liệu cục bộ'),
-        subtitle: const Text('Xóa lịch sử, hiệu chuẩn và cài đặt trên máy này. Dữ liệu đã đồng bộ vẫn còn trên tài khoản.'),
+        subtitle: const Text('Xóa lịch sử, hiệu chuẩn và cài đặt trên máy này. Bản sao đã đồng bộ (nếu có) vẫn còn trên tài khoản.'),
         onTap: () async {
           final ok = await showDialog<bool>(
             context: context,
@@ -193,6 +225,7 @@ class _AccountSection extends StatelessWidget {
           );
           if (ok != true) return;
           await auth.signOut();
+          await services.pro.clear();
           await services.store.wipe();
           await services.settings.load();
         },

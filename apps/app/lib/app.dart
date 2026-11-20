@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:tsudev_ui/tsudev_ui.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'app_scope.dart';
 import 'features/analysis/analysis_page.dart';
@@ -7,6 +9,8 @@ import 'features/history/history_page.dart';
 import 'features/meter/meter_page.dart';
 import 'features/settings/settings_page.dart';
 import 'features/tools/tools_page.dart';
+import 'pro/pro_page.dart';
+import 'pro/pro_service.dart';
 import 'theme/app_theme.dart';
 
 class SoundDbApp extends StatelessWidget {
@@ -65,6 +69,61 @@ class HomeShell extends StatefulWidget {
 
 class _HomeShellState extends State<HomeShell> {
   int _index = 0;
+  AppLifecycleListener? _lifecycle;
+  bool _noticeChecked = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _proNotices());
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _lifecycle ??= AppLifecycleListener(onStateChange: (s) {
+      final pro = AppScope.of(context).pro;
+      pro.renewal.handleAppLifecycleState(s);
+      // Quay lại sau ≥ 30 phút ở nền = lần mở mới (7.6): làm mới quyền lợi rồi xét nhắc.
+      if (s == AppLifecycleState.resumed && pro.renewal.openPending) {
+        pro.refresh().whenComplete(_proNotices);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _lifecycle?.dispose();
+    super.dispose();
+  }
+
+  void _openPro() {
+    if (isPlayBuild) {
+      Navigator.push(context, MaterialPageRoute<void>(builder: (_) => const ProPage()));
+    } else {
+      launchUrl(proBuyUrl, mode: LaunchMode.externalApplication);
+    }
+  }
+
+  /// Hộp thoại Pro ở màn chính sau khi mở app (PRODUCT_POLICY 7.6 rồi 7.3) - không bao giờ giữa lúc nhập liệu
+  /// (`tsudev_ui` tự kiểm), mỗi lần tối đa một hộp thoại.
+  Future<void> _proNotices() async {
+    if (!mounted) return;
+    final pro = AppScope.of(context).pro;
+    final state = await pro.settled;
+    if (!mounted) return;
+    final renewal = await maybeShowProRenewal(context, controller: pro.renewal, state: state, onRenew: _openPro);
+    if (renewal != null || _noticeChecked || !mounted) return;
+    _noticeChecked = true;
+    await maybeShowProNotice(
+      context,
+      controller: pro.notice,
+      state: state,
+      onSeePro: _openPro,
+      // Sao lưu ra tệp (miễn phí): xuất CSV/JSON từ màn Lịch sử.
+      onBackupToFile: () => setState(() => _index = 3),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import '../data/database.dart';
 import '../services/settings.dart';
 import '../core/format.dart';
+import '../pro/pro_service.dart';
 import 'auth_service.dart';
 
 /// Đồng bộ hai chiều theo con trỏ phiên bản máy chủ (`rev`).
@@ -14,12 +15,17 @@ import 'auth_service.dart';
 /// - Kéo: `/api/v1/sync/pull?since=<rev>` theo trang, áp vào kho cục bộ.
 /// Không hỏi định kỳ (FREE_TIER_STACK.md mục 3): chạy khi mở app, sau khi lưu
 /// phiên đo, và khi người dùng bấm "Đồng bộ ngay".
+///
+/// Đẩy lên đám mây là TsuDEV Pro (PRODUCT_POLICY 7.1 N2/N3): không có Pro còn hạn
+/// thì KHÔNG gửi một byte dữ liệu đo nào (kể cả khi máy chủ sẽ từ chối). Kéo vẫn
+/// chạy: hết Pro vẫn tải được bản sao đám mây trong 90 ngày (7.2).
 class SyncService extends ChangeNotifier {
-  SyncService(this._store, this._auth, this._settings);
+  SyncService(this._store, this._auth, this._settings, this._pro);
 
   final LocalStore _store;
   final AuthService _auth;
   final Settings _settings;
+  final ProService _pro;
 
   bool running = false;
   String? lastError;
@@ -38,6 +44,9 @@ class SyncService extends ChangeNotifier {
 
   String get statusText {
     if (running) return 'Đang đồng bộ...';
+    if (!_pro.isPro || _pro.serverSaysProRequired) {
+      return 'Bản miễn phí: dữ liệu chỉ lưu trên thiết bị này. Đồng bộ lên đám mây cần TsuDEV Pro.';
+    }
     if (lastError != null) return 'Lỗi đồng bộ: $lastError';
     if (lastSyncAt == null) return 'Chưa đồng bộ lần nào';
     return 'Đồng bộ lúc ${formatDateTime(lastSyncAt!)}';
@@ -51,7 +60,7 @@ class SyncService extends ChangeNotifier {
     lastError = null;
     notifyListeners();
     try {
-      lastPushed = await _push();
+      lastPushed = _pro.isPro && !_pro.serverSaysProRequired ? await _push() : 0;
       lastPulled = await _pull();
       lastSyncAt = DateTime.now();
       await _store.setValue(_kLastSync, lastSyncAt!.toIso8601String());
@@ -74,6 +83,11 @@ class SyncService extends ChangeNotifier {
         'changes': [for (final r in dirty) r.toJson()],
       });
       final json = jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, Object?>;
+      if (response.statusCode == 402) {
+        // Máy chủ là nơi quyết (N4): hết Pro ⇒ dừng đẩy, không thử lại.
+        _pro.markProRequired();
+        return pushed;
+      }
       if (response.statusCode != 200) throw Exception(json['message'] ?? 'HTTP ${response.statusCode}');
       final results = (json['results'] as List<Object?>).cast<Map<String, Object?>>();
       var progressed = 0;

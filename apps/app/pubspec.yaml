@@ -51,6 +51,11 @@ dependencies:
   path: ^1.9.1
   device_info_plus: ^13.3.0
   app_links: ^7.2.2
+  # Thành phần dùng chung TsuDEV (PRODUCT_POLICY 7.3/7.4/7.6): kiểm JWS quyền lợi, nhắc Pro, huy hiệu. Ghim tag.
+  tsudev_ui:
+    git:
+      url: https://github.com/tsudev-org/tsudev-ui-flutter.git
+      ref: v0.2.0
 
 dev_dependencies:
   flutter_test:
