@@ -902,6 +902,12 @@ abstract class AppLocalizations {
   /// **'Chưa có phiên đo nào. Bấm \"Lưu phiên đo\" ở màn hình Đo mức để lưu lại kết quả.'**
   String get historyEmpty;
 
+  /// No description provided for @historyLoadFailed.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không đọc được lịch sử đo trên thiết bị này. Dữ liệu vẫn còn; bấm Tải lại hoặc cập nhật ứng dụng.'**
+  String get historyLoadFailed;
+
   /// No description provided for @notSynced.
   ///
   /// In vi, this message translates to:

@@ -470,6 +470,10 @@ class AppLocalizationsVi extends AppLocalizations {
       'Chưa có phiên đo nào. Bấm \"Lưu phiên đo\" ở màn hình Đo mức để lưu lại kết quả.';
 
   @override
+  String get historyLoadFailed =>
+      'Không đọc được lịch sử đo trên thiết bị này. Dữ liệu vẫn còn; bấm Tải lại hoặc cập nhật ứng dụng.';
+
+  @override
   String get notSynced => ' · chưa đồng bộ';
 
   @override
