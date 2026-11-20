@@ -68,7 +68,8 @@ async function fetchJws(env: Env, sub: string, hint: { installation?: string; pl
   if (hint.platform && PLATFORM_RE.test(hint.platform)) headers['X-Tsu-Platform'] = hint.platform;
   const res = await idpFetch(`${rpAudience(env)}/${encodeURIComponent(sub)}`, {
     headers,
-    redirect: 'error',
+    // Workers chỉ nhận `follow`/`manual` (`'error'` ném "Invalid redirect value"); 3xx ⇒ `!res.ok` ⇒ lỗi, không đi theo.
+    redirect: 'manual',
     signal: AbortSignal.timeout(10_000),
   });
   if (res.status === 404) return null;
@@ -82,7 +83,8 @@ async function fetchJws(env: Env, sub: string, hint: { installation?: string; pl
 export async function fetchSubjectStatus(env: Env, subs: string[]): Promise<Map<string, SubjectStatus>> {
   const res = await idpFetch(statusAudience(env), {
     method: 'POST',
-    redirect: 'error',
+    // Workers chỉ nhận `follow`/`manual` (`'error'` ném "Invalid redirect value"); 3xx ⇒ `!res.ok` ⇒ lỗi, không đi theo.
+    redirect: 'manual',
     headers: {
       Authorization: `Bearer ${await clientAssertion(env, statusAudience(env))}`,
       'Content-Type': 'application/json',

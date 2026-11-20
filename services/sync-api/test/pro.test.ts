@@ -57,6 +57,30 @@ describe('gate Pro ở máy chủ (PRODUCT_POLICY 7.1 N4, 7.4)', () => {
     expect(idp.rpCalls).toBe(calls);
   });
 
+  it('trang Tài khoản (/api/v1/me) hiện Pro thật và lưu đệm quyền lợi (sự cố 21/11 entitlements_unavailable)', async () => {
+    const until = nowS() + 200 * 24 * 3600;
+    const { headers, userId } = await setup('acct-user', until);
+    const res = await call('/api/v1/me', { headers });
+    expect(res.status).toBe(200);
+    const me = (await res.json()) as { pro: { active: boolean; pro_until: number } | null };
+    expect(me.pro).toMatchObject({ active: true, pro_until: until });
+    const row = await env.DB.prepare('SELECT pro_until FROM entitlements WHERE user_id = ?').bind(userId).first<{ pro_until: number }>();
+    expect(row?.pro_until).toBe(until * 1000);
+
+    const free = await setup('acct-free', 0);
+    const meFree = (await (await call('/api/v1/me', { headers: free.headers })).json()) as { pro: { active: boolean } | null };
+    expect(meFree.pro).toMatchObject({ active: false });
+  });
+
+  it('kênh RP trả chuyển hướng ⇒ không đi theo, coi là lỗi (503 khi hết đệm), không phải miễn phí', async () => {
+    const { idp, headers, userId } = await setup('redir-user');
+    await env.DB.prepare('DELETE FROM entitlements WHERE user_id = ?').bind(userId).run();
+    idp.redirectRp = true;
+    const res = await push(headers);
+    expect(res.status).toBe(503);
+    expect(await res.json()).toMatchObject({ error: 'entitlements_unavailable' });
+  });
+
   it('Pro hết hạn ⇒ 402', async () => {
     const { headers } = await setup('expired-user', nowS() - 3600);
     expect((await push(headers)).status).toBe(402);
