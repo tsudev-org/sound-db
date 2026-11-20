@@ -11,9 +11,14 @@
 
 - [ ] 👤 **Duyệt ADR-0006** (chuyển đồng bộ sang tsusync, mã hoá đầu cuối, mật khẩu đồng bộ riêng) + duyệt triển khai
   tsusync với `NAMESPACES` gồm `sounddb`. Kế hoạch E1-E5 + điều kiện P1-P4: phiếu `logs/handover/20261120-E2E1_*`.
-  Chưa đủ P1-P3 ⇒ KHÔNG bắt đầu E1.
+  Chưa đủ P1-P3 ⇒ KHÔNG bắt đầu E1. Đo 20/11 23:10: ADR-0006 vẫn ĐỀ XUẤT; tsusync chưa deploy (`NAMESPACES` rỗng,
+  sync.tsudev.com không phân giải), thẻ v0.2.0 chưa có máy khách Dart/TS ⇒ đã gửi phiếu `tsusync/logs/handover/20261120-SDB1_*`.
 - [ ] 👤 Nghiệm thu Pro bằng tài khoản tsudev thật: đăng nhập web → Tài khoản hiện "Bản miễn phí"/"TsuDEV Pro tới ...";
-  `wrangler tail` không có `entitlements_unavailable`. (Khoá RP đã đăng ký - đo 20/11, phiếu PRO2 mục 5.)
+  `wrangler tail` không có `entitlements_unavailable`. (Khoá RP đã đăng ký - đo 20/11, phiếu PRO2 mục 5.) Đo 20/11 23:15:
+  D1 có 1 tài khoản (tạo 23:01, 1 phiên web) nhưng bảng `entitlements` RỖNG ⇒ chưa từng gọi `/api/v1/me` thành công
+  hoặc kênh RP lỗi; tail 30 phút không có lượt mở trang Tài khoản. Từ bước B đổi tên miền: đăng nhập lại ở sound.tsudev.com.
+- [ ] GP1 Google Play Console (`logs/handover/20261120-GP1_*`): 2.1 kiểm mã micro ĐẠT; bước 1-7 trên Play Console chưa làm.
+- [ ] DM1 đổi tên miền: báo tsudev làm SDB2 mục 1.2 (đã báo); phiếu homepage cho scoop-bucket/homebrew-tap/linux-packages.
 - [ ] Play Billing `tsudev_pro`/`nam` + ủng hộ trong app bản Play (chờ tsudev B2).
 - [ ] `NSMicrophoneUsageDescription` tiếng Anh (`en.lproj/InfoPlist.strings`) - cần phiên trên macOS (AGENTS.md B.4).
 - [ ] TR1-b: hồ sơ OpenSSF Best Practices cho sound-db (bestpractices.dev, cần đăng nhập GitHub của chủ dự án).
@@ -21,6 +26,7 @@
 - [ ] **ƯU TIÊN 1 - Kiểm thử toàn diện trên smartphone thật qua adb** (5 phase: kết nối + smoke, chức năng từng tab,
   phi chức năng + bảo mật, sửa lỗi + chuẩn hoá mã, phát hành bản sửa). Kế hoạch + lệnh + tiêu chí:
   `logs/handover/20261117-06_ke-hoach-kiem-thu-smartphone-adb.md`. 👤 cần bật Gỡ lỗi không dây và chạy `adb pair`.
+  Thêm: đo thời gian Argon2id (E2E1 rủi ro 2) + kiểm giao diện tiếng Anh trên máy thật. 20/11 23:10: `adb devices` trống.
 - [ ] 👤 Đăng nhập tsudev: ĐÃ HẾT TẮC (22:20 17/11) - `/auth/web/start` → `/oidc/auth` 303 → `/oidc/interaction/<uid>`
   307 → `tsudev.com/login` 200. Còn nghiệm thu bằng tài khoản tsudev thật của chủ dự án: đăng nhập web
   (sounddb.tsudev.com → Đăng nhập) + app, rồi đồng bộ hai thiết bị. Agent không có tài khoản ⇒ không tự làm được.
@@ -37,6 +43,12 @@
 | --- | --- | --- |
 
 ## Đã hoàn thành (mới nhất trên cùng)
+
+- 20/11/2026 - `sound-db-32`: **Đổi tên miền sang sound.tsudev.com** (ADR-0007, PR #24 bước A + #25 bước B, theo yêu cầu
+  chủ dự án): một Worker gắn hai tên miền; sounddb.tsudev.com giữ VĨNH VIỄN (API cho app đã cài, `/auth/*` 307 về tên
+  mới, trang tự chuyển qua `theme.js` + canonical); token nhận `iss` của cả hai tên; tsudev đã thêm callback mới (SDB2,
+  đo 303). Loại `run_worker_first: true` (thử thật: mất `_headers`). Phiếu SDB1 sang tsusync (PR tsusync #7). GP1 2.1:
+  kiểm mã micro đạt. adb: không có thiết bị.
 
 - 20/11/2026 - `sound-db-67`: **i18n tiếng Anh** cho app + web (PR #22): ARB vi/en 202 khoá, lần đầu theo ngôn ngữ
   hệ thống (chưa hỗ trợ ⇒ en), Cài đặt → Ngôn ngữ, máy đã cài giữ vi; web `/en/*` + `lang.js` tự chọn lần đầu, hreflang,
@@ -107,6 +119,7 @@
 - 17/11/2026 - Đồng bộ ghi sau thắng, con trỏ `rev`: `docs/adr/0004-*`
 - 20/11/2026 - TsuDEV Pro: gate 402 máy chủ, kênh RP, xoá có xác minh: `docs/adr/0005-*`
 - 20/11/2026 - (ĐỀ XUẤT) Đồng bộ sang tsusync, mã hoá đầu cuối: `docs/adr/0006-*`
+- 20/11/2026 - Tên miền chuẩn sound.tsudev.com, tên cũ giữ vĩnh viễn: `docs/adr/0007-*`
 - 17/11/2026 - Dùng logo tsudev chung cho tới khi có logo riêng được duyệt.
 
 ## Sự cố bảo mật

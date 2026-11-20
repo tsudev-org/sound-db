@@ -74,3 +74,6 @@ SendMessage nếu repo đó có phiên đang chạy).
 
 - 20/11/2026 - `sound-db-67`: lập ADR-0006 + phiếu này. Đo: production D1 `users` = 0, kênh RP/trạng thái của tsudev
   nhận khoá `sounddb` (HTTP 200). Chưa làm E1 vì P1-P3 chưa đủ.
+- 20/11/2026 - `sound-db-32`: đo lại - P1 chưa (ADR-0006 ĐỀ XUẤT), P2 chưa (sync.tsudev.com không phân giải,
+  `NAMESPACES` rỗng), P3 chưa (thẻ v0.1.0/v0.2.0 trước PRO-D2, không có `clients/dart`/`clients/ts`). Đã gửi phiếu
+  `tsusync/logs/handover/20261120-SDB1_*` (tsusync PR #7, đã gộp). Lưu ý: tên miền chuẩn nay là sound.tsudev.com (ADR-0007).
