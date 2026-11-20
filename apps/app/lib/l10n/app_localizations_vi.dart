@@ -683,7 +683,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get proFeatures =>
-      '• Đồng bộ lịch sử đo và hồ sơ hiệu chuẩn giữa các thiết bị cùng tài khoản.\n• Sao lưu lên đám mây, xem và tải về trên web (sounddb.tsudev.com).\n• Huy hiệu Pro cạnh tên tài khoản. Một gói dùng chung cho mọi sản phẩm TsuDEV.';
+      '• Đồng bộ lịch sử đo và hồ sơ hiệu chuẩn giữa các thiết bị cùng tài khoản.\n• Sao lưu lên đám mây, xem và tải về trên web (sound.tsudev.com).\n• Huy hiệu Pro cạnh tên tài khoản. Một gói dùng chung cho mọi sản phẩm TsuDEV.';
 
   @override
   String get proPlaySoon =>

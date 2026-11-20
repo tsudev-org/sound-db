@@ -5,7 +5,7 @@ import { ApiError } from '../lib/errors';
 
 /**
  * Bên tin cậy (RP) OIDC của tsudev.com. Chỉ Authorization Code + PKCE S256,
- * client công khai `sounddb`, redirect DUY NHẤT `${PUBLIC_ORIGIN}/auth/callback`.
+ * client công khai `sounddb`, redirect `${PUBLIC_ORIGIN}/auth/callback` (tsudev giữ thêm callback của tên cũ - ADR-0007).
  * Cấu hình đọc từ discovery (không ghi cứng endpoint); JWKS cache theo `kid`,
  * gặp `kid` lạ thì tải lại (tối đa 1 lần/phút) - AUTH_AND_ACCOUNT.md mục 2.
  */

@@ -13,7 +13,7 @@ export default defineConfig(async () => {
             SESSION_SECRET: 'test-secret-test-secret-test-secret-0123456789',
             IP_HASH_SALT: 'test-salt',
             // Ghim ở đây vì .dev.vars của máy dev (PUBLIC_ORIGIN=http://localhost:8787) đè `vars` của wrangler.test.jsonc.
-            PUBLIC_ORIGIN: 'https://sounddb.tsudev.com',
+            PUBLIC_ORIGIN: 'https://sound.tsudev.com',
           },
         },
       }),

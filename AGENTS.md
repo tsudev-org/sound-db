@@ -82,7 +82,7 @@ npx npm@11 install && npm test && npm run build
 - **`.gitignore` chuẩn có mẫu `core`** (tệp core dump) - nó chặn im lặng thư mục `apps/app/lib/core/`. Đã mở lại
   bằng `!apps/app/lib/core/`; thêm thư mục tên `core` ở chỗ khác thì phải mở lại tương tự (bài học 17/11: CI đỏ
   vì `format.dart` chưa bao giờ được commit).
-- **`wrangler dev` đổi header `Origin`** thành tên miền của route (`http://sounddb.tsudev.com`) ⇒ mọi lệnh ghi từ
+- **`wrangler dev` đổi header `Origin`** thành tên miền của route (`http://sound.tsudev.com`, `http://sounddb.tsudev.com`) ⇒ mọi lệnh ghi từ
   trình duyệt bị chặn CSRF ở local. Chạy `wrangler dev --local-upstream localhost:8787` và đặt
   `PUBLIC_ORIGIN=http://localhost:8787` trong `.dev.vars`.
 - **Cron**: tài khoản Cloudflare đã hết 5 cron Free - đừng thêm `triggers.crons`; việc định kỳ chạy kèm yêu cầu.
@@ -101,5 +101,6 @@ npx npm@11 install && npm test && npm run build
 - **TsuDEV Pro** (ADR-0005): đẩy dữ liệu = Pro, máy chủ kiểm qua kênh RP tsudev bằng secret `RP_PRIVATE_JWK` (khoá
   ở `~/.config/tsudev/sounddb/`); JWK công khai phải nằm ở `OAuthClient.rpPublicJwk` của client `sounddb` trên tsudev.
   Xoá dữ liệu đám mây vì hết Pro CHỈ qua `src/pro/purge.ts` (hỏi kênh trạng thái trước khi xoá).
-- Đăng nhập: client OIDC `sounddb` phải được đăng ký trong bảng `OAuthClient` của tsudev với redirect DUY NHẤT
-  `https://sounddb.tsudev.com/auth/callback` (phiếu `logs/handover/20261117-01_*`).
+- Đăng nhập: client OIDC `sounddb` phải được đăng ký trong bảng `OAuthClient` của tsudev với ĐÚNG hai redirect:
+  `https://sound.tsudev.com/auth/callback` + tên cũ `https://sounddb.tsudev.com/auth/callback` (giữ vĩnh viễn, ADR-0007;
+  phiếu `logs/handover/20261117-01_*`, tsudev SDB2).

@@ -2,7 +2,7 @@
   "schema": 1,
   "name": "tsudev-sound-db",
   "winget": "tsudev.SoundDb",
-  "homepage": "https://sounddb.tsudev.com",
+  "homepage": "https://sound.tsudev.com",
   "license": "Apache-2.0",
   "description": {
     "vi": "Máy đo âm thanh chính xác: mức dB (IEC 61672-1), phổ FFT, phổ đồ, dải octave, cao độ, liều tiếng ồn",

@@ -3,4 +3,4 @@ Allow: /
 Disallow: /bang-dieu-khien/
 Disallow: /api/
 Disallow: /auth/
-Sitemap: https://sounddb.tsudev.com/sitemap.xml
+Sitemap: https://sound.tsudev.com/sitemap.xml

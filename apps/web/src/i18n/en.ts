@@ -1,4 +1,4 @@
-// English UI strings of sounddb.tsudev.com. Same keys as vi.ts (enforced by the `Dict` type).
+// English UI strings of sound.tsudev.com. Same keys as vi.ts (enforced by the `Dict` type).
 import { REPO_URL } from '../lib/site';
 import type { Dict } from './vi';
 

@@ -35,7 +35,7 @@ describe('đăng nhập app (PKCE + mã một lần)', () => {
     const r = await appLogin(idp);
     expect(r.start.status).toBe(302);
     expect(r.authorize.searchParams.get('code_challenge_method')).toBe('S256');
-    expect(r.authorize.searchParams.get('redirect_uri')).toBe('https://sounddb.tsudev.com/auth/callback');
+    expect(r.authorize.searchParams.get('redirect_uri')).toBe('https://sound.tsudev.com/auth/callback');
     expect(r.back.searchParams.get('state')).toBe(r.appState);
     expect(r.token.status).toBe(200);
     expect(r.body.refresh_token).toMatch(/^sdbr_/);
@@ -132,7 +132,7 @@ describe('đăng nhập web (cookie)', () => {
     expect(noCsrf.status).toBe(403);
     const ok = await call('/api/v1/me', {
       method: 'DELETE',
-      headers: { ...cookie, Origin: 'https://sounddb.tsudev.com', 'X-Sdb-Csrf': '1', 'X-Sdb-Confirm': 'xoa-vinh-vien' },
+      headers: { ...cookie, Origin: 'https://sound.tsudev.com', 'X-Sdb-Csrf': '1', 'X-Sdb-Confirm': 'xoa-vinh-vien' },
     });
     expect(ok.status).toBe(204);
     expect((await call('/api/v1/me', { headers: cookie })).status).toBe(401);

@@ -5,7 +5,7 @@ tần số FFT, phổ đồ, dải octave 1/1 và 1/3 (IEC 61260-1), cao độ/n
 hiệu và hiệu chuẩn - trên **Android, iOS, Windows, macOS, Linux** và **trình duyệt**.
 Đăng nhập tài khoản TsuDEV (không bắt buộc) để đồng bộ lịch sử đo và hiệu chuẩn giữa các thiết bị.
 
-- Website: <https://sounddb.tsudev.com> · máy đo trên web: <https://sounddb.tsudev.com/do/>
+- Website: <https://sound.tsudev.com> · máy đo trên web: <https://sound.tsudev.com/do/>
 - Hạng sản phẩm: **B - app có kết nối** (`.standards/docs/AUTH_AND_ACCOUNT.md` mục 1): mọi chức năng đo chạy
   ngoại tuyến ở chế độ khách; đăng nhập chỉ mở thêm đồng bộ.
 - Giấy phép: [Apache 2.0](LICENSE).

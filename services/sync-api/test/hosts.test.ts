@@ -7,7 +7,7 @@ import { acceptedIssuers, aliasOrigins } from '../src/lib/hosts';
 import worker from '../src/index';
 import { ORIGIN } from './helpers';
 
-const ALIAS = 'https://sound.tsudev.com';
+const ALIAS = 'https://sounddb.tsudev.com';
 
 async function at(url: string, init: RequestInit = {}) {
   const ctx = createExecutionContext();

@@ -6,7 +6,7 @@ import { pkceChallenge, randomToken } from '../src/lib/crypto';
 import worker from '../src/index';
 
 export const ISSUER = 'https://idp.test/oidc';
-export const ORIGIN = 'https://sounddb.tsudev.com';
+export const ORIGIN = 'https://sound.tsudev.com';
 
 /** IdP giả: ghi lại nonce của lần authorize gần nhất, ký id_token ES256. */
 export const TSUDEV = new URL(ISSUER).origin;
