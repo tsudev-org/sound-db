@@ -1,0 +1,277 @@
+{
+  "fields": {
+    "name": "Sound Db",
+    "description": "Precision sound level meter of the TsuDEV ecosystem (IEC 61672-1 levels, FFT spectrum, octave bands, pitch, noise dose) for Android, iOS, Windows, macOS, Linux and the web (Apache-2.0).",
+    "homepage_url": "https://sound.tsudev.com"
+  },
+  "criteria": {
+    "description_good": [
+      "Met",
+      "README.md describes what the project does (precision sound level meter: IEC 61672-1 levels, FFT spectrum, octave bands per IEC 61260-1, pitch, noise dose, signal generator) for Android, iOS, Windows, macOS, Linux and the web, with an English summary: https://github.com/tsudev-org/sound-db/blob/main/README.md"
+    ],
+    "interact": [
+      "Met",
+      "README.md and CONTRIBUTING.md explain how to obtain the source, build and test every component, report bugs, request features (issue forms) and contribute: https://github.com/tsudev-org/sound-db/blob/main/CONTRIBUTING.md"
+    ],
+    "contribution": [
+      "Met",
+      "CONTRIBUTING.md explains the contribution process: pull requests into main (direct pushes are blocked by a ruleset), squash-merged after CI: https://github.com/tsudev-org/sound-db/blob/main/CONTRIBUTING.md"
+    ],
+    "contribution_requirements": [
+      "Met",
+      "CONTRIBUTING.md lists the requirements: Conventional Commits, tests with every behaviour change (regression and negative tests), Rust reference + Dart port + conformance vectors updated together, green CI without warnings, no home-made cryptography, CHANGELOG entry: https://github.com/tsudev-org/sound-db/blob/main/CONTRIBUTING.md"
+    ],
+    "floss_license": [
+      "Met",
+      "Apache License 2.0: https://github.com/tsudev-org/sound-db/blob/main/LICENSE"
+    ],
+    "floss_license_osi": [
+      "Met",
+      "Apache-2.0 is OSI approved; GitHub detects the license as Apache-2.0."
+    ],
+    "license_location": [
+      "Met",
+      "The license is in the standard location LICENSE at the repository root (with NOTICE): https://github.com/tsudev-org/sound-db/blob/main/LICENSE"
+    ],
+    "documentation_basics": [
+      "Met",
+      "README.md (structure, quick start, checks), CONTRIBUTING.md (build and test), docs/ARCHITECTURE.md, docs/MEASUREMENT.md (method and limits), docs/DEPLOYMENT.md, SECURITY.md, CHANGELOG.md and ADRs: https://github.com/tsudev-org/sound-db/tree/main/docs"
+    ],
+    "documentation_interface": [
+      "Met",
+      "The external interfaces are documented: the DSP core API in Rust doc comments, the flat WASM/FFI snapshot layout in packages/dsp-core/src/level.rs, the sync API and sign-in flow in docs/ARCHITECTURE.md and ADR-0003/0004: https://github.com/tsudev-org/sound-db/blob/main/docs/ARCHITECTURE.md"
+    ],
+    "sites_https": [
+      "Met",
+      "The project is on GitHub (https://github.com/tsudev-org/sound-db) and the website https://sound.tsudev.com, both HTTPS only (the website sends HSTS max-age=63072000; includeSubDomains; preload)."
+    ],
+    "discussion": [
+      "Met",
+      "GitHub Issues and pull requests are public, searchable, URL-addressable and open to anyone with a GitHub account: https://github.com/tsudev-org/sound-db/issues"
+    ],
+    "english": [
+      "Met",
+      "README.md and SECURITY.md have English summaries, CONTRIBUTING.md is in English and issues are accepted in English or Vietnamese: https://github.com/tsudev-org/sound-db/blob/main/CONTRIBUTING.md"
+    ],
+    "maintained": [
+      "Met",
+      "Actively maintained: five releases (26.11.1701-26.11.1705) and many merged pull requests in November 2026: https://github.com/tsudev-org/sound-db/pulls?q=is%3Apr+is%3Amerged"
+    ],
+    "repo_public": [
+      "Met",
+      "Public git repository on GitHub: https://github.com/tsudev-org/sound-db"
+    ],
+    "repo_track": [
+      "Met",
+      "git records who changed what and when; every change is a pull request with a description: https://github.com/tsudev-org/sound-db/commits/main"
+    ],
+    "repo_interim": [
+      "Met",
+      "All work, including work in progress, is pushed to branches and merged into main through pull requests in the public repository: https://github.com/tsudev-org/sound-db/pulls?q=is%3Apr"
+    ],
+    "repo_distributed": [
+      "Met",
+      "git (a distributed version control system) on GitHub."
+    ],
+    "version_unique": [
+      "Met",
+      "Each release has a unique version identifier (26.11.1701 ... 26.11.1705): https://github.com/tsudev-org/sound-db/tags"
+    ],
+    "version_semver": [
+      "Unmet",
+      "Releases use calendar versioning YY.M.DDNN (TsuDEV VERSIONING.md, section 2) instead of Semantic Versioning, because the app ships to app stores and package managers on many platforms at once; the scheme is documented in CONTRIBUTING.md."
+    ],
+    "version_tags": [
+      "Met",
+      "Each release is a git tag v<version> on main, and the release workflow refuses tags that do not match the scheme: https://github.com/tsudev-org/sound-db/tags"
+    ],
+    "release_notes": [
+      "Met",
+      "CHANGELOG.md has human-readable release notes for every version (added, fixed); each GitHub Release carries the build commit and verification instructions: https://github.com/tsudev-org/sound-db/blob/main/CHANGELOG.md"
+    ],
+    "release_notes_vulns": [
+      "N/A",
+      "No vulnerability with a CVE or similar public identifier has been fixed in this project. SECURITY.md commits to naming such fixes in CHANGELOG.md."
+    ],
+    "report_process": [
+      "Met",
+      "Bug reports go to GitHub Issues using the bug report form (organization default forms): https://github.com/tsudev-org/sound-db/issues/new/choose"
+    ],
+    "report_tracker": [
+      "Met",
+      "GitHub Issues with bug report and feature request forms: https://github.com/tsudev-org/sound-db/issues"
+    ],
+    "report_responses": [
+      "Met",
+      "No external bug report has been filed so far (young project); the maintainer reads every issue and acknowledges reports within days."
+    ],
+    "enhancement_responses": [
+      "Met",
+      "No external enhancement request has been filed so far; the feature request form routes them to the maintainer, who answers each one."
+    ],
+    "report_archive": [
+      "Met",
+      "GitHub Issues are public and searchable: https://github.com/tsudev-org/sound-db/issues?q=is%3Aissue"
+    ],
+    "vulnerability_report_process": [
+      "Met",
+      "SECURITY.md describes how to report vulnerabilities (English summary included): https://github.com/tsudev-org/sound-db/blob/main/SECURITY.md"
+    ],
+    "vulnerability_report_private": [
+      "Met",
+      "GitHub private vulnerability reporting is enabled: https://github.com/tsudev-org/sound-db/security/advisories/new"
+    ],
+    "vulnerability_report_response": [
+      "Met",
+      "No vulnerability report was received in the last 6 months. SECURITY.md commits to a reply within 7 days and a fix for serious issues within 30 days."
+    ],
+    "build": [
+      "Met",
+      "Standard tooling per component: cargo (DSP core and WebAssembly), dart pub, flutter build, npm workspaces with Astro and wrangler; CI runs the same commands: https://github.com/tsudev-org/sound-db/blob/main/.github/workflows/ci.yml"
+    ],
+    "build_common_tools": [
+      "Met",
+      "Standard tools: cargo, Dart SDK, Flutter, npm, TypeScript, Astro, wrangler."
+    ],
+    "build_floss_tools": [
+      "Met",
+      "Rust, Dart, Flutter, Node.js, TypeScript, Astro, wrangler and all dependencies (rustfft, realfft, hono, jose, zod) are FLOSS."
+    ],
+    "test": [
+      "Met",
+      "Automated test suites in every component: Rust unit, IEC accuracy and fuzz tests, Dart conformance tests against the Rust vectors, Flutter widget/unit tests, and API tests on the real workerd runtime: https://github.com/tsudev-org/sound-db/blob/main/CONTRIBUTING.md"
+    ],
+    "test_invocation": [
+      "Met",
+      "Standard invocation per component: cargo test, dart test, flutter test, npm test (documented in CONTRIBUTING.md): https://github.com/tsudev-org/sound-db/blob/main/CONTRIBUTING.md"
+    ],
+    "test_most": [
+      "Met",
+      "Tests cover the public behaviour: IEC 61672-1 weighting tables and tolerances, IEC 61260-1 band edges, levels/Leq/dose against synthetic signals, pitch detection, Rust/Dart agreement on every conformance vector, sign-in (state, nonce, PKCE), token rotation and reuse revocation, sync isolation and Pro gating."
+    ],
+    "test_continuous_integration": [
+      "Met",
+      "GitHub Actions runs formatting, strict analysis, all test suites, conformance checks and platform builds on every pull request and push to main: https://github.com/tsudev-org/sound-db/actions/workflows/ci.yml"
+    ],
+    "test_policy": [
+      "Met",
+      "CONTRIBUTING.md: every change in behaviour comes with tests in the same pull request; a bug fix comes with a regression test; sign-in, token and sync changes also need a negative test: https://github.com/tsudev-org/sound-db/blob/main/CONTRIBUTING.md"
+    ],
+    "tests_are_added": [
+      "Met",
+      "Recent changes add tests with the code, e.g. #31 (1/3 octave bands start at 10 Hz, octave_test.dart), #30 (history ordering, database_test.dart), #29 (Pro channel, pro.test.ts): https://github.com/tsudev-org/sound-db/pull/31"
+    ],
+    "tests_documented_added": [
+      "Met",
+      "The test requirement is written in CONTRIBUTING.md (Pull request requirements, point 2): https://github.com/tsudev-org/sound-db/blob/main/CONTRIBUTING.md"
+    ],
+    "warnings": [
+      "Met",
+      "Rust clippy on all targets (native and wasm32), Dart analyzer, flutter analyze, TypeScript strict mode for the website and the server."
+    ],
+    "warnings_fixed": [
+      "Met",
+      "CI fails on any warning: cargo clippy -D warnings, dart analyze --fatal-infos, flutter analyze, tsc strict typecheck: https://github.com/tsudev-org/sound-db/blob/main/.github/workflows/ci.yml"
+    ],
+    "warnings_strict": [
+      "Met",
+      "Strict modes are enabled and warnings are errors in CI (see above); the Rust core forbids unsafe code outside the WebAssembly feature."
+    ],
+    "know_secure_design": [
+      "Met",
+      "The maintainer documented the security design: audio never leaves the device, no network without sign-in, OIDC + PKCE in the system browser, rotated refresh tokens, per-user isolation and the threat model: https://github.com/tsudev-org/sound-db/blob/main/docs/THREAT_MODEL.md"
+    ],
+    "know_common_errors": [
+      "Met",
+      "SECURITY.md and the tests address common errors and their mitigations: CSRF (Origin + header), OIDC state/nonce/PKCE, JWT algorithm confusion (fixed algorithm lists), refresh token replay, cookie scope (__Host-), XSS (strict CSP), oversized input (schema limits), abuse (rate limits), PII in logs (salted IP hashes): https://github.com/tsudev-org/sound-db/blob/main/SECURITY.md"
+    ],
+    "crypto_published": [
+      "Met",
+      "Only published algorithms: SHA-256, HMAC-SHA256 (HS256 access tokens), ECDSA P-256 (ES256, RFC 7518) for id_token and entitlement verification and client assertions, PKCE S256 (RFC 7636), TLS."
+    ],
+    "crypto_call": [
+      "Met",
+      "No primitives are implemented in the project: the server calls WebCrypto through the jose library and crypto.subtle; the app uses the Dart crypto package, Random.secure and the OS secret store (flutter_secure_storage)."
+    ],
+    "crypto_floss": [
+      "Met",
+      "jose (MIT), the Dart crypto package (BSD-3-Clause), flutter_secure_storage (BSD-3-Clause) and the workerd WebCrypto runtime (Apache-2.0) are FLOSS."
+    ],
+    "crypto_keylength": [
+      "Met",
+      "HMAC keys are at least 32 random bytes (documented requirement for SESSION_SECRET), ECDSA P-256 (128-bit security), SHA-256."
+    ],
+    "crypto_working": [
+      "Met",
+      "No broken or weak algorithms (MD5, SHA-1, DES, RC4, ECB) are used; JWT verification accepts only ES256 (tsudev.com tokens) or HS256 (own access tokens)."
+    ],
+    "crypto_weaknesses": [
+      "Met",
+      "No security mechanism depends on an algorithm with known serious weaknesses; alg none and algorithm switching are rejected by fixed algorithm lists."
+    ],
+    "crypto_pfs": [
+      "Met",
+      "The app and website only talk to https endpoints using the platform TLS stack. sound.tsudev.com and tsudev.com run behind Cloudflare, which negotiates TLS 1.3 (always ephemeral ECDHE) with current clients (measured 2026-11-21: TLSv1.3 TLS_AES_256_GCM_SHA384); the edge still accepts some legacy TLS 1.2 RSA-key-exchange suites for old clients."
+    ],
+    "crypto_password_storage": [
+      "N/A",
+      "The project does not store user passwords. Sign-in is delegated to tsudev.com through OIDC; the server keeps only SHA-256 hashes of opaque refresh tokens."
+    ],
+    "crypto_random": [
+      "Met",
+      "State, nonce, PKCE verifiers, refresh tokens and identifiers come from cryptographically secure generators: crypto.getRandomValues and crypto.randomUUID on the server, Random.secure in the app."
+    ],
+    "delivery_mitm": [
+      "Met",
+      "Releases are delivered over HTTPS only (GitHub Releases, sound.tsudev.com, Scoop/Homebrew/APT/RPM channels) with SHA256SUMS and GitHub build provenance attestations: https://github.com/tsudev-org/sound-db/releases"
+    ],
+    "delivery_unsigned": [
+      "Met",
+      "Hashes are never retrieved over plain HTTP. CI tools fetched at build time are verified: Flutter by pinned commit, gitleaks by pinned SHA-256, npm dependencies by lock file integrity hashes, GitHub Actions by commit SHA: https://github.com/tsudev-org/sound-db/blob/main/.github/workflows/ci.yml"
+    ],
+    "vulnerabilities_fixed_60_days": [
+      "Met",
+      "No unpatched vulnerability of medium or higher severity: 0 open Dependabot alerts and the npm audit gate (--omit=dev --audit-level=high) in CI. (The open code-scanning entries are OpenSSF Scorecard posture checks, not vulnerabilities.)"
+    ],
+    "vulnerabilities_critical_fixed": [
+      "Met",
+      "No critical vulnerability has been reported or is open."
+    ],
+    "no_leaked_credentials": [
+      "Met",
+      "No valid credentials in the repository: gitleaks scans the full history on every push and pull request, and GitHub secret scanning with push protection is enabled; local secrets live in uncommitted .dev.vars: https://github.com/tsudev-org/sound-db/blob/main/.github/workflows/ci.yml"
+    ],
+    "static_analysis": [
+      "Met",
+      "CodeQL (security-extended queries) for JavaScript/TypeScript and GitHub Actions, plus clippy, the Dart analyzer and strict TypeScript: https://github.com/tsudev-org/sound-db/blob/main/.github/workflows/codeql.yml"
+    ],
+    "static_analysis_common_vulnerabilities": [
+      "Met",
+      "CodeQL security-extended queries cover the TypeScript server and website (the attack surface that handles network input); the Rust core is checked by clippy and forbids unsafe code outside the WebAssembly bridge."
+    ],
+    "static_analysis_fixed": [
+      "Met",
+      "All CodeQL findings are handled: the three findings (regular expressions in the build-time dist checker, not a filter for user data) were reviewed and dismissed as false positives with a written reason; 0 open."
+    ],
+    "static_analysis_often": [
+      "Met",
+      "CodeQL and all analyzers run on every push and pull request; Scorecard weekly."
+    ],
+    "dynamic_analysis": [
+      "Met",
+      "A seeded fuzz test feeds unusual sample blocks (odd lengths, extreme amplitudes, impulses, silence, NaN/Inf) through the whole measurement path of the DSP core on every CI run; the API tests run the server on the real workerd runtime: https://github.com/tsudev-org/sound-db/blob/main/packages/dsp-core/tests/fuzz.rs"
+    ],
+    "dynamic_analysis_unsafe": [
+      "N/A",
+      "The Rust core forbids unsafe code (forbid(unsafe_code)) except in the generated WebAssembly bindings; all other code is Dart and TypeScript, which are memory safe."
+    ],
+    "dynamic_analysis_enable_assertions": [
+      "Met",
+      "Tests run with assertions enabled (Rust debug assertions and overflow checks in cargo test, Dart asserts in tests, vitest expect), and the core asserts its invariants (FFT size, sample rate, octave fraction)."
+    ],
+    "dynamic_analysis_fixed": [
+      "Met",
+      "The fuzz tests have found no vulnerability; any finding would be fixed before release following SECURITY.md."
+    ]
+  }
+}

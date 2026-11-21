@@ -1,5 +1,7 @@
 # Sound Db
 
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/16974/badge)](https://www.bestpractices.dev/projects/16974)
+
 Máy đo âm thanh chính xác của hệ sinh thái [TsuDEV](https://tsudev.com): mức âm (dB) theo IEC 61672-1, phổ
 tần số FFT, phổ đồ, dải octave 1/1 và 1/3 (IEC 61260-1), cao độ/nốt nhạc, liều tiếp xúc tiếng ồn, bộ phát tín
 hiệu và hiệu chuẩn - trên **Android, iOS, Windows, macOS, Linux** và **trình duyệt**.
@@ -57,3 +59,17 @@ IP_HASH_SALT=<chuỗi ngẫu nhiên>
 node scripts/build-tokens.mjs --check        # token sinh ra khớp nguồn + tương phản WCAG AA
 node apps/web/scripts/brand-assets.mjs --check
 ```
+
+## English summary
+
+Sound Db (Apache-2.0) is the precision sound level meter of the [TsuDEV](https://tsudev.com) ecosystem: sound level
+(dB) per IEC 61672-1 with A/C/Z frequency and Fast/Slow/Impulse time weightings, Leq, percentiles and noise dose,
+FFT spectrum and spectrogram, 1/1 and 1/3 octave bands per IEC 61260-1, pitch/note detection, a signal generator and
+calibration - on Android, iOS, Windows, macOS, Linux and in the browser (<https://sound.tsudev.com>).
+
+- **One DSP, two implementations**: the Rust core in `packages/dsp-core` is the reference (also compiled to
+  WebAssembly for the web meter); the Dart port in `packages/dsp-dart` used by the Flutter app must reproduce the
+  Rust conformance vectors (`conformance/vectors.json`), checked in CI.
+- **Offline first**: every measurement works without an account; signing in with a TsuDEV account (OIDC against
+  tsudev.com) only adds sync of measurement history and calibration.
+- **Build and test**: see [CONTRIBUTING.md](CONTRIBUTING.md) (English). Security: [SECURITY.md](SECURITY.md).
