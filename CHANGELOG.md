@@ -4,6 +4,8 @@ Theo `.standards/docs/VERSIONING.md` mục 3. Ngày dạng DD/MM/YYYY.
 
 ## [Chưa phát hành]
 
+- Thêm `CONTRIBUTING.md` (tiếng Anh), tóm tắt tiếng Anh ở README/SECURITY, hồ sơ OpenSSF Best Practices
+  (`docs/best-practices.*`) và fuzz test cho lõi DSP (`packages/dsp-core/tests/fuzz.rs`).
 - iOS chờ tài khoản Apple Developer.
 
 ## 26.11.1705 - 17/11/2026

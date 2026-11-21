@@ -28,3 +28,24 @@ Mỗi bản phát hành kèm `SHA256SUMS` và chứng thực nguồn gốc bản
 ```bash
 gh attestation verify <tệp> --repo tsudev-org/sound-db
 ```
+
+## English summary
+
+- **Reporting**: do **not** open a public issue. Use GitHub
+  [private vulnerability reporting](https://github.com/tsudev-org/sound-db/security/advisories/new) with the affected
+  component (app, web or server), version, steps to reproduce and impact. We reply within 7 days and ship a fix for
+  serious issues within 30 days; fixed vulnerabilities are named in [CHANGELOG.md](CHANGELOG.md).
+- **Audio never leaves the device**: samples are processed in memory only and never recorded; sync carries only
+  the measured numbers. Without sign-in the app makes no network request, and a *fully offline* switch blocks all
+  connections.
+- **Sign-in**: OIDC Authorization Code + PKCE S256 against tsudev.com in the system browser (no WebView); `state`
+  bound to the browser with a `__Host-` cookie, `nonce` checked in the ES256 `id_token` (JWKS by `kid`, only `ES256`).
+- **App tokens**: HS256 access JWT valid 15 minutes (fixed algorithm list); opaque refresh tokens stored only as
+  SHA-256, rotated on every use, and reuse of a rotated token revokes the whole device. On the device the refresh
+  token lives in the OS secret store.
+- **Web**: `__Host-` session cookie (HttpOnly, Secure, SameSite=Lax); every write needs the right `Origin` plus an
+  anti-CSRF header; CSP without `unsafe-inline`/`unsafe-eval`.
+- **Server**: strict schema validation with size limits (zod), per-user data isolation in every query, rate limits,
+  security log with salted IP hashes.
+- **Verifying downloads**: every release ships `SHA256SUMS` and GitHub build provenance attestations
+  (`gh attestation verify <file> --repo tsudev-org/sound-db`).
