@@ -336,3 +336,6 @@ apps/web/public/wasm/
 !apps/app/lib/core/
 # Siêu dữ liệu dự án Flutter (flutter tool cần để nâng cấp nền tảng).
 !apps/app/.metadata
+
+# Ảnh/log kiểm thử trên máy thật (có thể lộ thông báo/thanh trạng thái cá nhân) - phiếu 20261117-06 mục 3
+logs/qa/
