@@ -22,7 +22,9 @@
   CI. Homepage trong .deb/.rpm (pkg.tsudev.com) tự đổi ở bản phát hành KẾ TIẾP - không cần làm gì thêm.
 - [ ] Play Billing `tsudev_pro`/`nam` + ủng hộ trong app bản Play (chờ tsudev B2).
 - [ ] `NSMicrophoneUsageDescription` tiếng Anh (`en.lproj/InfoPlist.strings`) - cần phiên trên macOS (AGENTS.md B.4).
-- [ ] TR1-b: hồ sơ OpenSSF Best Practices cho sound-db (bestpractices.dev, cần đăng nhập GitHub của chủ dự án).
+- [ ] STD50 (phiếu `20261121-STD50`): bản sắc riêng sounddb theo tsudev-standards v5.0.0 - PR 1 màu + hình, PR 2 bố cục
+  `do-luong` + hoạ tiết `song-am`.
+- [ ] Phát hành bản sửa QA-01 (Lịch sử trống trên máy không có JSON1 - NGHIÊM TRỌNG) + QA-02: phiếu 06 Phase 5.
 
 - [ ] **ƯU TIÊN 1 - Kiểm thử toàn diện trên smartphone thật qua adb** (5 phase: kết nối + smoke, chức năng từng tab,
   phi chức năng + bảo mật, sửa lỗi + chuẩn hoá mã, phát hành bản sửa). Kế hoạch + lệnh + tiêu chí:
@@ -44,6 +46,11 @@
 | --- | --- | --- |
 
 ## Đã hoàn thành (mới nhất trên cùng)
+
+- 21/11/2026 - Kiểm thử máy thật Samsung SM-M325FV qua adb (phiếu 06 Phase 1-2 một phần, phiên bị cắt ngang - kết quả
+  ghi lại 23/11 ở phiếu 06 mục 6): **QA-01** Lịch sử trống vì SQLite máy không có JSON1 (PR #30), **QA-02** dải 1/3
+  octave dưới 10 Hz (PR #31). **TR1-b**: hồ sơ OpenSSF Best Practices 16974, CONTRIBUTING tiếng Anh, fuzz lõi DSP (PR #32).
+  AV1: VirusTotal 22/11 v26.11.1705 sạch 0/74 (`docs/store/antivirus.md`).
 
 - 20/11/2026 - `sound-db-32`: **Đổi tên miền sang sound.tsudev.com** (ADR-0007, PR #24 bước A + #25 bước B, theo yêu cầu
   chủ dự án): một Worker gắn hai tên miền; sounddb.tsudev.com giữ VĨNH VIỄN (API cho app đã cài, `/auth/*` 307 về tên
