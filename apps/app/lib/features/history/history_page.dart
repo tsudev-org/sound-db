@@ -46,6 +46,7 @@ class _HistoryPageState extends State<HistoryPage> {
     _initialised = true;
     final services = _services = AppScope.of(context);
     services.sync.addListener(_reload);
+    services.store.changes.addListener(_reload);
     () async {
       _pageSize = PaginationFooter.sanitize(int.tryParse(await services.store.getValue(_pageSizeKey) ?? ''));
       await _reload();
@@ -55,6 +56,7 @@ class _HistoryPageState extends State<HistoryPage> {
   @override
   void dispose() {
     _services.sync.removeListener(_reload);
+    _services.store.changes.removeListener(_reload);
     _debounce?.cancel();
     _search.dispose();
     super.dispose();

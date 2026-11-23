@@ -1,7 +1,7 @@
 // QA-06 (phiếu 06 mục 6): so độ nhạy thô của các nguồn thu Android trên CÙNG một âm ổn định (tông 1 kHz từ loa PC).
 // Không đo mức tuyệt đối - chỉ chênh lệch giữa nguồn `unprocessed` (app dùng) với `mic`/`voiceRecognition` (gần đường
 // thu của trình duyệt). Chạy ở chế độ profile, quyền micro cấp trước:
-//   adb shell pm grant com.tsudev.sounddb.profile android.permission.RECORD_AUDIO
+//   (test tự xin quyền micro - bấm Cho phép trên máy; flutter drive cài lại gói nên quyền cấp trước bị mất)
 //   flutter drive --profile -d <serial> --driver test_driver/perf_driver.dart \
 //     --target integration_test/mic_source_test.dart
 // Kết quả: build/mic_source.json - mỗi nguồn: RMS toàn dải (dBFS) và mức riêng tại 1 kHz (Goertzel, dBFS sin).
@@ -71,6 +71,8 @@ void main() {
   final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   testWidgets('QA-06: độ nhạy thô theo nguồn thu Android', (tester) async {
+    // `flutter drive` cài lại gói ⇒ mất quyền đã cấp; xin lại (người chạy bấm Cho phép, hoặc tap qua adb).
+    expect(await AudioRecorder().hasPermission(), isTrue, reason: 'chưa có quyền micro');
     final result = <String, List<Map<String, double>>>{};
     // Xen kẽ 3 vòng để âm nền trôi theo thời gian chia đều cho các nguồn.
     for (var round = 0; round < 3; round++) {

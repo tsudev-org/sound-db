@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -54,6 +55,10 @@ class LocalStore {
   LocalStore._(this._db);
 
   final Database _db;
+
+  /// Tăng mỗi lần bảng bản ghi đổi (lưu/xoá/nhận từ đồng bộ). QA-07: tab Lịch sử nằm trong IndexedStack nên phải
+  /// nghe kho, không chỉ nghe đồng bộ, để phiên vừa lưu hiện ngay.
+  final ValueNotifier<int> changes = ValueNotifier(0);
 
   static Future<LocalStore> open() async {
     if (Platform.isWindows || Platform.isLinux) {
@@ -210,15 +215,18 @@ class LocalStore {
     DateTime updatedAt,
     bool deleted,
     bool dirty,
-  ) => _db.insert(table, {
-    'id': id,
-    'data': jsonEncode(data),
-    'updated_at': updatedAt.toUtc().millisecondsSinceEpoch,
-    'deleted': deleted ? 1 : 0,
-    'dirty': dirty ? 1 : 0,
-    if (table == 'sessions') 'started_at': startedAtMs(data),
-    if (table == 'sessions') 'search_norm': searchNorm(data),
-  }, conflictAlgorithm: ConflictAlgorithm.replace);
+  ) async {
+    await _db.insert(table, {
+      'id': id,
+      'data': jsonEncode(data),
+      'updated_at': updatedAt.toUtc().millisecondsSinceEpoch,
+      'deleted': deleted ? 1 : 0,
+      'dirty': dirty ? 1 : 0,
+      if (table == 'sessions') 'started_at': startedAtMs(data),
+      if (table == 'sessions') 'search_norm': searchNorm(data),
+    }, conflictAlgorithm: ConflictAlgorithm.replace);
+    changes.value++;
+  }
 
   static String tableOf(String kind) => switch (kind) {
     'session' => 'sessions',
@@ -274,6 +282,7 @@ class LocalStore {
     await _db.delete('sessions');
     await _db.delete('calibrations');
     await _db.delete('kv');
+    changes.value++;
   }
 }
 
