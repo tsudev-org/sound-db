@@ -103,3 +103,8 @@ Tám kiểu đặt thẻ cùng tồn tại, khó so sánh/đối chiếu phiên 
      `main`), lệnh kiểm trên `apps/web/src/pages/tai-ve.astro`; phiếu cho `scoop-bucket` (`autoupdate.url`,
      `hash.url`/`regex`) và `homebrew-tap` (`url` cask).
   4. Các kênh đã chuyển sang tên mới ⇒ bản sau đó bỏ tên cũ.
+
+- **23/11/2026 (agent-sound) - bước 2 XONG**: `v26.11.2301` phát hành cả tên cũ lẫn tên chuẩn `{os}-{arch}` + cả
+  `SHA256SUMS` lẫn `SHA256SUMS.txt` (`release.yml` khối "Tên tệp chuẩn + tệp kiểm", PR #36). Bước 3: phiếu điều phối
+  `~/projects/logs/handover/20261123-SDB-V1_sound-db-ten-tep-chuan.md` cho scoop-bucket, homebrew-tap, linux-packages;
+  `packaging/package.json` chưa đổi (linux-packages đọc từ `main`). Bước 4 chờ ba repo xác nhận.

@@ -22,9 +22,8 @@
   CI. Homepage trong .deb/.rpm (pkg.tsudev.com) tự đổi ở bản phát hành KẾ TIẾP - không cần làm gì thêm.
 - [ ] Play Billing `tsudev_pro`/`nam` + ủng hộ trong app bản Play (chờ tsudev B2).
 - [ ] `NSMicrophoneUsageDescription` tiếng Anh (`en.lproj/InfoPlist.strings`) - cần phiên trên macOS (AGENTS.md B.4).
-- [ ] STD50 (phiếu `20261121-STD50`): bản sắc riêng sounddb theo tsudev-standards v5.0.0 - PR 1 màu + hình, PR 2 bố cục
-  `do-luong` + hoạ tiết `song-am`.
-- [ ] Phát hành bản sửa QA-01 (Lịch sử trống trên máy không có JSON1 - NGHIÊM TRỌNG) + QA-02: phiếu 06 Phase 5.
+- [ ] Phiếu V1 bước 3-4: chờ scoop-bucket, homebrew-tap, linux-packages chuyển sang tên tệp chuẩn (phiếu điều phối
+  `~/projects/logs/handover/20261123-SDB-V1_*`) ⇒ đổi `packaging/package.json`, bỏ tên cũ ở `release.yml`.
 
 - [ ] **ƯU TIÊN 1 - Kiểm thử toàn diện trên smartphone thật qua adb** (5 phase: kết nối + smoke, chức năng từng tab,
   phi chức năng + bảo mật, sửa lỗi + chuẩn hoá mã, phát hành bản sửa). Kế hoạch + lệnh + tiêu chí:
@@ -35,7 +34,7 @@
   (sounddb.tsudev.com → Đăng nhập) + app, rồi đồng bộ hai thiết bị. Agent không có tài khoản ⇒ không tự làm được.
 - [ ] 👤 Required reviewers cho Environment `release` và `production` (tài khoản `tsudev-tsudev` không có quyền admin
   repo - HTTP 403). Lệnh: phiếu `20261117-05` mục 3.
-- [ ] 👤 Duyệt `xuat-ban` của linux-packages khi có run mới cho 26.11.1705.
+- [ ] 👤 Duyệt `xuat-ban` của linux-packages khi có run mới cho 26.11.2301.
 - [ ] Phiếu V1 (khuôn phiên bản thống nhất): chờ `tsudev-standards` v3.7.0 ⇒ sync, bản chuyển tiếp phát hành cả
   tên tệp cũ + mới (`{os}-{arch}`, `SHA256SUMS.txt`), phiếu cho scoop-bucket + homebrew-tap. Kế hoạch: phiếu V1 mục 6.
 - [ ] winget: PR vào microsoft/winget-pkgs (bộ phân loại từng chặn - để chủ dự án)
@@ -46,6 +45,13 @@
 | --- | --- | --- |
 
 ## Đã hoàn thành (mới nhất trên cùng)
+
+- 23/11/2026 - `sound-db-98`: **Bản 26.11.2301** (Latest, PR #36): QA-01 + QA-02, bản sắc v5.0.0; 5 nền tảng đạt,
+  VirusTotal 0/73 mọi tệp, `sha256sum -c SHA256SUMS.txt` + `gh attestation verify` đạt; lần đầu phát hành thêm tên
+  tệp chuẩn `{os}-{arch}` + `SHA256SUMS.txt` (phiếu V1 bước 2). **STD50 xong**: PR #34 (sync `.standards` v5.0.0,
+  `data-product="sounddb"`, màu xanh vàng chanh, Space Grotesk, `--radius-control`) + PR #35 (trang chủ bố cục
+  `do-luong` mặt đồng hồ trung tâm, hoạ tiết `song-am`, og-image mới, app `LevelDial`). Production đã deploy (đo:
+  `data-product="sounddb"`, /tai-ve/ hiện 26.11.2301). PR #33 ghi kết quả QA 21/11 + AV1 đóng. adb: không có thiết bị.
 
 - 21/11/2026 - Kiểm thử máy thật Samsung SM-M325FV qua adb (phiếu 06 Phase 1-2 một phần, phiên bị cắt ngang - kết quả
   ghi lại 23/11 ở phiếu 06 mục 6): **QA-01** Lịch sử trống vì SQLite máy không có JSON1 (PR #30), **QA-02** dải 1/3
