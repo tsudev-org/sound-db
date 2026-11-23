@@ -9,7 +9,11 @@ String _two(int v) => v.toString().padLeft(2, '0');
 
 bool get _vi => activeLanguage == 'vi';
 
-String formatDate(DateTime t) => _vi ? '${_two(t.day)}/${_two(t.month)}/${t.year}' : '${t.year}-${_two(t.month)}-${_two(t.day)}';
+/// Ngày + tháng, không năm (vi `24/11`, en `11-24`).
+String formatDayMonth(DateTime t) => _vi ? '${_two(t.day)}/${_two(t.month)}' : '${_two(t.month)}-${_two(t.day)}';
+
+String formatDate(DateTime t) =>
+    _vi ? '${_two(t.day)}/${_two(t.month)}/${t.year}' : '${t.year}-${_two(t.month)}-${_two(t.day)}';
 
 String formatDateTime(DateTime t) =>
     _vi ? '${_two(t.hour)}:${_two(t.minute)} ${formatDate(t)}' : '${formatDate(t)} ${_two(t.hour)}:${_two(t.minute)}';

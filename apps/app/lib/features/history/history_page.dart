@@ -149,10 +149,7 @@ class _HistoryPageState extends State<HistoryPage> {
       _Range.d7 => l.historyRange7d,
       _Range.d30 => l.historyRange30d,
       _Range.y1 => l.historyRange1y,
-      _Range.custom =>
-        _custom == null || _range != _Range.custom
-            ? l.historyRangeCustom
-            : '${formatDate(_custom!.start)} – ${formatDate(_custom!.end)}',
+      _Range.custom => _custom == null || _range != _Range.custom ? l.historyRangeCustom : _rangeLabel(_custom!),
     };
     final active = _query.isActive;
     return Padding(
@@ -206,6 +203,33 @@ class _HistoryPageState extends State<HistoryPage> {
     );
   }
 
+  Widget _row(BuildContext context, AppServices services, MeasurementSession s) {
+    final p = context.palette;
+    return ListTile(
+      title: Text(s.label, maxLines: 1, overflow: TextOverflow.ellipsis),
+      subtitle: Text(
+        '${formatDateTime(s.startedAt)} · ${formatDuration(s.durationSeconds)}'
+        '${s.dirty && services.auth.signedIn ? context.l10n.notSynced : ''}',
+        style: TextStyle(color: p.textMuted),
+      ),
+      trailing: Text(
+        '${formatNumber(s.summary['laeq'] ?? double.nan)} dBA',
+        style: const TextStyle(fontWeight: FontWeight.w600),
+      ),
+      onTap: () async {
+        await Navigator.push(context, MaterialPageRoute<void>(builder: (_) => SessionDetailPage(sessionId: s.id)));
+        await _reload();
+      },
+    );
+  }
+
+  /// Cùng năm hiện tại ⇒ bỏ năm cho chip ngắn (QA-08: chữ cỡ lớn cắt mất ngày kết thúc).
+  static String _rangeLabel(DateTimeRange r) {
+    final now = DateTime.now().year;
+    if (r.start.year != now || r.end.year != now) return '${formatDate(r.start)} – ${formatDate(r.end)}';
+    return '${formatDayMonth(r.start)} – ${formatDayMonth(r.end)}';
+  }
+
   @override
   Widget build(BuildContext context) {
     final p = context.palette;
@@ -221,50 +245,39 @@ class _HistoryPageState extends State<HistoryPage> {
           clipBehavior: Clip.antiAlias,
           child: Column(
             children: [
-              _filterBar(context),
-              Divider(height: 1, color: p.border),
+              // QA-08: thanh tìm/lọc cuộn CÙNG danh sách. Cố định phía trên thì chữ cỡ lớn + bàn phím mở làm danh sách
+              // còn 0 px và kết quả không bao giờ hiện.
               Expanded(
-                child: _rows.isEmpty && !_loading
-                    ? Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(SdbSpacing.s6),
-                          child: Text(
-                            _emptyText(context),
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: p.textMuted),
-                          ),
-                        ),
-                      )
-                    : AnimatedOpacity(
-                        opacity: _loading ? 0.5 : 1,
-                        duration: const Duration(milliseconds: 150),
-                        child: ListView.separated(
-                          itemCount: _rows.length,
-                          separatorBuilder: (_, _) => Divider(height: 1, color: p.border),
-                          itemBuilder: (context, i) {
-                            final s = _rows[i];
-                            return ListTile(
-                              title: Text(s.label, maxLines: 1, overflow: TextOverflow.ellipsis),
-                              subtitle: Text(
-                                '${formatDateTime(s.startedAt)} · ${formatDuration(s.durationSeconds)}'
-                                '${s.dirty && services.auth.signedIn ? context.l10n.notSynced : ''}',
+                child: AnimatedOpacity(
+                  opacity: _loading ? 0.5 : 1,
+                  duration: const Duration(milliseconds: 150),
+                  child: CustomScrollView(
+                    slivers: [
+                      SliverToBoxAdapter(child: _filterBar(context)),
+                      SliverToBoxAdapter(child: Divider(height: 1, color: p.border)),
+                      if (_rows.isEmpty && !_loading)
+                        SliverFillRemaining(
+                          hasScrollBody: false,
+                          child: Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(SdbSpacing.s6),
+                              child: Text(
+                                _emptyText(context),
+                                textAlign: TextAlign.center,
                                 style: TextStyle(color: p.textMuted),
                               ),
-                              trailing: Text(
-                                '${formatNumber(s.summary['laeq'] ?? double.nan)} dBA',
-                                style: const TextStyle(fontWeight: FontWeight.w600),
-                              ),
-                              onTap: () async {
-                                await Navigator.push(
-                                  context,
-                                  MaterialPageRoute<void>(builder: (_) => SessionDetailPage(sessionId: s.id)),
-                                );
-                                await _reload();
-                              },
-                            );
-                          },
+                            ),
+                          ),
+                        )
+                      else
+                        SliverList.separated(
+                          itemCount: _rows.length,
+                          separatorBuilder: (_, _) => Divider(height: 1, color: p.border),
+                          itemBuilder: (context, i) => _row(context, services, _rows[i]),
                         ),
-                      ),
+                    ],
+                  ),
+                ),
               ),
               PaginationFooter(
                 pageSize: _pageSize,

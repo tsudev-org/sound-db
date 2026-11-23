@@ -50,12 +50,14 @@ class PaginationFooter extends StatelessWidget {
       // Hẹp (điện thoại 360 px trong thẻ): bỏ chữ "/ trang" và thu nút mũi tên để không tràn ngang.
       child: LayoutBuilder(
         builder: (context, box) {
-          final compact = box.maxWidth < 340;
+          // QA-08: chữ phóng to (font_scale 2.0) làm cùng bề ngang chứa ít chữ hơn ⇒ ngưỡng gọn nhân theo tỉ lệ chữ.
+          final textScale = MediaQuery.textScalerOf(context).scale(14) / 14;
+          final compact = box.maxWidth < 340 * textScale;
           final arrow = compact ? const BoxConstraints.tightFor(width: 36, height: 36) : null;
           return Row(
             children: [
-              SizedBox(
-                height: 32,
+              ConstrainedBox(
+                constraints: const BoxConstraints(minHeight: 32),
                 child: DropdownButtonHideUnderline(
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: SdbSpacing.s2),
@@ -87,7 +89,9 @@ class PaginationFooter extends StatelessWidget {
                 onPressed: loading || page <= 1 ? null : () => onPage(page - 1),
                 icon: const Icon(Icons.chevron_left),
               ),
-              Text('$page / $pages', style: muted),
+              Flexible(
+                child: Text('$page / $pages', style: muted, maxLines: 1, overflow: TextOverflow.ellipsis),
+              ),
               IconButton(
                 visualDensity: VisualDensity.compact,
                 tooltip: context.l10n.nextPage,
