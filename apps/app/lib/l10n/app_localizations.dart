@@ -152,6 +152,24 @@ abstract class AppLocalizations {
   /// **'Mức âm {name} {value} đề-xi-ben'**
   String meterLevelSemantics(String name, String value);
 
+  /// Vùng live trợ năng: chỉ đọc khi vùng mức đổi (QA-05), không đọc từng con số.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mức an toàn'**
+  String get meterZoneSafe;
+
+  /// No description provided for @meterZoneCaution.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mức cần lưu ý'**
+  String get meterZoneCaution;
+
+  /// No description provided for @meterZoneDanger.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mức nguy hại'**
+  String get meterZoneDanger;
+
   /// No description provided for @timeFast.
   ///
   /// In vi, this message translates to:

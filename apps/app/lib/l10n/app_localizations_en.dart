@@ -40,6 +40,15 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get meterZoneSafe => 'Safe level';
+
+  @override
+  String get meterZoneCaution => 'Caution level';
+
+  @override
+  String get meterZoneDanger => 'Harmful level';
+
+  @override
   String get timeFast => 'Fast';
 
   @override

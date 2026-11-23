@@ -134,11 +134,11 @@ Ghi lại vào phiếu: hãng/model, phiên bản Android, ABI (`getprop ro.prod
 
 | Phase | Trạng thái | PR | Ghi chú |
 | --- | --- | --- | --- |
-| 1 | xong một phần (21/11) | - | Samsung SM-M325FV, Android 13, cắm USB, `adb.exe` của Windows (WSL2 không thấy USB) - bộ công cụ `scripts/android/ui.sh`. Chưa ghi số khởi động lạnh/RAM/jank (phiên 21/11 bị cắt ngang trước khi ghi) |
-| 2 | xong một phần (21/11) | #30, #31 | Đã chạy (ảnh `logs/qa/20261121/`, không commit): xin quyền micro, đang đo/tạm dừng, lưu phiên (hộp thoại + nhãn), Lịch sử, Phân tích (FFT, phổ đồ, dải octave), Công cụ, Cài đặt. Hai lỗi QA-01, QA-02 đã sửa + test. Chưa làm: âm chuẩn 1 kHz so với web, 1000+ bản ghi, đăng nhập + đồng bộ (👤) |
-| 3 | bắt đầu (21/11) | - | Deep link giả `com.tsudev.sounddb://auth?code=x&state=sai` ⇒ app không crash, không đăng nhập, giữ màn Cài đặt (ĐẠT, ảnh `p3-deeplink-gia.png`). Phần còn lại chưa làm |
-| 4 | QA-01, QA-02 | #30, #31 | |
-| 5 | phát hành xong, chưa cài thử trên máy (23/11) | #36 | `v26.11.2301` Latest (QA-01 + QA-02 + bản sắc v5.0.0), 5 nền tảng đạt, VirusTotal 0/73, SHA256SUMS.txt + `gh attestation verify` đạt. CÒN: cài đè lên Samsung SM-M325FV (kiểm nâng cấp DB v1→v2 giữ dữ liệu, Lịch sử hiện đủ) + chạy lại smoke - cần 👤 cắm máy |
+| 1 | xong (23/11) | #38 | Samsung SM-M325FV, Android 13, USB qua `adb.exe` Windows + Wi-Fi `adb tcpip 5555` cho adb/flutter của WSL. **Khởi động lạnh** (`am start -W`, 26.11.2301): 2137 ms lần đầu sau cài, rồi 856 / 681 ms; bản sửa: 950-1206 ms. **RAM** PSS: 96,8 MB đứng yên → 108-122 MB khi đo (Đo mức/Phân tích). **Nhịp vẽ khi đo** (log SurfaceFlinger, bản release): 26.11.2301 vẽ 78-81 khung/giây dù dữ liệu chỉ đổi 20 lần/giây ⇒ QA-04; bản sửa 19-20 khung/giây, đứng yên 0 khung. **Jank** (FrameTiming, `integration_test/perf_test.dart`, bản profile, 90 Hz): trước sửa build p90 25-33 ms / p99 60-68 ms (DSP chạy trong khung), sau sửa build p99 2,7-3,3 ms; raster p50 ~9,5 ms là chi phí nền của máy (Mali-G52, 1080×2400) - tỉ lệ "giật" của bộ đo KHÔNG dùng làm tiêu chí vì binding integration_test tự xin khung (~80/giây), xem LES-20261123-2011-102b trong AKB |
+| 2 | xong một phần (23/11) | #30, #31, #38 | **Nâng cấp 26.11.1705 → 26.11.2301** (`sha256sum -c SHA256SUMS.txt` + `gh attestation verify` đạt, `install -r`): Lịch sử từ 0/0 (QA-01) lên 2/2, dữ liệu 21/11 còn nguyên, nhãn `<b>QA 01</b>&"x` hiện dạng chữ (ảnh `p5-truoc/sau-nang-cap-lich-su.png`). **Âm chuẩn 1 kHz** (PC phát `[console]::beep(1000)`): app LAF 64,6 dB(A), Phân tích "Tần số trội 1000,0 Hz", mức đỉnh 64,6 dB - khớp; web `/do/` trên Chrome cùng máy, cùng chỗ: 84,3 dB(A), nền 62,3 (app nền ~41) ⇒ QA-06. **1200 bản ghi** (`integration_test/history_scale_test.dart`, gói `.profile`): đếm 2 ms, 100 dòng đầu/cuối 23/26 ms, mở tab tới "1-10 / 1200" 113 ms, sắp mới nhất trước đúng - ĐẠT. Tạm dừng/Tiếp tục ⇒ QA-03. CHƯA: Bộ chỉnh âm 440 Hz, Máy phát dừng khi ra nền, Cài đặt (giao diện/hiệu chuẩn/ngoại tuyến), đăng nhập + đồng bộ (👤), ô tìm/lọc Lịch sử (CHƯA CÓ tính năng - `SEARCH_AND_FILTER.md`, cần quyết định) |
+| 3 | bắt đầu (21/11, 23/11) | #38 | Deep link giả ⇒ không đăng nhập (ĐẠT, 21/11). 23/11: `allowBackup` tắt (cờ gói không có ALLOW_BACKUP) - ĐẠT; logcat không có token/bearer/cookie của app - ĐẠT; app bị `am kill` khi ở nền ⇒ mở lại bình thường - ĐẠT; `pm revoke RECORD_AUDIO` khi đang đo ⇒ Android giết tiến trình (hành vi hệ thống), log crash không có app - ĐẠT; mở lại + bấm đo ⇒ quyền về `granted`, đo được nhưng KHÔNG chụp được hộp thoại (uiautomator lỗi khi đang đo) - cần xem bằng mắt. Trợ năng ⇒ QA-05. CHƯA: TalkBack thật, `font_scale 2.0`, cỡ màn `wm size`, đo 30 phút (RAM/pin), quyền "không hỏi lại" |
+| 4 | QA-01..05 | #30, #31, #38 | |
+| 5 | phát hành xong 26.11.2301, cài thử ĐẠT (23/11) | #36 | Cài đè trên SM-M325FV giữ dữ liệu (xem Phase 2). QA-03/04/05 chưa phát hành - vào bản kế tiếp |
 
 Danh sách lỗi (mã `QA-nn`, mức, tab, cách tái hiện, trạng thái):
 
@@ -149,6 +149,25 @@ Danh sách lỗi (mã `QA-nn`, mức, tab, cách tái hiện, trạng thái):
 - **QA-02 - Trung bình - Phân tích > Dải octave**: vòng 1/3 octave chạy tâm 1 Hz..20 kHz, tâm < 10 Hz làm tròn danh
   định thành 10 ⇒ nhãn trục "10 10 10 10 16..." + cảnh báo "Dải thấp nhất chỉ phủ 0,0 bin FFT". Sửa Rust tham chiếu +
   Dart (x = -20..13), `vectors.json` không đổi. **ĐÃ SỬA** PR #31, phát hành 26.11.2301.
+
+- **QA-03 - Cao - Đo mức**: bấm "Tiếp tục" sau "Tạm dừng" xoá sạch phiên (đồ thị 2 phút, LAeq/Max/Min, mốc bắt đầu) -
+  `start()` gán `state = starting` TRƯỚC khi kiểm "đang tạm dừng". Máy thật: ảnh `p2-qa03-tam-dung.png` (~1 phút dữ
+  liệu) → `p2-qa03-sau-tiep-tuc.png` (chỉ đoạn mới). Test `measurement_resume_test.dart` đỏ → xanh. **ĐÃ SỬA** PR #38.
+- **QA-04 - Trung bình - Đo mức/Phân tích (hiệu năng, pin)**: nhịp hiển thị là `Ticker` ⇒ xin khung ở MỌI vsync (90 Hz)
+  dù `_onTick` bỏ qua khung cách < 50 ms ⇒ 78-81 khung/giây raster lại toàn màn; FFT 8192 + cao độ + dải octave chạy
+  TRONG khung (build p90 25-33 ms). Sửa: `Timer.periodic(50 ms)` ⇒ 19-20 khung/giây, build p99 ~3 ms. Test "không
+  giữ callback theo từng khung" đỏ → xanh. **ĐÃ SỬA** PR #38.
+- **QA-05 - Trung bình - Trợ năng**: số đo bọc `Semantics(liveRegion: true)` với nhãn đổi mỗi 50 ms ⇒ 115-117 sự kiện
+  trợ năng / ~5 s khi đo (2 khi tạm dừng) - TalkBack đọc dồn liên tục. Sửa: vùng live chỉ mang tên vùng mức (an toàn /
+  cần lưu ý / nguy hại - vi + en), số đo là nút con thường. Máy thật sau sửa: 66 sự kiện / ~5 s (cập nhật không live,
+  TalkBack không đọc), cây có "Mức an toàn" + "Mức âm LAF 48,9 đề-xi-ben". Test `meter_semantics_test.dart` đỏ →
+  xanh. **ĐÃ SỬA** PR #38. Còn: kiểm bằng TalkBack thật.
+- **QA-06 - Trung bình - Web vs app (chưa hiệu chuẩn)**: cùng điện thoại, cùng tông 1 kHz: app 64,6 dB(A) (−55,4 dBFS,
+  offset 120, nguồn `unprocessed`), web Chrome 84,3 dB(A) (−15,7 dBFS, offset mặc định 100). Chuỗi thu chênh ~40 dB
+  thô; nền 41 vs 62 dB(A) ⇒ lệch cố định ~+20 dB. Lõi DSP không lệch (cùng 1000,0 Hz; Dart khớp vector Rust). Chưa có
+  máy đo chuẩn ⇒ chưa biết bên nào đúng tuyệt đối. **MỞ** - bước kế: in `track.getSettings()` trên Chrome Android
+  (autoGainControl có thật sự tắt?), so nguồn `mic` vs `unprocessed` trên app; cân nhắc offset mặc định theo nền tảng
+  (ghi ADR nếu đổi). Ảnh `p2-1khz-app-*.png`, `p2-1khz-web-chrome.png`, `p2-nen-web-chrome.png`.
 
 Đo trên máy 21/11 (bằng chứng ảnh): FFT 8192 Hann 5,86 Hz/bin trọng số A hiển thị đúng, nhãn trục không tràn; Cài
 đặt hiện phiên bản 26.11.1705 và khối "Âm thanh không bao giờ rời thiết bị".
