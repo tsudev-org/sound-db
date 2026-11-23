@@ -19,7 +19,19 @@ npm run deploy
 
 Token Cloudflare cần quyền: Workers Scripts Edit, Workers Routes Edit (zone tsudev.com), D1 Edit, DNS Edit (zone
 tsudev.com - để Custom Domain tự tạo bản ghi). Đặt bằng `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID` trong shell,
-không ghi vào tệp.
+không ghi vào repo.
+
+Nhận token/secret từ chủ dự án (phiếu SEC1): KHÔNG dán vào chat, tệp hay lệnh `!`. Agent chạy `tsu-nhan-bi-mat` (nền),
+chủ dự án chỉ bấm Copy trên trang dịch vụ; công cụ xoá mục đó khỏi clipboard + lịch sử Win+V:
+
+```bash
+tsu-nhan-bi-mat --bien CLOUDFLARE_API_TOKEN --min 35 --max 90 \
+  --kiem 'curl -sf -H "Authorization: Bearer $TSU_SECRET" https://api.cloudflare.com/client/v4/user/tokens/verify' \
+  --luu ~/.config/tsudev/cloudflare.env                       # chmod 600, ngoài repo
+tsu-nhan-bi-mat --min 35 --max 90 --stdout | gh secret set CLOUDFLARE_API_TOKEN --env production -R tsudev-org/sound-db
+```
+
+Đọc giá trị đã lưu: `set -a; . ~/.config/tsudev/cloudflare.env; set +a` - không `cat`, không đưa vào tham số lệnh.
 
 Đăng ký client OIDC ở TsuDEV (chỉ OWNER, chèn bảng - TsuDEV `docs/auth.md` mục 8):
 

@@ -4,7 +4,7 @@
 - **Thời điểm**: 23/11/2026
 - **Người gửi**: agent-tsuswico (phiên tsuswico-6e) theo yêu cầu của chủ dự án
 - **Phiếu điều phối (ĐỌC TRƯỚC)**: `~/projects/logs/handover/20261123-SEC1_nhan-bi-mat-qua-clipboard-toan-he.md`
-- **Trạng thái**: MỞ
+- **Trạng thái**: ĐÓNG (24/11/2026, sound-db-c9)
 
 ## 1. Quy tắc áp dụng ngay cho agent của repo này
 
@@ -28,3 +28,18 @@
 
 | Tên | Nơi lưu | Phạm vi | Ghi chú |
 | --- | --- | --- | --- |
+| `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID` | GitHub Environment `production`; bản tại máy `~/.config/tsudev/cloudflare.env` | Workers Scripts/Routes, D1 (zone tsudev.com) - chỉ job Deploy | Bản tại máy trả `Authentication error 10000` với `wrangler secret list` (24/11) - có thể đã thu hồi/hết hạn; CI Deploy vẫn chạy bằng bản trên GitHub |
+| `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD` | GitHub Environment `release`; gốc `~/.config/tsudev/android/` (600) | Ký APK - chỉ job phát hành | Mất khoá = không cập nhật được app |
+| `VT_API_KEY` | Secret cấp Organization `tsudev-org` | Quét VirusTotal khi phát hành | Dùng chung toàn hệ |
+| `SESSION_SECRET`, `IP_HASH_SALT` | Secret Worker `sound-db` (Cloudflare) | Ký access token app / băm IP | Sinh bằng `openssl rand`, không đi qua người |
+| `RP_PRIVATE_JWK` | Secret Worker `sound-db`; gốc `~/.config/tsudev/sounddb/rp-private.jwk` (600) | Kênh RP quyền lợi Pro tới tsudev | Sinh tại máy, không đi qua chat |
+| (tại máy dev) `services/sync-api/.dev.vars` | Không commit (`.gitignore` dòng `.dev.vars`) | Chỉ `wrangler dev` | Giá trị ngẫu nhiên riêng, không dùng bí mật production |
+
+## 4. Kết quả (24/11/2026)
+
+- Mục 2.1: sửa `docs/DEPLOYMENT.md` mục 2 (nhận token bằng `tsu-nhan-bi-mat`), `README.md` (`.dev.vars` sinh bằng
+  `openssl rand`), phiếu cũ `20261117-03` (lệnh `gh secret set ... # dán token` ghi chú SEC1). Không chỗ nào khác
+  hướng dẫn dán bí mật (rà `README`, `docs/`, `CONTRIBUTING`, `logs/`).
+- Mục 2.2: `.gitignore` có `.env`, `.env.*` (trừ `*.example`/`*.sample`) + `.dev.vars`; gitleaks binary ghim trong CI;
+  secret scanning + push protection BẬT (`gh api`, 24/11).
+- Mục 2.3: bảng trên. Phiếu, STATE và AKB của sound-db không ghi nhận bí mật nào từng bị dán vào chat/log.

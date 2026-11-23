@@ -37,7 +37,9 @@
 2. 👤 Client OIDC `sounddb`: chạy SQL trong phiếu tsudev `20261117-SD1` (bản gốc `logs/handover/20261117-01_*`).
 3. 👤 Secret Cloudflare cho Deploy, rồi bỏ chú thích khối `push` trong `.github/workflows/deploy.yml`:
    ```bash
-   gh secret set CLOUDFLARE_API_TOKEN  --env production --repo tsudev-org/sound-db   # dán token, quyền Workers + D1
+   # (Đã làm 17/11. Từ 23/11 - phiếu SEC1: KHÔNG dán token; dùng
+   #  `tsu-nhan-bi-mat --stdout | gh secret set ...`, xem docs/DEPLOYMENT.md mục 2.)
+   gh secret set CLOUDFLARE_API_TOKEN  --env production --repo tsudev-org/sound-db   # quyền Workers + D1
    gh secret set CLOUDFLARE_ACCOUNT_ID --env production --repo tsudev-org/sound-db
    ```
 4. 👤 Khóa ký Android (Environment `release`), rồi tag bản mới:

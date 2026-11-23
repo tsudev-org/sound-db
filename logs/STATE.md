@@ -51,6 +51,7 @@
 
 | Task | Agent | Bắt đầu |
 | --- | --- | --- |
+| QA-06, phiếu 06 phần CHƯA, SEC1 mục 2, SDB-V1 | sound-db-c9 | 00:45 24/11/2026 |
 
 ## Đã hoàn thành (mới nhất trên cùng)
 
