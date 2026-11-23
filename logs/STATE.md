@@ -26,8 +26,8 @@
   `~/projects/logs/handover/20261123-SDB-V1_*`) ⇒ đổi `packaging/package.json`, bỏ tên cũ ở `release.yml`. Đo 23/11
   19:55 (`gh api`): CHƯA repo nào chuyển; scoop + cask còn ở 26.11.1705 (chưa tự lên 26.11.2301) ⇒ giữ tên cũ.
 
-- [ ] **Bản phát hành kế tiếp** (QA-03 Tạm dừng/Tiếp tục mất phiên, QA-04 nhịp vẽ 80→20 khung/giây, QA-05 TalkBack đọc
-  dồn) - đã merge PR #38, chưa phát hành; dựng thử APK ký số ở máy đạt (versionCode 26114303, cài đè giữ dữ liệu).
+- [ ] 👤 Điện thoại SM-M325FV: adb.exe Windows báo "unauthorized" sau `adb usb` (23/11) - thu hồi uỷ quyền gỡ lỗi USB,
+  cắm lại, cho phép. Máy đang chạy bản thử 26.11.2302 versionCode 26114303 (cao hơn bản chính thức 26114302).
 - [ ] QA-06 web vs app lệch ~20 dB khi chưa hiệu chuẩn (phiếu 06 mục 6) - điều tra `getSettings()` Chrome Android.
 - [ ] Lịch sử chưa có ô tìm/lọc (`SEARCH_AND_FILTER.md`) - cần quyết định phạm vi (app + bảng điều khiển web).
 - [ ] **ƯU TIÊN 1 - Kiểm thử toàn diện trên smartphone thật qua adb** (5 phase: kết nối + smoke, chức năng từng tab,
@@ -51,6 +51,9 @@
 | --- | --- | --- |
 
 ## Đã hoàn thành (mới nhất trên cùng)
+
+- 23/11/2026 - `sound-db-38`: **Bản 26.11.2302** (Latest, PR #39, run 45212957432 mọi job đạt gồm VirusTotal): QA-03,
+  QA-04, QA-05. `sha256sum -c SHA256SUMS.txt` + `gh attestation verify` APK arm64 đạt. Tên cũ + chuẩn song song.
 
 - 23/11/2026 - `sound-db-38`: **Kiểm thử máy thật Samsung SM-M325FV** (phiếu 06, PR #38): cài đè 26.11.2301 đạt (SHA256 +
   chứng thực, Lịch sử 0/0 → 2/2 giữ dữ liệu 21/11); Phase 1 số đo khởi động lạnh/RAM/nhịp vẽ/FrameTiming; âm chuẩn 1 kHz

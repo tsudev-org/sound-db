@@ -106,7 +106,10 @@ npx npm@11 install && npm test && npm run build
   thật. Hiệu năng: `integration_test/perf_test.dart`; quy mô Lịch sử: `integration_test/history_scale_test.dart`. Đo
   nhịp vẽ bản release bằng log `queueBuffer: fps` (Samsung) - `gfxinfo` không đếm khung Flutter. Đừng chạy lệnh
   `flutter` khác khi gradle đang dựng release: nó sinh lại `GeneratedPluginRegistrant` kèm `integration_test` ⇒
-  "package dev.flutter.plugins.integration_test does not exist".
+  "package dev.flutter.plugins.integration_test does not exist". Dựng release thử tại máy để cài đè: `--build-number`
+  = ĐÚNG versionCode bản sắp phát hành (CI `--split-per-abi`: số dựng pubspec + mã ABI × 1000, arm64 = 2 ⇒ 26112302
+  + 2000 = 26114302), KHÔNG cao hơn - nếu không bản
+  chính thức sẽ bị Android từ chối như hạ cấp (23/11: bản thử 26114303 chặn 26.11.2302).
 - Đăng nhập: client OIDC `sounddb` phải được đăng ký trong bảng `OAuthClient` của tsudev với ĐÚNG hai redirect:
   `https://sound.tsudev.com/auth/callback` + tên cũ `https://sounddb.tsudev.com/auth/callback` (giữ vĩnh viễn, ADR-0007;
   phiếu `logs/handover/20261117-01_*`, tsudev SDB2).
