@@ -94,14 +94,14 @@ ThemeData buildTheme(Brightness brightness) {
       style: FilledButton.styleFrom(
         backgroundColor: p.primary,
         foregroundColor: p.onPrimary,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(SdbRadius.md)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(SdbRadius.control)),
       ),
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
         foregroundColor: p.textPrimary,
         side: BorderSide(color: p.borderControl),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(SdbRadius.md)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(SdbRadius.control)),
       ),
     ),
     navigationBarTheme: NavigationBarThemeData(

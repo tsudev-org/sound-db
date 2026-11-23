@@ -2,6 +2,10 @@
 // Khung chung: <head> theo ECOSYSTEM_IDENTITY mục 2.2, đầu trang, chân trang nối về tsudev.com (mục 4).
 import '../styles/fonts.css';
 import '../styles/fonts-mono.css';
+import '../styles/fonts-display.css';
+// Lớp nền chung + lớp bản sắc sounddb (tsudev-standards v5.0.0, DESIGN_SYSTEM 1.2.1) - KHÔNG chép mã màu vào CSS riêng.
+import '../../../../.standards/tokens/tokens.css';
+import '../../../../.standards/tokens/products.css';
 import '../styles/tokens.css';
 import '../styles/site.css';
 import { LANGS, duongDan as dd, t, type Lang } from '../i18n';
@@ -37,7 +41,7 @@ const cheDo = [
 const dangO = (href: string) => duongDan.startsWith(href);
 ---
 <!doctype html>
-<html lang={lang} data-theme="dark" data-mot-ngon-ngu={motNgonNgu ? '' : undefined}>
+<html lang={lang} data-theme="dark" data-product="sounddb" data-mot-ngon-ngu={motNgonNgu ? '' : undefined}>
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -66,7 +70,7 @@ const dangO = (href: string) => duongDan.startsWith(href);
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <link rel="manifest" href="/manifest.webmanifest">
   </head>
-  <body>
+  <body data-platform="web">
     <a class="bo-qua" href="#noi-dung">{k.boQua}</a>
     <header class="dau-trang">
       <div class="khung dau-trang__trong">
