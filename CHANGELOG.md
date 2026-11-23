@@ -4,9 +4,24 @@ Theo `.standards/docs/VERSIONING.md` mục 3. Ngày dạng DD/MM/YYYY.
 
 ## [Chưa phát hành]
 
-- Thêm `CONTRIBUTING.md` (tiếng Anh), tóm tắt tiếng Anh ở README/SECURITY, hồ sơ OpenSSF Best Practices
-  (`docs/best-practices.*`) và fuzz test cho lõi DSP (`packages/dsp-core/tests/fuzz.rs`).
 - iOS chờ tài khoản Apple Developer.
+
+## 26.11.2301 - 23/11/2026
+
+### Sửa
+- Lịch sử trống trên một số điện thoại Android (SQLite của máy không có JSON1) dù đã báo "Đã lưu"; nay xếp theo cột
+  thời gian riêng, nâng cấp dữ liệu cũ tự động, và báo lỗi rõ ràng thay vì màn trống (QA-01).
+- Dải 1/3 octave bắt đầu đúng ở 10 Hz: hết nhãn trục "10 10 10 10" và cảnh báo "phủ 0,0 bin FFT" (QA-02).
+
+### Thay đổi
+- Bản sắc riêng của Sound Db (tsudev-standards v5.0.0): màu nhấn xanh vàng chanh, font tiêu đề Space Grotesk trên
+  web, mặt đồng hồ mức âm ở màn Đo mức và trang chủ, hoạ tiết sóng âm.
+- Tệp phát hành có thêm tên chuẩn `{os}-{arch}` (`sound-db_26.11.2301_windows-x64.zip`, `_android-arm64.apk`...) và
+  `SHA256SUMS.txt`; tên cũ vẫn phát hành song song trong giai đoạn chuyển tiếp.
+
+### Thêm
+- `CONTRIBUTING.md` (tiếng Anh), tóm tắt tiếng Anh ở README/SECURITY, hồ sơ OpenSSF Best Practices
+  (`docs/best-practices.*`) và fuzz test cho lõi DSP (`packages/dsp-core/tests/fuzz.rs`).
 
 ## 26.11.1705 - 17/11/2026
 
