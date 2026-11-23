@@ -6,6 +6,15 @@ Theo `.standards/docs/VERSIONING.md` mục 3. Ngày dạng DD/MM/YYYY.
 
 - iOS chờ tài khoản Apple Developer.
 
+## 26.11.2302 - 23/11/2026
+
+### Sửa
+- Bấm "Tiếp tục" sau "Tạm dừng" không còn xoá phiên đang đo (đồ thị 2 phút, LAeq, Max/Min, giờ bắt đầu) (QA-03).
+- Màn Đo mức và Phân tích chỉ vẽ lại khi có số liệu mới (20 lần/giây thay vì ~80): mượt hơn, đỡ tốn pin; phân tích
+  phổ không còn chạy chen trong lúc vẽ khung hình (QA-04).
+- Trình đọc màn hình (TalkBack/VoiceOver) không còn đọc dồn từng con số khi đang đo; chỉ thông báo khi mức âm chuyển
+  vùng an toàn / cần lưu ý / nguy hại, chạm mặt đồng hồ để nghe số hiện tại (QA-05).
+
 ## 26.11.2301 - 23/11/2026
 
 ### Sửa
