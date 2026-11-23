@@ -56,28 +56,41 @@ class MeterPage extends StatelessWidget {
                 NoticeBanner(message: context.l10n.meterNotCalibrated),
                 const SizedBox(height: SdbSpacing.s3),
               ],
-              Center(
-                child: Semantics(
-                  liveRegion: true,
-                  label: context.l10n.meterLevelSemantics('L${w.label}${t.label}', formatNumber(level)),
-                  child: LevelDial(
-                    level: s == null ? double.nan : level,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text('L${w.label}${t.label}', style: TextStyle(color: p.textMuted, fontSize: 16)),
-                        Text(
-                          formatNumber(level),
-                          style: TextStyle(
-                            fontSize: 64,
-                            fontWeight: FontWeight.w600,
-                            color: s == null ? p.textMuted : zone,
-                            fontFeatures: const [FontFeature.tabularFigures()],
-                            height: 1.05,
+              // Vùng live CHỈ mang tên vùng mức (nút chứa bọc ngoài): số đo đổi 20 lần/giây, nếu là vùng live thì
+              // TalkBack đọc dồn liên tục (QA-05). Số hiện tại ở nút con - chạm mặt đồng hồ để nghe.
+              Semantics(
+                container: true,
+                liveRegion: s != null,
+                label: s == null
+                    ? null
+                    : level >= SdbMeterZones.danger
+                    ? context.l10n.meterZoneDanger
+                    : level >= SdbMeterZones.caution
+                    ? context.l10n.meterZoneCaution
+                    : context.l10n.meterZoneSafe,
+                child: Center(
+                  child: Semantics(
+                    container: true,
+                    label: context.l10n.meterLevelSemantics('L${w.label}${t.label}', formatNumber(level)),
+                    child: LevelDial(
+                      level: s == null ? double.nan : level,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text('L${w.label}${t.label}', style: TextStyle(color: p.textMuted, fontSize: 16)),
+                          Text(
+                            formatNumber(level),
+                            style: TextStyle(
+                              fontSize: 64,
+                              fontWeight: FontWeight.w600,
+                              color: s == null ? p.textMuted : zone,
+                              fontFeatures: const [FontFeature.tabularFigures()],
+                              height: 1.05,
+                            ),
                           ),
-                        ),
-                        Text('dB(${w.label})', style: TextStyle(color: p.textSecondary, fontSize: 18)),
-                      ],
+                          Text('dB(${w.label})', style: TextStyle(color: p.textSecondary, fontSize: 18)),
+                        ],
+                      ),
                     ),
                   ),
                 ),

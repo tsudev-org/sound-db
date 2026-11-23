@@ -101,6 +101,12 @@ npx npm@11 install && npm test && npm run build
 - **TsuDEV Pro** (ADR-0005): đẩy dữ liệu = Pro, máy chủ kiểm qua kênh RP tsudev bằng secret `RP_PRIVATE_JWK` (khoá
   ở `~/.config/tsudev/sounddb/`); JWK công khai phải nằm ở `OAuthClient.rpPublicJwk` của client `sounddb` trên tsudev.
   Xoá dữ liệu đám mây vì hết Pro CHỈ qua `src/pro/purge.ts` (hỏi kênh trạng thái trước khi xoá).
+- **Kiểm thử máy thật** (phiếu 06): `scripts/android/ui.sh` (adb.exe Windows). Bản profile có hậu tố `.profile`
+  (`build.gradle.kts`) - đừng bỏ: profile ký khoá debug, cài đè bản release thì `flutter drive` GỠ app và mất dữ liệu
+  thật. Hiệu năng: `integration_test/perf_test.dart`; quy mô Lịch sử: `integration_test/history_scale_test.dart`. Đo
+  nhịp vẽ bản release bằng log `queueBuffer: fps` (Samsung) - `gfxinfo` không đếm khung Flutter. Đừng chạy lệnh
+  `flutter` khác khi gradle đang dựng release: nó sinh lại `GeneratedPluginRegistrant` kèm `integration_test` ⇒
+  "package dev.flutter.plugins.integration_test does not exist".
 - Đăng nhập: client OIDC `sounddb` phải được đăng ký trong bảng `OAuthClient` của tsudev với ĐÚNG hai redirect:
   `https://sound.tsudev.com/auth/callback` + tên cũ `https://sounddb.tsudev.com/auth/callback` (giữ vĩnh viễn, ADR-0007;
   phiếu `logs/handover/20261117-01_*`, tsudev SDB2).

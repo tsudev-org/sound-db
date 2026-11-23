@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:sounddb_dsp/sounddb_dsp.dart';
 import 'package:uuid/uuid.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
@@ -26,8 +25,10 @@ class MeasurementController extends ChangeNotifier {
   final AudioInput _input;
   late Engine _engine;
   StreamSubscription<Float32List>? _subscription;
-  Ticker? _ticker;
-  Duration _lastFrame = Duration.zero;
+  /// Nhịp hiển thị 20 lần/giây. KHÔNG dùng Ticker: nó xin khung ở mọi vsync (90 Hz) dù dữ liệu chỉ đổi mỗi 50 ms, mỗi
+  /// khung raster lại toàn màn và DSP chạy trong khung ⇒ giật 27-56% trên máy thật (QA-04, 23/11/2026).
+  Timer? _ticker;
+  static const _tickInterval = Duration(milliseconds: 50);
 
   MeterState state = MeterState.idle;
   String? error;
@@ -78,17 +79,18 @@ class MeasurementController extends ChangeNotifier {
 
   Future<void> start() async {
     if (state == MeterState.running || state == MeterState.starting) return;
+    // Phải đọc TRƯỚC khi gán starting: kiểm sau đó thì luôn "không tạm dừng" và nút Tiếp tục xoá sạch phiên (QA-03).
+    final resuming = state == MeterState.paused;
     state = MeterState.starting;
     error = null;
     notifyListeners();
     try {
-      if (state != MeterState.paused) _resetSessionData();
+      if (!resuming) _resetSessionData();
       _subscription = _input.samples.listen(_onSamples, onError: _onError);
       await _input.start();
       startedAt ??= DateTime.now();
       state = MeterState.running;
-      _ticker ??= Ticker(_onTick);
-      if (!_ticker!.isActive) _ticker!.start();
+      _ticker ??= Timer.periodic(_tickInterval, (_) => _onTick());
       if (settings.keepScreenOn) unawaited(WakelockPlus.enable().catchError((_) {}));
     } catch (e) {
       _onError(e);
@@ -107,7 +109,8 @@ class MeasurementController extends ChangeNotifier {
     await _subscription?.cancel();
     _subscription = null;
     await _input.stop();
-    _ticker?.stop();
+    _ticker?.cancel();
+    _ticker = null;
     unawaited(WakelockPlus.disable().catchError((_) {}));
   }
 
@@ -161,9 +164,7 @@ class MeasurementController extends ChangeNotifier {
     }
   }
 
-  void _onTick(Duration elapsed) {
-    if (elapsed - _lastFrame < const Duration(milliseconds: 50)) return;
-    _lastFrame = elapsed;
+  void _onTick() {
     if (_engine.totalSamples < _engine.spectrum.size) return;
     _engine.analyzeSpectrum();
     final spectrum = _engine.spectrum;
@@ -222,8 +223,7 @@ class MeasurementController extends ChangeNotifier {
   void debugProcess(Float32List block) {
     _onSamples(block);
     startedAt ??= DateTime.now();
-    _lastFrame = Duration.zero;
-    _onTick(const Duration(days: 1));
+    _onTick();
   }
 
   void clearPeakHold() {
@@ -289,7 +289,7 @@ class MeasurementController extends ChangeNotifier {
   @override
   void dispose() {
     settings.removeListener(_onSettings);
-    _ticker?.dispose();
+    _ticker?.cancel();
     unawaited(_stopInput().then((_) => _input.dispose()));
     super.dispose();
   }

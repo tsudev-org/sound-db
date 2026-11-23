@@ -9,6 +9,10 @@
   "meterReferenceTooltip": "Mức tham chiếu thường gặp",
   "meterNotCalibrated": "Chưa hiệu chuẩn: số đo là ước lượng theo micro điển hình (sai số có thể vài dB). Vào Cài đặt > Hiệu chuẩn để đo chính xác.",
   "meterLevelSemantics": "Mức âm {name} {value} đề-xi-ben",
+  "meterZoneSafe": "Mức an toàn",
+  "meterZoneCaution": "Mức cần lưu ý",
+  "meterZoneDanger": "Mức nguy hại",
+  "@meterZoneSafe": {"description": "Vùng live trợ năng: chỉ đọc khi vùng mức đổi (QA-05), không đọc từng con số."},
   "@meterLevelSemantics": {
     "placeholders": {
       "name": {

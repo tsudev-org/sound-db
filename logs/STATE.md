@@ -23,12 +23,18 @@
 - [ ] Play Billing `tsudev_pro`/`nam` + ủng hộ trong app bản Play (chờ tsudev B2).
 - [ ] `NSMicrophoneUsageDescription` tiếng Anh (`en.lproj/InfoPlist.strings`) - cần phiên trên macOS (AGENTS.md B.4).
 - [ ] Phiếu V1 bước 3-4: chờ scoop-bucket, homebrew-tap, linux-packages chuyển sang tên tệp chuẩn (phiếu điều phối
-  `~/projects/logs/handover/20261123-SDB-V1_*`) ⇒ đổi `packaging/package.json`, bỏ tên cũ ở `release.yml`.
+  `~/projects/logs/handover/20261123-SDB-V1_*`) ⇒ đổi `packaging/package.json`, bỏ tên cũ ở `release.yml`. Đo 23/11
+  19:55 (`gh api`): CHƯA repo nào chuyển; scoop + cask còn ở 26.11.1705 (chưa tự lên 26.11.2301) ⇒ giữ tên cũ.
 
+- [ ] **Bản phát hành kế tiếp** (QA-03 Tạm dừng/Tiếp tục mất phiên, QA-04 nhịp vẽ 80→20 khung/giây, QA-05 TalkBack đọc
+  dồn) - đã merge PR #38, chưa phát hành; dựng thử APK ký số ở máy đạt (versionCode 26114303, cài đè giữ dữ liệu).
+- [ ] QA-06 web vs app lệch ~20 dB khi chưa hiệu chuẩn (phiếu 06 mục 6) - điều tra `getSettings()` Chrome Android.
+- [ ] Lịch sử chưa có ô tìm/lọc (`SEARCH_AND_FILTER.md`) - cần quyết định phạm vi (app + bảng điều khiển web).
 - [ ] **ƯU TIÊN 1 - Kiểm thử toàn diện trên smartphone thật qua adb** (5 phase: kết nối + smoke, chức năng từng tab,
   phi chức năng + bảo mật, sửa lỗi + chuẩn hoá mã, phát hành bản sửa). Kế hoạch + lệnh + tiêu chí:
   `logs/handover/20261117-06_ke-hoach-kiem-thu-smartphone-adb.md`. 👤 cần bật Gỡ lỗi không dây và chạy `adb pair`.
-  Thêm: đo thời gian Argon2id (E2E1 rủi ro 2) + kiểm giao diện tiếng Anh trên máy thật. 20/11 23:10: `adb devices` trống.
+  Thêm: đo thời gian Argon2id (E2E1 rủi ro 2) + kiểm giao diện tiếng Anh trên máy thật. 23/11: Phase 1 xong, Phase 2-3
+  một phần (phiếu 06 mục 6 - danh sách "CHƯA" từng phase).
 - [ ] 👤 Đăng nhập tsudev: ĐÃ HẾT TẮC (22:20 17/11) - `/auth/web/start` → `/oidc/auth` 303 → `/oidc/interaction/<uid>`
   307 → `tsudev.com/login` 200. Còn nghiệm thu bằng tài khoản tsudev thật của chủ dự án: đăng nhập web
   (sounddb.tsudev.com → Đăng nhập) + app, rồi đồng bộ hai thiết bị. Agent không có tài khoản ⇒ không tự làm được.
@@ -45,6 +51,13 @@
 | --- | --- | --- |
 
 ## Đã hoàn thành (mới nhất trên cùng)
+
+- 23/11/2026 - `sound-db-38`: **Kiểm thử máy thật Samsung SM-M325FV** (phiếu 06, PR #38): cài đè 26.11.2301 đạt (SHA256 +
+  chứng thực, Lịch sử 0/0 → 2/2 giữ dữ liệu 21/11); Phase 1 số đo khởi động lạnh/RAM/nhịp vẽ/FrameTiming; âm chuẩn 1 kHz
+  app đọc 1000,0 Hz; 1200 bản ghi đạt; Phase 3 backup/logcat/chết tiến trình đạt. Sửa **QA-03** (Tiếp tục xoá phiên),
+  **QA-04** (Ticker ⇒ Timer, 80 → 20 khung/giây, build p99 60 → 3 ms), **QA-05** (vùng live chỉ báo vùng mức); mở
+  **QA-06**. Bộ đo `integration_test` (hiệu năng, quy mô Lịch sử), bản profile `.profile` cài song song. SDB-V1: ba repo
+  chưa chuyển tên tệp.
 
 - 23/11/2026 - `sound-db-98`: **Bản 26.11.2301** (Latest, PR #36): QA-01 + QA-02, bản sắc v5.0.0; 5 nền tảng đạt,
   VirusTotal 0/73 mọi tệp, `sha256sum -c SHA256SUMS.txt` + `gh attestation verify` đạt; lần đầu phát hành thêm tên

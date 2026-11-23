@@ -40,6 +40,15 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
+  String get meterZoneSafe => 'Mức an toàn';
+
+  @override
+  String get meterZoneCaution => 'Mức cần lưu ý';
+
+  @override
+  String get meterZoneDanger => 'Mức nguy hại';
+
+  @override
   String get timeFast => 'Nhanh';
 
   @override

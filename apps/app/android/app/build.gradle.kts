@@ -55,6 +55,9 @@ android {
         release {
             signingConfig = if (keyFile.exists()) signingConfigs.getByName("release") else signingConfigs.getByName("debug")
         }
+        // Bản profile (đo hiệu năng, integration_test/perf_test.dart) ký khoá debug ⇒ cài đè bản release sẽ lỗi chữ
+        // ký và `flutter drive` tự GỠ app, mất dữ liệu thật trên máy thử. Tách applicationId để cài song song.
+        maybeCreate("profile").applicationIdSuffix = ".profile"
     }
 }
 
