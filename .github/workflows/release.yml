@@ -109,14 +109,31 @@ jobs:
     steps:
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with: { path: out, merge-multiple: true }
-      - run: cd out && sha256sum * > SHA256SUMS && cat SHA256SUMS
+      # Bản chuyển tiếp (phiếu V1 mục 6 bước 2, VERSIONING.md 2.1): phát hành CẢ tên cũ `{arch}-{os}` (Scoop, Homebrew,
+      # linux-packages, /tai-ve/ đang đọc) LẪN tên chuẩn `{os}-{arch}`, cả `SHA256SUMS` lẫn `SHA256SUMS.txt`. Khi mọi
+      # kênh đã chuyển sang tên chuẩn thì bỏ khối sao chép này (bước 4).
+      - name: Tên tệp chuẩn + tệp kiểm
+        run: |
+          cd out
+          for f in *; do
+            n=$(printf '%s' "$f" | sed -E \
+              -e 's/_x64-windows\.zip$/_windows-x64.zip/' \
+              -e 's/_x64-linux\.tar\.gz$/_linux-x64.tar.gz/' \
+              -e 's/_universal-macos\.zip$/_macos-universal.zip/' \
+              -e 's/_arm64-setup\.apk$/_android-arm64.apk/' \
+              -e 's/_x64-setup\.apk$/_android-x64.apk/')
+            if [ "$n" != "$f" ]; then cp "$f" "$n"; fi
+          done
+          sha256sum * > SHA256SUMS
+          cp SHA256SUMS SHA256SUMS.txt
+          cat SHA256SUMS
       - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
         with: { subject-path: 'out/*' }
       - name: Tạo bản phát hành
         env: { GH_TOKEN: '${{ github.token }}', V: '${{ needs.version.outputs.v }}' }
         run: |
           gh release create "$GITHUB_REF_NAME" out/* --repo "$GITHUB_REPOSITORY" --title "Sound Db $V" --draft \
-            --notes "Bản dựng tự động từ ${GITHUB_SHA}. Kiểm chứng: \`sha256sum -c SHA256SUMS --ignore-missing\` và \`gh attestation verify <tệp> --repo $GITHUB_REPOSITORY\`."
+            --notes "Bản dựng tự động từ ${GITHUB_SHA}. Kiểm chứng: \`sha256sum -c SHA256SUMS.txt --ignore-missing\` và \`gh attestation verify <tệp> --repo $GITHUB_REPOSITORY\`."
 
   # Quét VirusTotal khi Release còn NHÁP (DISTRIBUTION_TRUST.md mục 3, phiếu 20261117-P2 P1 bước 3). Mẫu dùng chung ở
   # tsudev-org/.github; chưa có bí mật VT_API_KEY thì bỏ qua (xanh). Có engine gắn cờ ⇒ Release ở nháp, job đỏ.
