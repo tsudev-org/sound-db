@@ -138,17 +138,17 @@ Ghi lại vào phiếu: hãng/model, phiên bản Android, ABI (`getprop ro.prod
 | 2 | xong một phần (21/11) | #30, #31 | Đã chạy (ảnh `logs/qa/20261121/`, không commit): xin quyền micro, đang đo/tạm dừng, lưu phiên (hộp thoại + nhãn), Lịch sử, Phân tích (FFT, phổ đồ, dải octave), Công cụ, Cài đặt. Hai lỗi QA-01, QA-02 đã sửa + test. Chưa làm: âm chuẩn 1 kHz so với web, 1000+ bản ghi, đăng nhập + đồng bộ (👤) |
 | 3 | bắt đầu (21/11) | - | Deep link giả `com.tsudev.sounddb://auth?code=x&state=sai` ⇒ app không crash, không đăng nhập, giữ màn Cài đặt (ĐẠT, ảnh `p3-deeplink-gia.png`). Phần còn lại chưa làm |
 | 4 | QA-01, QA-02 | #30, #31 | |
-| 5 | chưa làm | | Bản sửa chứa QA-01/QA-02 chưa phát hành (Latest vẫn 26.11.1705) |
+| 5 | phát hành xong, chưa cài thử trên máy (23/11) | #36 | `v26.11.2301` Latest (QA-01 + QA-02 + bản sắc v5.0.0), 5 nền tảng đạt, VirusTotal 0/73, SHA256SUMS.txt + `gh attestation verify` đạt. CÒN: cài đè lên Samsung SM-M325FV (kiểm nâng cấp DB v1→v2 giữ dữ liệu, Lịch sử hiện đủ) + chạy lại smoke - cần 👤 cắm máy |
 
 Danh sách lỗi (mã `QA-nn`, mức, tab, cách tái hiện, trạng thái):
 
 - **QA-01 - Nghiêm trọng - Lịch sử**: SQLite hệ thống của Samsung SM-M325FV (Android 13) không có `json_extract` ⇒
   `listSessions` ném "no such function: json_extract", Lịch sử trống dù báo "Đã lưu". Test dùng SQLite ffi (có JSON1)
   nên không thấy. Sửa: DB v2 cột `sessions.started_at` + chỉ mục, nâng cấp v1 điền lại bằng Dart; Lịch sử báo
-  `historyLoadFailed` thay vì trống im lặng; test cấm hàm JSON1 trong SQL của `lib/`. **ĐÃ SỬA** PR #30 (chưa phát hành).
+  `historyLoadFailed` thay vì trống im lặng; test cấm hàm JSON1 trong SQL của `lib/`. **ĐÃ SỬA** PR #30, phát hành 26.11.2301.
 - **QA-02 - Trung bình - Phân tích > Dải octave**: vòng 1/3 octave chạy tâm 1 Hz..20 kHz, tâm < 10 Hz làm tròn danh
   định thành 10 ⇒ nhãn trục "10 10 10 10 16..." + cảnh báo "Dải thấp nhất chỉ phủ 0,0 bin FFT". Sửa Rust tham chiếu +
-  Dart (x = -20..13), `vectors.json` không đổi. **ĐÃ SỬA** PR #31 (chưa phát hành).
+  Dart (x = -20..13), `vectors.json` không đổi. **ĐÃ SỬA** PR #31, phát hành 26.11.2301.
 
 Đo trên máy 21/11 (bằng chứng ảnh): FFT 8192 Hann 5,86 Hz/bin trọng số A hiển thị đúng, nhãn trục không tràn; Cài
 đặt hiện phiên bản 26.11.1705 và khối "Âm thanh không bao giờ rời thiết bị".

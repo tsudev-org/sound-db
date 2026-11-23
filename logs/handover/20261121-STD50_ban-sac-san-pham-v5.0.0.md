@@ -2,7 +2,7 @@
 
 - **Mã phiếu**: 20261121-STD50
 - **Từ**: phiên tsudev-standards, 21/11/2026 - **Đến**: phiên kế tiếp của `sound-db`
-- **Trạng thái**: MỞ
+- **Trạng thái**: ĐÓNG (23/11/2026, PR #34, #35)
 - **Nguồn**: https://github.com/tsudev-org/tsudev-standards/releases/tag/v5.0.0 - `docs/DESIGN_SYSTEM.md` mục 1.2,
   CHANGELOG 5.0.0 "Hướng dẫn nâng cấp"
 - **Bối cảnh**: chủ dự án muốn mỗi sản phẩm có đặc trưng nổi bật riêng (màu, giao diện, bố cục). Trước v5.0.0, 9/11
@@ -47,3 +47,13 @@ kiểm chống trùng phải xanh. KHÔNG ghi đè tại repo này.
 ## Kết quả xử lý
 
 - 
+- 23/11/2026 (agent-sound): **XONG cả hai PR**, đã deploy production (sound.tsudev.com có `data-product="sounddb"`).
+  - PR #34 `feat(ui): bản sắc sounddb theo tsudev-standards v5.0.0`: sync `.standards` v5.0.0; web nạp
+    `.standards/tokens/tokens.css` + `products.css`, `data-product`, `data-platform="web"`; Space Grotesk tự host
+    (vietnamese + latin, 500/700); `build-tokens.mjs` gộp lớp nền + `products/sounddb.json`, extensions chỉ còn biểu
+    đồ; nút `--radius-control` (web) / `SdbRadius.control` (app). Ảnh trước/sau: `docs/ui/ban-sac-v5/`.
+  - PR #35 `feat(ui): bố cục do-luong + hoạ tiết song-am`: trang chủ mặt đồng hồ trung tâm + 4 số liệu quanh;
+    `src/lib/song-am.mjs` dùng chung hero + og-image; app màn Đo mức dùng `LevelDial`.
+  - Lệch còn lại: app Flutter chưa dùng Space Grotesk (chỉ web) - chuẩn chỉ đòi gộp màu ở app; thêm font vào app khi
+    có lý do (tăng cỡ gói). Phát hành trong bản 26.11.2301.
+- **Trạng thái: ĐÓNG.**
