@@ -28,6 +28,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
+import { songAm } from '../src/lib/song-am.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const WEB = path.resolve(HERE, '..'); // apps/web
@@ -201,9 +202,16 @@ async function main() {
   const W = 1200;
   const H = 630;
   const L = 300;
+  // Hoạ tiết chữ ký (tsudev-standards v5.0.0 DESIGN_SYSTEM 1.2.4) - cùng hình với hero website.
+  const motif = CFG.ogMotif === 'song-am'
+    ? `<g fill="none" stroke="${CFG.ogMotifColor}" stroke-width="2" opacity="0.14">${songAm(W, 420)
+        .map((l) => `<path d="${l.d}" opacity="${l.opacity}" transform="translate(0 ${H - 420 - 30})"/>`)
+        .join('')}</g>`
+    : '';
   const back = Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">
     <defs><radialGradient id="g" cx="0.28" cy="0.5" r="0.75"><stop offset="0%" stop-color="${CFG.ogGlow}"/><stop offset="100%" stop-color="#0a0a0a"/></radialGradient></defs>
     <rect width="${W}" height="${H}" fill="url(#g)"/>
+    ${motif}
     <text x="500" y="270" font-family="DejaVu Sans, Verdana, sans-serif" font-size="68" font-weight="700" fill="#ededed">${esc(CFG.name)}</text>
     ${CFG.ogLines.map((l, i) => `<text x="500" y="${340 + i * 44}" font-family="DejaVu Sans, Verdana, sans-serif" font-size="30" fill="#b4b4b4">${esc(l)}</text>`).join('')}
     <text x="500" y="${360 + CFG.ogLines.length * 44 + 20}" font-family="DejaVu Sans, Verdana, sans-serif" font-size="26" fill="${CFG.ogAccent}">${esc(CFG.domain)}</text>

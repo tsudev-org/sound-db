@@ -1,19 +1,81 @@
 ---
 import Trang from '../layouts/Trang.astro';
 import { duongDan as dd, t, type Lang } from '../i18n';
+import { songAm } from '../lib/song-am.mjs';
+import { dinhDangSo } from '../lib/dong-ho';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const c = t(lang).chu;
+
+// Bố cục chữ ký `do-luong` (DESIGN_SYSTEM 1.2.2): một mặt đồng hồ lớn ở trung tâm, số liệu phụ xếp quanh. Số đo là
+// MINH HOẠ tĩnh (ghi rõ dưới mặt đồng hồ); vạch vùng màu theo ngưỡng WHO/NIOSH của app (70 / 85 dBA).
+const DB_MAX = 130;
+const GOC_DAU = 150; // độ, chiều kim đồng hồ từ trục x (SVG y hướng xuống)
+const QUET = 240;
+const R = 100;
+const goc = (db: number) => ((GOC_DAU + (QUET * db) / DB_MAX) * Math.PI) / 180;
+const diem = (db: number, r = R) => [120 + r * Math.cos(goc(db)), 120 + r * Math.sin(goc(db))].map((v) => v.toFixed(2));
+const cung = (a: number, b: number, r = R) => {
+  const [x1, y1] = diem(a, r);
+  const [x2, y2] = diem(b, r);
+  return `M${x1} ${y1} A${r} ${r} 0 ${(QUET * (b - a)) / DB_MAX > 180 ? 1 : 0} 1 ${x2} ${y2}`;
+};
+const mau = c.mau;
+const vach = Array.from({ length: DB_MAX / 10 + 1 }, (_, i) => i * 10);
+const song = songAm(1200, 420);
 ---
 <Trang lang={lang} moTa={c.moTa} duongDan="/">
-  <section class="hero khung">
-    <span class="nhan">{c.nhan}</span>
-    <h1 set:html={c.tieuDe} />
-    <p>{c.dan}</p>
-    <div class="hang-nut">
-      <a class="nut nut--chinh" href={dd(lang, '/do/')}>{c.doNgay}</a>
-      <a class="nut nut--phu" href={dd(lang, '/tai-ve/')}>{c.taiApp}</a>
+  <section class="hero hero--do-luong">
+    <svg class="song-am" viewBox="0 0 1200 420" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+      {song.map((l) => <path d={l.d} opacity={l.opacity} />)}
+    </svg>
+    <div class="khung">
+      <span class="nhan">{c.nhan}</span>
+      <h1 set:html={c.tieuDe} />
+      <p>{c.dan}</p>
+
+      <figure class="dong-ho" aria-labelledby="dong-ho-chu">
+        <ul class="dong-ho__phu dong-ho__phu--trai">
+          <li><span>Leq</span><b>{dinhDangSo(lang, mau.leq)} <small>dB</small></b></li>
+          <li><span>Lmax</span><b>{dinhDangSo(lang, mau.lmax)} <small>dB</small></b></li>
+        </ul>
+        <div class="dong-ho__mat">
+          <svg viewBox="0 0 240 196" role="img" aria-labelledby="dong-ho-chu">
+            <path class="dong-ho__ray" d={cung(0, DB_MAX)} />
+            <path class="dong-ho__vung dong-ho__vung--an-toan" d={cung(0, 70, 112)} />
+            <path class="dong-ho__vung dong-ho__vung--luu-y" d={cung(70, 85, 112)} />
+            <path class="dong-ho__vung dong-ho__vung--nguy" d={cung(85, DB_MAX, 112)} />
+            <path class="dong-ho__muc" d={cung(0, mau.laf)} />
+            {vach.map((v) => {
+              const [x1, y1] = diem(v, 86);
+              const [x2, y2] = diem(v, v % 30 === 0 ? 76 : 81);
+              const [tx, ty] = diem(v, 64);
+              return (
+                <g class="dong-ho__vach">
+                  <line x1={x1} y1={y1} x2={x2} y2={y2} />
+                  {v % 30 === 0 && <text x={tx} y={ty}>{v}</text>}
+                </g>
+              );
+            })}
+          </svg>
+          <div class="dong-ho__so">
+            <span class="dong-ho__ten">LAF</span>
+            <output>{dinhDangSo(lang, mau.laf)}</output>
+            <span class="dong-ho__don-vi">dB(A)</span>
+          </div>
+        </div>
+        <ul class="dong-ho__phu dong-ho__phu--phai">
+          <li><span>Lpeak</span><b>{dinhDangSo(lang, mau.lpeak)} <small>dB</small></b></li>
+          <li><span>{c.tanSoTroi}</span><b>{dinhDangSo(lang, mau.tanSo, 2)} <small>kHz</small></b></li>
+        </ul>
+        <figcaption id="dong-ho-chu">{c.minhHoa}</figcaption>
+      </figure>
+
+      <div class="hang-nut">
+        <a class="nut nut--chinh" href={dd(lang, '/do/')}>{c.doNgay}</a>
+        <a class="nut nut--phu" href={dd(lang, '/tai-ve/')}>{c.taiApp}</a>
+      </div>
     </div>
   </section>
 
