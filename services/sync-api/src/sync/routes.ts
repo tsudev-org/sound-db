@@ -7,6 +7,7 @@ import type { AppEnv } from '../env';
 import { ApiError } from '../lib/errors';
 import { rateLimit } from '../lib/ratelimit';
 import { requirePro } from '../pro/entitlements';
+import { sessionSearchNorm } from '../lib/vi-text';
 import { MAX_RECORD_BYTES, pushBody, validateData, type Kind } from './schema';
 
 interface RecordRow {
@@ -37,11 +38,14 @@ export async function writeRecord(
   if (!rev) throw new ApiError(401, 'unauthenticated', 'Tài khoản không còn tồn tại.');
   await db
     .prepare(
-      `INSERT INTO records (user_id, kind, id, rev, updated_at, deleted, data, device_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      `INSERT INTO records (user_id, kind, id, rev, updated_at, deleted, data, device_id, search_norm)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
        ON CONFLICT(user_id, kind, id) DO UPDATE SET rev = excluded.rev, updated_at = excluded.updated_at,
-         deleted = excluded.deleted, data = excluded.data, device_id = excluded.device_id`,
+         deleted = excluded.deleted, data = excluded.data, device_id = excluded.device_id,
+         search_norm = excluded.search_norm`,
     )
-    .bind(userId, kind, id, rev.rev, updatedAt, deleted ? 1 : 0, JSON.stringify(data), deviceId)
+    .bind(userId, kind, id, rev.rev, updatedAt, deleted ? 1 : 0, JSON.stringify(data), deviceId,
+      kind === 'session' ? sessionSearchNorm(data) : '')
     .run();
   return rev.rev;
 }

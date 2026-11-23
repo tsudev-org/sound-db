@@ -717,4 +717,42 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get proCheckAgain => 'Kiểm tra lại gói Pro';
+
+  @override
+  String get historySearchHint => 'Tìm theo nhãn, ghi chú, thiết bị';
+
+  @override
+  String get historyClearSearch => 'Xoá từ khoá';
+
+  @override
+  String get historyRangeLabel => 'Khoảng thời gian';
+
+  @override
+  String get historyRangeAll => 'Mọi lúc';
+
+  @override
+  String get historyRange7d => '7 ngày qua';
+
+  @override
+  String get historyRange30d => '1 tháng qua';
+
+  @override
+  String get historyRange1y => '1 năm qua';
+
+  @override
+  String get historyRangeCustom => 'Tuỳ chọn…';
+
+  @override
+  String historyNoMatchQuery(String query) {
+    return 'Không tìm thấy phiên đo phù hợp với \"$query\". Thử kiểm tra chính tả, từ khoá khác hoặc nới khoảng thời gian.';
+  }
+
+  @override
+  String get historyNoMatch =>
+      'Không có phiên đo nào trong khoảng thời gian này. Thử nới khoảng thời gian.';
+
+  @override
+  String historyResultCount(int count) {
+    return '$count phiên đo phù hợp';
+  }
 }

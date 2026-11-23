@@ -12,7 +12,9 @@
   "meterZoneSafe": "Mức an toàn",
   "meterZoneCaution": "Mức cần lưu ý",
   "meterZoneDanger": "Mức nguy hại",
-  "@meterZoneSafe": {"description": "Vùng live trợ năng: chỉ đọc khi vùng mức đổi (QA-05), không đọc từng con số."},
+  "@meterZoneSafe": {
+    "description": "Vùng live trợ năng: chỉ đọc khi vùng mức đổi (QA-05), không đọc từng con số."
+  },
   "@meterLevelSemantics": {
     "placeholders": {
       "name": {
@@ -471,5 +473,30 @@
   "proBuyWeb": "Mua TsuDEV Pro trên tsudev.com",
   "supportTsudev": "Ủng hộ TsuDEV",
   "proPayNote": "Thanh toán trên tsudev.com bằng VietQR. Mua xong, mở lại app hoặc bấm Kiểm tra lại.",
-  "proCheckAgain": "Kiểm tra lại gói Pro"
+  "proCheckAgain": "Kiểm tra lại gói Pro",
+  "historySearchHint": "Tìm theo nhãn, ghi chú, thiết bị",
+  "historyClearSearch": "Xoá từ khoá",
+  "historyRangeLabel": "Khoảng thời gian",
+  "historyRangeAll": "Mọi lúc",
+  "historyRange7d": "7 ngày qua",
+  "historyRange30d": "1 tháng qua",
+  "historyRange1y": "1 năm qua",
+  "historyRangeCustom": "Tuỳ chọn…",
+  "historyNoMatchQuery": "Không tìm thấy phiên đo phù hợp với \"{query}\". Thử kiểm tra chính tả, từ khoá khác hoặc nới khoảng thời gian.",
+  "@historyNoMatchQuery": {
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
+  "historyNoMatch": "Không có phiên đo nào trong khoảng thời gian này. Thử nới khoảng thời gian.",
+  "historyResultCount": "{count} phiên đo phù hợp",
+  "@historyResultCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

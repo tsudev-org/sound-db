@@ -204,5 +204,16 @@
   "proBuyWeb": "Buy TsuDEV Pro on tsudev.com",
   "supportTsudev": "Support TsuDEV",
   "proPayNote": "Pay on tsudev.com with VietQR. After buying, reopen the app or tap Check again.",
-  "proCheckAgain": "Check Pro plan again"
+  "proCheckAgain": "Check Pro plan again",
+  "historySearchHint": "Search label, note, device",
+  "historyClearSearch": "Clear search",
+  "historyRangeLabel": "Time range",
+  "historyRangeAll": "Any time",
+  "historyRange7d": "Last 7 days",
+  "historyRange30d": "Last month",
+  "historyRange1y": "Last year",
+  "historyRangeCustom": "Custom…",
+  "historyNoMatchQuery": "No measurement sessions match \"{query}\". Check the spelling, try other words or widen the time range.",
+  "historyNoMatch": "No measurement sessions in this time range. Try widening the range.",
+  "historyResultCount": "{count, plural, =1{1 matching session} other{{count} matching sessions}}"
 }

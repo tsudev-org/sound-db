@@ -17,15 +17,17 @@ const _sources = [AndroidAudioSource.unprocessed, AndroidAudioSource.mic, Androi
 
 Future<Float32List> _record(AndroidAudioSource source, Duration d) async {
   final rec = AudioRecorder();
-  final stream = await rec.startStream(RecordConfig(
-    encoder: AudioEncoder.pcm16bits,
-    sampleRate: _rate,
-    numChannels: 1,
-    autoGain: false,
-    echoCancel: false,
-    noiseSuppress: false,
-    androidConfig: AndroidRecordConfig(audioSource: source),
-  ));
+  final stream = await rec.startStream(
+    RecordConfig(
+      encoder: AudioEncoder.pcm16bits,
+      sampleRate: _rate,
+      numChannels: 1,
+      autoGain: false,
+      echoCancel: false,
+      noiseSuppress: false,
+      androidConfig: AndroidRecordConfig(audioSource: source),
+    ),
+  );
   final bytes = BytesBuilder(copy: false);
   final sub = stream.listen(bytes.add);
   await Future<void>.delayed(d);

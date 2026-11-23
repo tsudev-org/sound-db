@@ -36,8 +36,18 @@ const v = t(lang).bang;
       </p>
 
       <h2>{v.phienDo}</h2>
-      <p><label class="an-di" for="tim">{v.timTheoTen}</label>
-        <input id="tim" class="o-tim" type="search" placeholder={v.timTheoTen} maxlength="100"></p>
+      <div class="loc-phien" role="search">
+        <label class="an-di" for="tim">{v.timTheoTen}</label>
+        <input id="tim" class="o-tim" type="search" placeholder={v.timTheoTen} maxlength="100">
+        <label class="loc-phien__muc">{v.khoangThoiGian}
+          <select id="khoang" class="o-chon">
+            {v.khoang.map((t, i) => <option value={['tat-ca', '7n', '30n', '1y', 'tuy-chon'][i]}>{t}</option>)}
+          </select></label>
+        <span id="khoang-tuy-chon" class="loc-phien__muc" hidden>
+          <label>{v.tuNgay} <input id="tu-ngay" class="o-chon" type="date"></label>
+          <label>{v.denNgay} <input id="den-ngay" class="o-chon" type="date"></label>
+        </span>
+      </div>
       <div class="vung-ban-ghi">
         <div class="cuon-ngang" tabindex="0" role="region" aria-label={v.bangPhien}>
         <table class="bang">

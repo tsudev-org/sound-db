@@ -87,6 +87,46 @@ describe('đồng bộ', () => {
     expect(search.items[0].label).toBe('Công trường 50%');
   });
 
+  it('tìm không dấu theo nhãn/ghi chú/thiết bị + lọc khoảng ngày (SEARCH_AND_FILTER mục 4, 6, 7)', async () => {
+    const a = await login('tim-loc');
+    const mk = (label: string, at: string, extra: Record<string, unknown> = {}) => ({
+      kind: 'session', id: crypto.randomUUID(), updated_at: 1_790_000_000_000, deleted: false,
+      data: { ...session(label, at), ...extra },
+    });
+    await call('/api/v1/sync/push', { method: 'POST', headers: a, body: JSON.stringify({ changes: [
+      mk('Phòng ngủ', '2026-11-01T08:00:00.000Z'),
+      mk('Đường Giải Phóng', '2026-11-10T08:00:00.000Z', { note: 'giờ cao điểm' }),
+      mk('Văn phòng', '2026-11-20T08:00:00.000Z', { device_model: 'Galaxy M32' }),
+    ] }) });
+    const get = async (qs: string) => (await (await call(`/api/v1/sessions?${qs}`, { headers: a })).json()) as any;
+    const labels = (r: any) => r.items.map((x: any) => x.label);
+
+    expect(labels(await get('q=phong'))).toEqual(['Văn phòng', 'Đường Giải Phóng', 'Phòng ngủ']);
+    expect(labels(await get('q=duong%20giai'))).toEqual(['Đường Giải Phóng']);
+    expect(labels(await get('q=cao%20diem'))).toEqual(['Đường Giải Phóng']);
+    expect(labels(await get('q=galaxy%20phong'))).toEqual(['Văn phòng']);
+    expect((await get('q=GIẢI')).meta.query_normalized).toBe('giai');
+    // Dưới 2 ký tự ⇒ không lọc; ký tự đại diện LIKE không phải "mọi thứ".
+    expect((await get('q=p')).total).toBe(3);
+    expect((await get('q=p%25')).total).toBe(3);
+    const range = await get('date_from=2026-11-05T00:00:00.000Z&date_to=2026-11-20T08:00:00.000Z');
+    expect(labels(range)).toEqual(['Đường Giải Phóng']);
+    expect(range.total).toBe(1);
+    expect(labels(await get('q=phong&date_from=2026-11-05T00:00:00.000Z'))).toEqual(['Văn phòng', 'Đường Giải Phóng']);
+    expect((await call('/api/v1/sessions?date_from=khong-phai-ngay', { headers: a })).status).toBe(400);
+  });
+
+  it('bản ghi cũ chưa có cột tìm kiếm được điền khi liệt kê', async () => {
+    const a = await login('ban-cu');
+    await call('/api/v1/sync/push', { method: 'POST', headers: a, body: JSON.stringify({ changes: [
+      { kind: 'session', id: crypto.randomUUID(), updated_at: 1_790_000_000_000, deleted: false, data: session('Bếp nhà') },
+    ] }) });
+    // Giả lập bản ghi ghi TRƯỚC migration 0003.
+    await env.DB.prepare('UPDATE records SET search_norm = NULL').run();
+    const r = (await (await call('/api/v1/sessions?q=bep', { headers: a })).json()) as any;
+    expect(r.items.map((x: any) => x.label)).toEqual(['Bếp nhà']);
+  });
+
   it('thu hồi thiết bị chặn ngay access token của nó', async () => {
     const a = await login('revoker');
     const me = (await (await call('/api/v1/me', { headers: a })).json()) as any;
