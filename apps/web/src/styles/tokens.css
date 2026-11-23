@@ -1,37 +1,30 @@
 /* TỆP SINH TỰ ĐỘNG bởi scripts/build-tokens.mjs - KHÔNG SỬA TAY.
-   Nguồn: .standards/tokens/design-tokens.json + tokens/extensions.sound-db.json
-   Tối là mặc định (:root); [data-theme='light'] do public/theme.js đặt trước khi vẽ. */
-:root {
-  --bg-base: #0A0A0A;
-  --bg-surface: #0F1114;
-  --bg-subtle: #15181D;
-  --bg-hover: #1C2027;
-  --border: #22272F;
-  --border-strong: #2C323C;
-  --border-control: #6E6E6E;
-  --text-primary: #EDEDED;
-  --text-secondary: #B4B4B4;
-  --text-muted: #8F8F8F;
-  --text-link: #7DD3FC;
-  --primary: #38BDF8;
-  --primary-hover: #7DD3FC;
-  --primary-active: #0EA5E9;
-  --on-primary: #0A0A0A;
-  --focus-ring: #38BDF8;
-  --success: #4ADE80;
-  --warning: #FBBF24;
-  --danger: #F87171;
-  --info: #38BDF8;
-  --on-status: #0A0A0A;
-  --overlay: rgba(0, 0, 0, 0.6);
-  --chart-line: #38BDF8;
-  --chart-fill: rgba(56,189,248,0.18);
+   Nguồn: tokens/extensions.sound-db.json + màu nhấn .standards/tokens/products/sounddb.json.
+   Nạp SAU .standards/tokens/tokens.css + products.css; data-theme do public/theme.js đặt trước khi vẽ. */
+:root,
+[data-theme='light'] {
+  --chart-line: #4C7601;
+  --chart-fill: rgba(76, 118, 1, 0.1);
+  --chart-peak: #B45309;
+  --chart-grid: #D4D4D8;
+  --chart-axis: #52525B;
+  --chart-level-safe: #15803D;
+  --chart-level-caution: #B45309;
+  --chart-level-danger: #DC2626;
+}
+
+[data-theme='dark'] {
+  --chart-line: #7DB530;
+  --chart-fill: rgba(125, 181, 48, 0.14);
   --chart-peak: #FBBF24;
   --chart-grid: #2C323C;
   --chart-axis: #8F8F8F;
   --chart-level-safe: #4ADE80;
   --chart-level-caution: #FBBF24;
   --chart-level-danger: #F87171;
+}
+
+:root {
   --spectrogram-0: #000004;
   --spectrogram-1: #320A5E;
   --spectrogram-2: #781B6C;
@@ -39,47 +32,6 @@
   --spectrogram-4: #EC6824;
   --spectrogram-5: #FBB41A;
   --spectrogram-6: #FCFFA4;
-  --radius-none: 0px;
-  --radius-sm: 4px;
-  --radius-md: 6px;
-  --radius-lg: 8px;
-  --font-sans: 'Inter', 'SF Pro Text', 'Segoe UI', 'Roboto', system-ui, -apple-system, sans-serif;
-  --font-mono: 'JetBrains Mono', 'Cascadia Code', 'Consolas', monospace;
   --zone-caution: 70;
   --zone-danger: 85;
-  color-scheme: dark;
-}
-
-:root[data-theme='light'] {
-  --bg-base: #FAFAFA;
-  --bg-surface: #FFFFFF;
-  --bg-subtle: #F4F4F5;
-  --bg-hover: #EBEBED;
-  --border: #E4E4E7;
-  --border-strong: #D4D4D8;
-  --border-control: #71717A;
-  --text-primary: #0A0A0A;
-  --text-secondary: #3F3F46;
-  --text-muted: #52525B;
-  --text-link: #0757A3;
-  --primary: #0868C4;
-  --primary-hover: #0757A3;
-  --primary-active: #064785;
-  --on-primary: #FFFFFF;
-  --focus-ring: #0868C4;
-  --success: #15803D;
-  --warning: #B45309;
-  --danger: #DC2626;
-  --info: #0369A1;
-  --on-status: #FFFFFF;
-  --overlay: rgba(10,10,10,0.45);
-  --chart-line: #0868C4;
-  --chart-fill: rgba(8,104,196,0.14);
-  --chart-peak: #B45309;
-  --chart-grid: #D4D4D8;
-  --chart-axis: #52525B;
-  --chart-level-safe: #15803D;
-  --chart-level-caution: #B45309;
-  --chart-level-danger: #DC2626;
-  color-scheme: light;
 }

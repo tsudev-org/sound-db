@@ -1,5 +1,5 @@
 // TỆP SINH TỰ ĐỘNG bởi scripts/build-tokens.mjs - KHÔNG SỬA TAY.
-// Nguồn: .standards/tokens/design-tokens.json + tokens/extensions.sound-db.json
+// Nguồn: .standards/tokens/design-tokens.json + .standards/tokens/products/sounddb.json + tokens/extensions.sound-db.json
 // ignore_for_file: public_member_api_docs
 
 import 'dart:ui' show Color;
@@ -22,6 +22,10 @@ class SdbPalette {
     required this.primaryActive,
     required this.onPrimary,
     required this.focusRing,
+    required this.accent,
+    required this.glow,
+    required this.iconInfo,
+    required this.iconNav,
     required this.success,
     required this.warning,
     required this.danger,
@@ -54,6 +58,10 @@ class SdbPalette {
   final Color primaryActive;
   final Color onPrimary;
   final Color focusRing;
+  final Color accent;
+  final Color glow;
+  final Color iconInfo;
+  final Color iconNav;
   final Color success;
   final Color warning;
   final Color danger;
@@ -80,20 +88,24 @@ class SdbPalette {
     textPrimary: Color(0xFF0A0A0A),
     textSecondary: Color(0xFF3F3F46),
     textMuted: Color(0xFF52525B),
-    textLink: Color(0xFF0757A3),
-    primary: Color(0xFF0868C4),
-    primaryHover: Color(0xFF0757A3),
-    primaryActive: Color(0xFF064785),
+    textLink: Color(0xFF3F6301),
+    primary: Color(0xFF4C7601),
+    primaryHover: Color(0xFF3F6301),
+    primaryActive: Color(0xFF335100),
     onPrimary: Color(0xFFFFFFFF),
-    focusRing: Color(0xFF0868C4),
+    focusRing: Color(0xFF4C7601),
+    accent: Color(0xFF365501),
+    glow: Color(0x1A4C7601),
+    iconInfo: Color(0xFF4C7601),
+    iconNav: Color(0xFF3F6301),
     success: Color(0xFF15803D),
     warning: Color(0xFFB45309),
     danger: Color(0xFFDC2626),
     info: Color(0xFF0369A1),
     onStatus: Color(0xFFFFFFFF),
     overlay: Color(0x730A0A0A),
-    chartLine: Color(0xFF0868C4),
-    chartFill: Color(0x240868C4),
+    chartLine: Color(0xFF4C7601),
+    chartFill: Color(0x1A4C7601),
     chartPeak: Color(0xFFB45309),
     chartGrid: Color(0xFFD4D4D8),
     chartAxis: Color(0xFF52525B),
@@ -113,20 +125,24 @@ class SdbPalette {
     textPrimary: Color(0xFFEDEDED),
     textSecondary: Color(0xFFB4B4B4),
     textMuted: Color(0xFF8F8F8F),
-    textLink: Color(0xFF7DD3FC),
-    primary: Color(0xFF38BDF8),
-    primaryHover: Color(0xFF7DD3FC),
-    primaryActive: Color(0xFF0EA5E9),
+    textLink: Color(0xFF92C35B),
+    primary: Color(0xFF7DB530),
+    primaryHover: Color(0xFF95C65E),
+    primaryActive: Color(0xFF699F08),
     onPrimary: Color(0xFF0A0A0A),
-    focusRing: Color(0xFF38BDF8),
+    focusRing: Color(0xFF7DB530),
+    accent: Color(0xFFAFD985),
+    glow: Color(0x247DB530),
+    iconInfo: Color(0xFF7DB530),
+    iconNav: Color(0xFF92C35B),
     success: Color(0xFF4ADE80),
     warning: Color(0xFFFBBF24),
     danger: Color(0xFFF87171),
     info: Color(0xFF38BDF8),
     onStatus: Color(0xFF0A0A0A),
     overlay: Color(0x99000000),
-    chartLine: Color(0xFF38BDF8),
-    chartFill: Color(0x2E38BDF8),
+    chartLine: Color(0xFF7DB530),
+    chartFill: Color(0x247DB530),
     chartPeak: Color(0xFFFBBF24),
     chartGrid: Color(0xFF2C323C),
     chartAxis: Color(0xFF8F8F8F),
@@ -151,6 +167,7 @@ class SdbRadius {
   static const double sm = 4;
   static const double md = 6;
   static const double lg = 8;
+  static const double control = 6;
 }
 
 class SdbSpacing {
