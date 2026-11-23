@@ -168,6 +168,12 @@ Danh sách lỗi (mã `QA-nn`, mức, tab, cách tái hiện, trạng thái):
   máy đo chuẩn ⇒ chưa biết bên nào đúng tuyệt đối. **MỞ** - bước kế: in `track.getSettings()` trên Chrome Android
   (autoGainControl có thật sự tắt?), so nguồn `mic` vs `unprocessed` trên app; cân nhắc offset mặc định theo nền tảng
   (ghi ADR nếu đổi). Ảnh `p2-1khz-app-*.png`, `p2-1khz-web-chrome.png`, `p2-nen-web-chrome.png`.
+  **24/11 (sound-db-c9):** Chrome 158 Android `getSettings()` với ràng buộc `may-do.ts`: AGC/AEC/NS đều `false`, 48 kHz
+  ⇒ AGC KHÔNG phải nguyên nhân. Nền thô -33..-36 dBFS (bật xử lý mặc định: -102). Chuỗi thu Chrome nhạy hơn
+  `unprocessed` ~40 dB. CDD 5.4 (SHOULD): `VOICE_RECOGNITION` 90 dB SPL 1 kHz ⇒ -22,4 dBFS ⇒ offset ~112,4. Socket
+  `chrome_devtools_remote` là của Edge; Chrome ở `chrome_devtools_remote_<pid>`. Bước kế: chạy
+  `integration_test/mic_source_test.dart` (unprocessed/mic/voiceRecognition, tông 1 kHz) - lần 24/11 hỏng
+  `AudioRecord initialization check failed -1` (đóng tab Chrome `/do/`, force-stop app rồi chạy lại), có số ⇒ ADR + test.
 
 Đo trên máy 21/11 (bằng chứng ảnh): FFT 8192 Hann 5,86 Hz/bin trọng số A hiển thị đúng, nhãn trục không tràn; Cài
 đặt hiện phiên bản 26.11.1705 và khối "Âm thanh không bao giờ rời thiết bị".
