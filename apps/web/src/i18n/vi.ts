@@ -38,6 +38,9 @@ export const vi = {
       máy; bản miễn phí giữ mọi dữ liệu trên máy, đồng bộ giữa các thiết bị là tính năng TsuDEV Pro.`,
     doNgay: 'Đo ngay trên trình duyệt',
     taiApp: 'Tải ứng dụng',
+    tanSoTroi: 'Tần số trội',
+    minhHoa: 'Minh hoạ mặt đồng hồ với số đo mẫu - bấm "Đo ngay trên trình duyệt" để đo thật bằng micro của bạn.',
+    mau: { laf: 62.4, leq: 58.1, lmax: 71.3, lpeak: 84.0, tanSo: 1.0 },
     boCongCu: 'Bộ công cụ đo đầy đủ',
     boCongCuDan: `Một lõi xử lý tín hiệu viết bằng Rust, chạy giống hệt nhau trên web (WebAssembly) và được kiểm
         khớp từng con số với bản trong ứng dụng.`,

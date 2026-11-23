@@ -1,5 +1,5 @@
 {
-  "_ghi_chu": "Cấu hình dây chuyền thương hiệu (apps/web/scripts/brand-assets.mjs). Logo riêng Sound Db do chủ dự án giao 20/11/2026 (phiếu logs/handover/20261120-LG1): source/logo-sound-db.png, PNG 1024x1024 nền navy đặc, SHA-256 32c1ae43...1955. Góc phải dưới ảnh gốc có dấu ✦ của công cụ tạo ảnh (x/y ~880-930) ⇒ `crop` lấy vuông 704 px quanh logo (159..862), không sửa pixel tệp gốc; bản 1024 là phóng to từ 704 (nợ BRAND_ASSETS mục 15 - có bản gốc sạch lớn hơn thì bỏ crop). Khối nhà làm ở chân trang web giữ logo tsudev (brand/logo-tsudev-*). Chạy lại `node apps/web/scripts/brand-assets.mjs`; CI chạy với --check.",
+  "_ghi_chu": "Cấu hình dây chuyền thương hiệu (apps/web/scripts/brand-assets.mjs). Logo riêng Sound Db do chủ dự án giao 20/11/2026 (phiếu logs/handover/20261120-LG1): source/logo-sound-db.png, PNG 1024x1024 nền navy đặc, SHA-256 32c1ae43...1955. Góc phải dưới ảnh gốc có dấu ✦ của công cụ tạo ảnh (x/y ~880-930) ⇒ `crop` lấy vuông 704 px quanh logo (159..862), không sửa pixel tệp gốc; bản 1024 là phóng to từ 704 (nợ BRAND_ASSETS mục 15 - có bản gốc sạch lớn hơn thì bỏ crop). Khối nhà làm ở chân trang web giữ logo tsudev (brand/logo-tsudev-*). Chạy lại `node apps/web/scripts/brand-assets.mjs`; CI chạy với --check. og-image (23/11/2026, phiếu STD50): màu nhấn + hoạ tiết song-am theo .standards/tokens/products/sounddb.json (accent/primary chế độ Tối).",
   "id": "sound-db",
   "name": "Sound Db",
   "source": "source/logo-sound-db.png",
@@ -11,8 +11,8 @@
   },
   "tileRadius": 0.22,
   "solidBg": "#0e192d",
-  "ogGlow": "#0e3a4a",
-  "ogAccent": "#22c55e",
+  "ogGlow": "#1f2d0b",
+  "ogAccent": "#7DB530",
   "domain": "sound.tsudev.com",
   "ogLines": [
     "Máy đo mức âm, phổ tần số và cao độ",
@@ -28,5 +28,7 @@
     256,
     512,
     1024
-  ]
+  ],
+  "ogMotif": "song-am",
+  "ogMotifColor": "#AFD985"
 }

@@ -9,6 +9,7 @@ import '../../theme/app_theme.dart';
 import '../../theme/tokens.g.dart';
 import '../../widgets/charts.dart';
 import '../../widgets/common.dart';
+import '../../widgets/level_dial.dart';
 import 'save_session.dart';
 
 /// Màn hình chính: máy đo mức âm (sound level meter).
@@ -42,8 +43,8 @@ class MeterPage extends StatelessWidget {
           final zone = level >= SdbMeterZones.danger
               ? p.chartLevelDanger
               : level >= SdbMeterZones.caution
-                  ? p.chartLevelCaution
-                  : p.chartLevelSafe;
+              ? p.chartLevelCaution
+              : p.chartLevelSafe;
           return ListView(
             padding: const EdgeInsets.all(SdbSpacing.s4),
             children: [
@@ -59,20 +60,26 @@ class MeterPage extends StatelessWidget {
                 child: Semantics(
                   liveRegion: true,
                   label: context.l10n.meterLevelSemantics('L${w.label}${t.label}', formatNumber(level)),
-                  child: Column(children: [
-                    Text('L${w.label}${t.label}', style: TextStyle(color: p.textMuted, fontSize: 16)),
-                    Text(
-                      formatNumber(level),
-                      style: TextStyle(
-                        fontSize: 88,
-                        fontWeight: FontWeight.w600,
-                        color: s == null ? p.textMuted : zone,
-                        fontFeatures: const [FontFeature.tabularFigures()],
-                        height: 1.05,
-                      ),
+                  child: LevelDial(
+                    level: s == null ? double.nan : level,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text('L${w.label}${t.label}', style: TextStyle(color: p.textMuted, fontSize: 16)),
+                        Text(
+                          formatNumber(level),
+                          style: TextStyle(
+                            fontSize: 64,
+                            fontWeight: FontWeight.w600,
+                            color: s == null ? p.textMuted : zone,
+                            fontFeatures: const [FontFeature.tabularFigures()],
+                            height: 1.05,
+                          ),
+                        ),
+                        Text('dB(${w.label})', style: TextStyle(color: p.textSecondary, fontSize: 18)),
+                      ],
                     ),
-                    Text('dB(${w.label})', style: TextStyle(color: p.textSecondary, fontSize: 18)),
-                  ]),
+                  ),
                 ),
               ),
               const SizedBox(height: SdbSpacing.s4),
@@ -88,9 +95,17 @@ class MeterPage extends StatelessWidget {
                   ),
                   SegmentedButton<TimeWeighting>(
                     segments: [
-                      ButtonSegment(value: TimeWeighting.fast, label: Text(context.l10n.timeFast), tooltip: 'F - 125 ms'),
+                      ButtonSegment(
+                        value: TimeWeighting.fast,
+                        label: Text(context.l10n.timeFast),
+                        tooltip: 'F - 125 ms',
+                      ),
                       ButtonSegment(value: TimeWeighting.slow, label: Text(context.l10n.timeSlow), tooltip: 'S - 1 s'),
-                      ButtonSegment(value: TimeWeighting.impulse, label: Text(context.l10n.timeImpulse), tooltip: 'I - 35 ms / ${formatNumber(1.5)} s'),
+                      ButtonSegment(
+                        value: TimeWeighting.impulse,
+                        label: Text(context.l10n.timeImpulse),
+                        tooltip: 'I - 35 ms / ${formatNumber(1.5)} s',
+                      ),
                     ],
                     selected: {t},
                     onSelectionChanged: (v) => settings.setTimeWeighting(v.first),
@@ -101,37 +116,67 @@ class MeterPage extends StatelessWidget {
               SizedBox(
                 height: 160,
                 child: RepaintBoundary(
-                  child: CustomPaint(painter: LevelHistoryPainter(m.levelHistory, p, capacity: MeasurementController.historyLength)),
+                  child: CustomPaint(
+                    painter: LevelHistoryPainter(m.levelHistory, p, capacity: MeasurementController.historyLength),
+                  ),
                 ),
               ),
               Text(context.l10n.meterLast2Min, style: TextStyle(color: p.textMuted, fontSize: 12)),
               const SizedBox(height: SdbSpacing.s4),
-              StatGrid(children: [
-                StatTile(label: 'L${w.label}eq', value: formatNumber(s?.leq[w.index] ?? double.nan), hint: context.l10n.meterLeqHint),
-                StatTile(label: 'L${w.label}${t.label}max', value: formatNumber(s?.max[w.index][t.index] ?? double.nan)),
-                StatTile(label: 'L${w.label}${t.label}min', value: formatNumber(s?.min[w.index][t.index] ?? double.nan)),
-                StatTile(label: 'L${w.label}peak', value: formatNumber(s?.peak[w.index] ?? double.nan), hint: context.l10n.meterPeakHint),
-                StatTile(label: 'LAF10', value: formatNumber(s?.percentiles[2] ?? double.nan), hint: context.l10n.meterL10Hint),
-                StatTile(label: 'LAF50', value: formatNumber(s?.percentiles[3] ?? double.nan)),
-                StatTile(label: 'LAF90', value: formatNumber(s?.percentiles[4] ?? double.nan), hint: context.l10n.meterL90Hint),
-                StatTile(label: 'LAE (SEL)', value: formatNumber(s?.selA ?? double.nan)),
-                StatTile(label: context.l10n.duration, value: formatDuration(s?.elapsedSeconds ?? 0)),
-              ]),
+              StatGrid(
+                children: [
+                  StatTile(
+                    label: 'L${w.label}eq',
+                    value: formatNumber(s?.leq[w.index] ?? double.nan),
+                    hint: context.l10n.meterLeqHint,
+                  ),
+                  StatTile(
+                    label: 'L${w.label}${t.label}max',
+                    value: formatNumber(s?.max[w.index][t.index] ?? double.nan),
+                  ),
+                  StatTile(
+                    label: 'L${w.label}${t.label}min',
+                    value: formatNumber(s?.min[w.index][t.index] ?? double.nan),
+                  ),
+                  StatTile(
+                    label: 'L${w.label}peak',
+                    value: formatNumber(s?.peak[w.index] ?? double.nan),
+                    hint: context.l10n.meterPeakHint,
+                  ),
+                  StatTile(
+                    label: 'LAF10',
+                    value: formatNumber(s?.percentiles[2] ?? double.nan),
+                    hint: context.l10n.meterL10Hint,
+                  ),
+                  StatTile(label: 'LAF50', value: formatNumber(s?.percentiles[3] ?? double.nan)),
+                  StatTile(
+                    label: 'LAF90',
+                    value: formatNumber(s?.percentiles[4] ?? double.nan),
+                    hint: context.l10n.meterL90Hint,
+                  ),
+                  StatTile(label: 'LAE (SEL)', value: formatNumber(s?.selA ?? double.nan)),
+                  StatTile(label: context.l10n.duration, value: formatDuration(s?.elapsedSeconds ?? 0)),
+                ],
+              ),
               const SizedBox(height: SdbSpacing.s4),
               _DoseCard(snapshot: s),
               const SizedBox(height: SdbSpacing.s4),
-              Wrap(spacing: SdbSpacing.s2, runSpacing: SdbSpacing.s2, children: [
-                OutlinedButton.icon(
-                  onPressed: s == null ? null : m.resetSession,
-                  icon: const Icon(Icons.restart_alt),
-                  label: Text(context.l10n.resetSession),
-                ),
-                FilledButton.icon(
-                  onPressed: s == null ? null : () => saveCurrentSession(context),
-                  icon: const Icon(Icons.save_outlined),
-                  label: Text(context.l10n.saveSession),
-                ),
-              ]),
+              Wrap(
+                spacing: SdbSpacing.s2,
+                runSpacing: SdbSpacing.s2,
+                children: [
+                  OutlinedButton.icon(
+                    onPressed: s == null ? null : m.resetSession,
+                    icon: const Icon(Icons.restart_alt),
+                    label: Text(context.l10n.resetSession),
+                  ),
+                  FilledButton.icon(
+                    onPressed: s == null ? null : () => saveCurrentSession(context),
+                    icon: const Icon(Icons.save_outlined),
+                    label: Text(context.l10n.saveSession),
+                  ),
+                ],
+              ),
             ],
           );
         },
@@ -152,31 +197,45 @@ class _DoseCard extends StatelessWidget {
       final color = dose >= 100 ? p.chartLevelDanger : (dose >= 50 ? p.chartLevelCaution : p.chartLevelSafe);
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: SdbSpacing.s1),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Row(children: [
-            Text(name, style: const TextStyle(fontWeight: FontWeight.w600)),
-            const SizedBox(width: SdbSpacing.s2),
-            Expanded(child: Text(rule, style: TextStyle(color: p.textMuted, fontSize: 12))),
-            Text('${formatPercent(dose, digits: 2)} · TWA ${formatNumber(twa)}'),
-          ]),
-          const SizedBox(height: SdbSpacing.s1),
-          LinearProgressIndicator(value: (dose / 100).clamp(0, 1), color: color, backgroundColor: p.bgSubtle, minHeight: 6),
-        ]),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Text(name, style: const TextStyle(fontWeight: FontWeight.w600)),
+                const SizedBox(width: SdbSpacing.s2),
+                Expanded(
+                  child: Text(rule, style: TextStyle(color: p.textMuted, fontSize: 12)),
+                ),
+                Text('${formatPercent(dose, digits: 2)} · TWA ${formatNumber(twa)}'),
+              ],
+            ),
+            const SizedBox(height: SdbSpacing.s1),
+            LinearProgressIndicator(
+              value: (dose / 100).clamp(0, 1),
+              color: color,
+              backgroundColor: p.bgSubtle,
+              minHeight: 6,
+            ),
+          ],
+        ),
       );
     }
 
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(SdbSpacing.s4),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(context.l10n.doseTitle, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-          const SizedBox(height: SdbSpacing.s2),
-          row('NIOSH', s?.doseNioshPercent ?? 0, s?.twaNiosh ?? double.nan, context.l10n.doseNioshRule),
-          row('OSHA', s?.doseOshaPercent ?? 0, s?.twaOsha ?? double.nan, context.l10n.doseOshaRule),
-          const SizedBox(height: SdbSpacing.s1),
-          Text(context.l10n.doseNote,
-              style: TextStyle(color: p.textMuted, fontSize: 12)),
-        ]),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(context.l10n.doseTitle, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+            const SizedBox(height: SdbSpacing.s2),
+            row('NIOSH', s?.doseNioshPercent ?? 0, s?.twaNiosh ?? double.nan, context.l10n.doseNioshRule),
+            row('OSHA', s?.doseOshaPercent ?? 0, s?.twaOsha ?? double.nan, context.l10n.doseOshaRule),
+            const SizedBox(height: SdbSpacing.s1),
+            Text(context.l10n.doseNote, style: TextStyle(color: p.textMuted, fontSize: 12)),
+          ],
+        ),
       ),
     );
   }
@@ -208,7 +267,14 @@ class _ReferenceSheet extends StatelessWidget {
           Text(l.refTitle, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
           const SizedBox(height: SdbSpacing.s2),
           for (final (db, text) in rows)
-            ListTile(dense: true, leading: SizedBox(width: 64, child: Text(db, style: TextStyle(color: p.textLink))), title: Text(text)),
+            ListTile(
+              dense: true,
+              leading: SizedBox(
+                width: 64,
+                child: Text(db, style: TextStyle(color: p.textLink)),
+              ),
+              title: Text(text),
+            ),
         ],
       ),
     );

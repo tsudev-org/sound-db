@@ -37,6 +37,9 @@ export const en: Dict = {
       leaves the device; the free version keeps all data on the device, syncing between devices is a TsuDEV Pro feature.`,
     doNgay: 'Measure in your browser',
     taiApp: 'Get the app',
+    tanSoTroi: 'Dominant freq.',
+    minhHoa: 'Illustrative meter face with sample readings - press "Measure in your browser" to measure with your own microphone.',
+    mau: { laf: 62.4, leq: 58.1, lmax: 71.3, lpeak: 84.0, tanSo: 1.0 },
     boCongCu: 'A complete measuring toolkit',
     boCongCuDan: `One signal processing core written in Rust runs identically on the web (WebAssembly) and is checked
         number by number against the version inside the app.`,
