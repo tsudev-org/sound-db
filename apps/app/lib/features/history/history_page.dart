@@ -206,7 +206,7 @@ class _HistoryPageState extends State<HistoryPage> {
   Widget _row(BuildContext context, AppServices services, MeasurementSession s) {
     final p = context.palette;
     return ListTile(
-      title: Text(s.label, maxLines: 1, overflow: TextOverflow.ellipsis),
+      title: Text(s.label, maxLines: 2, overflow: TextOverflow.ellipsis), // chữ cỡ lớn: còn thấy giờ trong nhãn mặc định
       subtitle: Text(
         '${formatDateTime(s.startedAt)} · ${formatDuration(s.durationSeconds)}'
         '${s.dirty && services.auth.signedIn ? context.l10n.notSynced : ''}',
