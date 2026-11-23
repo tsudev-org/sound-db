@@ -28,6 +28,8 @@
 
 - [ ] 👤 Điện thoại SM-M325FV: adb.exe Windows báo "unauthorized" sau `adb usb` (23/11) - thu hồi uỷ quyền gỡ lỗi USB,
   cắm lại, cho phép. Máy đang chạy bản thử 26.11.2302 versionCode 26114303 (cao hơn bản chính thức 26114302).
+- [ ] SEC1 (`logs/handover/20261123-SEC1_*` mục 2): rà README/docs/phiếu cũ, chỗ nào bảo dán token ⇒ đổi sang
+  `tsu-nhan-bi-mat`.
 - [ ] QA-06 web vs app lệch ~20 dB khi chưa hiệu chuẩn (phiếu 06 mục 6) - điều tra `getSettings()` Chrome Android.
 - [ ] Lịch sử chưa có ô tìm/lọc (`SEARCH_AND_FILTER.md`) - cần quyết định phạm vi (app + bảng điều khiển web).
 - [ ] **ƯU TIÊN 1 - Kiểm thử toàn diện trên smartphone thật qua adb** (5 phase: kết nối + smoke, chức năng từng tab,
