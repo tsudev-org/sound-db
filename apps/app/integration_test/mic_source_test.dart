@@ -5,7 +5,6 @@
 //   flutter drive --profile -d <serial> --driver test_driver/perf_driver.dart \
 //     --target integration_test/mic_source_test.dart
 // Kết quả: build/mic_source.json - mỗi nguồn: RMS toàn dải (dBFS) và mức riêng tại 1 kHz (Goertzel, dBFS sin).
-import 'dart:async';
 import 'dart:math' as math;
 import 'dart:typed_data';
 
