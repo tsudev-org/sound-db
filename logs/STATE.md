@@ -1,5 +1,8 @@
 # STATE.md - Trạng thái project Sound Db
 
+> **PHIÊN KẾ TIẾP ĐỌC TRƯỚC:** `logs/handover/20261124-07_ban-giao-sound-db.md` (việc còn lại theo thứ tự, bẫy, prompt
+> khởi động chuẩn ở mục 5). Phiên `sound-db-c9` kết thúc 18:00 24/11/2026, main sạch, LOCKS trống.
+
 > **Phiên kế tiếp (phiếu toàn hệ 20261117-P2):** đọc `~/projects/logs/handover/20261117-P2_ke-hoach-phan-phoi-tin-cay-da-nen-tang.md` hàng 2 (`sound-db`) ở mục 3
 > + `.standards/docs/DISTRIBUTION_TRUST.md` (chuẩn v3.7.0) + `.standards/docs/VERSIONING.md` mục 2. Khuôn thẻ/tên tệp mới chỉ áp
 > cho bản phát hành KẾ TIẾP, đọc mục 2.4 (updater đã cài) trước khi đổi.
