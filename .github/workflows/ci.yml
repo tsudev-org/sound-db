@@ -66,10 +66,13 @@ jobs:
         run: dart pub get && dart analyze --fatal-infos && dart test
       - name: App - phân tích + test
         working-directory: apps/app
-        run: flutter pub get && flutter analyze && flutter test
+        # Clean Codebase (PROJECT_STRUCTURE 3.1): --fatal-infos chặn cả unused_* mức info.
+        run: flutter pub get && flutter analyze --fatal-infos && flutter test
       - name: App - dựng Linux
         working-directory: apps/app
         run: flutter build linux --release
+      - name: Không sinh tệp rác sau dựng (PROJECT_STRUCTURE 3.1)
+        run: test -z "$(git status --porcelain)" || { git status --porcelain; exit 1; }
 
   apple:
     name: Dựng kiểm iOS + macOS
@@ -108,6 +111,8 @@ jobs:
       - run: npm --workspace services/sync-api run typecheck
       - run: npm --workspace services/sync-api test
       - run: npm audit --omit=dev --audit-level=high
+      - name: Không sinh tệp rác sau dựng (PROJECT_STRUCTURE 3.1)
+        run: test -z "$(git status --porcelain)" || { git status --porcelain; exit 1; }
 
   gitleaks:
     name: Quét lộ bí mật (gitleaks)

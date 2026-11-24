@@ -10,16 +10,16 @@ enum ThemeChoice {
   system;
 
   static ThemeChoice parse(String? raw) => switch (raw) {
-        'light' || 'warm' => ThemeChoice.light,
-        'dark' => ThemeChoice.dark,
-        _ => ThemeChoice.system,
-      };
+    'light' || 'warm' => ThemeChoice.light,
+    'dark' => ThemeChoice.dark,
+    _ => ThemeChoice.system,
+  };
 
   ThemeMode get mode => switch (this) {
-        ThemeChoice.light => ThemeMode.light,
-        ThemeChoice.dark => ThemeMode.dark,
-        ThemeChoice.system => ThemeMode.system,
-      };
+    ThemeChoice.light => ThemeMode.light,
+    ThemeChoice.dark => ThemeMode.dark,
+    ThemeChoice.system => ThemeMode.system,
+  };
 }
 
 class SdbTheme extends ThemeExtension<SdbTheme> {
@@ -45,6 +45,14 @@ ThemeData buildTheme(Brightness brightness) {
     onPrimary: p.onPrimary,
     secondary: p.textLink,
     onSecondary: p.onPrimary,
+    // UI1 (24/11/2026): khai ĐỦ cặp *Container. Thiếu thì M3 lấy secondary/onSecondary ⇒ icon đang chọn của thanh điều
+    // hướng, Chip đã chọn... vẽ bằng onSecondary (trắng) trên nền nhạt - không thấy (1,2:1).
+    primaryContainer: p.bgSubtle,
+    onPrimaryContainer: p.textPrimary,
+    secondaryContainer: p.bgHover,
+    onSecondaryContainer: p.textPrimary,
+    tertiaryContainer: p.bgSubtle,
+    onTertiaryContainer: p.textPrimary,
     error: p.danger,
     onError: p.onStatus,
     surface: p.bgSurface,
@@ -104,12 +112,29 @@ ThemeData buildTheme(Brightness brightness) {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(SdbRadius.control)),
       ),
     ),
+    // UI1 + DESIGN_SYSTEM mục 1: biểu tượng trên nền THẬT >= 3:1 ở mọi trạng thái (test/icon_contrast_test.dart).
     navigationBarTheme: NavigationBarThemeData(
       backgroundColor: p.bgSurface,
-      indicatorColor: p.bgHover,
+      indicatorColor: p.primary.withValues(alpha: 0.14),
       surfaceTintColor: Colors.transparent,
+      iconTheme: WidgetStateProperty.resolveWith(
+        (s) => IconThemeData(color: s.contains(WidgetState.selected) ? p.primary : p.iconNav),
+      ),
+      labelTextStyle: WidgetStateProperty.resolveWith(
+        (s) => TextStyle(
+          color: s.contains(WidgetState.selected) ? p.textPrimary : p.textSecondary,
+          fontWeight: s.contains(WidgetState.selected) ? FontWeight.w600 : FontWeight.w500,
+        ),
+      ),
     ),
-    navigationRailTheme: NavigationRailThemeData(backgroundColor: p.bgSurface, indicatorColor: p.bgHover),
+    navigationRailTheme: NavigationRailThemeData(
+      backgroundColor: p.bgSurface,
+      indicatorColor: p.primary.withValues(alpha: 0.14),
+      selectedIconTheme: IconThemeData(color: p.primary),
+      unselectedIconTheme: IconThemeData(color: p.iconNav),
+      selectedLabelTextStyle: TextStyle(color: p.textPrimary, fontWeight: FontWeight.w600),
+      unselectedLabelTextStyle: TextStyle(color: p.textSecondary, fontWeight: FontWeight.w500),
+    ),
     segmentedButtonTheme: SegmentedButtonThemeData(
       style: SegmentedButton.styleFrom(
         selectedBackgroundColor: p.primary,
