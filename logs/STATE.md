@@ -59,6 +59,8 @@
   phẳng 187 MB; ĐẠT: Bộ chỉnh âm 440,0 Hz/0 cent, 360×640 dp, Cài đặt (Tối, ngoại tuyến, hiệu chuẩn), quyền
   "không hỏi lại" không crash. TalkBack thật cần 👤 nghe. SDB-V1: ba repo CHƯA chuyển; excavator scoop-bucket đỏ vì
   `tsudev-contact` (hash 404) ⇒ Scoop kẹt 26.11.1705.
+  **Production đã deploy** (run 45325031102, migration 0003 ✅, phiên bản Worker 204c9fa7): lần đầu hỏng `7403` vì token
+  Cloudflare cũ hết quyền ⇒ chủ dự án tạo token mới (thêm D1 Edit), nhận qua `tsu-nhan-bi-mat`; nghiệm thu DEPLOYMENT mục 3 đạt.
 
 - 23/11/2026 - `sound-db-38`: **Bản 26.11.2302** (Latest, PR #39, run 45212957432 mọi job đạt gồm VirusTotal): QA-03,
   QA-04, QA-05. `sha256sum -c SHA256SUMS.txt` + `gh attestation verify` APK arm64 đạt. Tên cũ + chuẩn song song.

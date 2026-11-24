@@ -28,7 +28,7 @@
 
 | Tên | Nơi lưu | Phạm vi | Ghi chú |
 | --- | --- | --- | --- |
-| `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID` | GitHub Environment `production`; bản tại máy `~/.config/tsudev/cloudflare.env` | Workers Scripts/Routes, D1 (zone tsudev.com) - chỉ job Deploy | Bản tại máy trả `Authentication error 10000` với `wrangler secret list` (24/11) - có thể đã thu hồi/hết hạn; CI Deploy vẫn chạy bằng bản trên GitHub |
+| `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID` | GitHub Environment `production`; bản tại máy `~/.config/tsudev/cloudflare-sounddb.env` (600, 24/11) | Workers Scripts Edit, Workers Routes Edit + DNS Edit (zone tsudev.com), D1 Edit - chỉ job Deploy | 24/11: token cũ hết quyền (Deploy `7403`, bản cũ tại máy `cloudflare.env` lỗi 10000 - bỏ) ⇒ token mới nhận qua `tsu-nhan-bi-mat` (`--kiem` đòi đọc được D1 `sound-db`), đưa vào GitHub qua stdin; chưa từng xuất hiện trong chat |
 | `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD` | GitHub Environment `release`; gốc `~/.config/tsudev/android/` (600) | Ký APK - chỉ job phát hành | Mất khoá = không cập nhật được app |
 | `VT_API_KEY` | Secret cấp Organization `tsudev-org` | Quét VirusTotal khi phát hành | Dùng chung toàn hệ |
 | `SESSION_SECRET`, `IP_HASH_SALT` | Secret Worker `sound-db` (Cloudflare) | Ký access token app / băm IP | Sinh bằng `openssl rand`, không đi qua người |
