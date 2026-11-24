@@ -40,6 +40,6 @@
     }
   },
   "devDependencies": {
-    "knip": "6.44.2"
+    "knip": "6.47.0"
   }
 }
