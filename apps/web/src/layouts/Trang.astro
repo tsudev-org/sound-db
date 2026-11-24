@@ -39,6 +39,7 @@ const cheDo = [
   { ma: 'system', ten: k.cheDo.system, icon: '<rect x="2.8" y="4.4" width="18.4" height="12.2" rx="1.6"/><path d="M8.6 20.2h6.8M12 16.6v3.6"/>' },
 ];
 const dangO = (href: string) => duongDan.startsWith(href);
+import DauTsuDev from '../components/DauTsuDev.astro';
 ---
 <!doctype html>
 <html lang={lang} data-theme="dark" data-product="sounddb" data-mot-ngon-ngu={motNgonNgu ? '' : undefined}>
@@ -65,7 +66,8 @@ const dangO = (href: string) => duongDan.startsWith(href);
     <meta property="og:image:height" content="630">
     <meta property="og:url" content={url}>
     <meta name="twitter:card" content="summary_large_image">
-    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="icon" href="/favicon.ico" sizes="32x32"><!-- không "any": Chrome sẽ bỏ favicon.svg -->
     <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <link rel="manifest" href="/manifest.webmanifest">
@@ -75,7 +77,9 @@ const dangO = (href: string) => duongDan.startsWith(href);
     <header class="dau-trang">
       <div class="khung dau-trang__trong">
         <a class="thuong-hieu" href={dd(lang, '/')} aria-label={k.trangChu}>
-          <picture><source srcset="/brand/logo-sound-db-48.avif 1x, /brand/logo-sound-db-96.avif 2x" type="image/avif"><source srcset="/brand/logo-sound-db-48.webp 1x, /brand/logo-sound-db-96.webp 2x" type="image/webp"><img src="/brand/logo-sound-db.png" alt="" width="36" height="36"></picture>
+          <!-- LG2: logo vector xoá nền, hai bản theo data-theme (site.css ẩn bản không hợp) - không còn ô nền tối. -->
+          <picture class="logo-toi"><source srcset="/brand/logo-sound-db-48.avif 1x, /brand/logo-sound-db-96.avif 2x" type="image/avif"><source srcset="/brand/logo-sound-db-48.webp 1x, /brand/logo-sound-db-96.webp 2x" type="image/webp"><img src="/brand/logo-sound-db.png" alt="" width="36" height="36"></picture>
+          <picture class="logo-sang"><source srcset="/brand/logo-sound-db-light-48.avif 1x, /brand/logo-sound-db-light-96.avif 2x" type="image/avif"><source srcset="/brand/logo-sound-db-light-48.webp 1x, /brand/logo-sound-db-light-96.webp 2x" type="image/webp"><img src="/brand/logo-sound-db-light.png" alt="" width="36" height="36"></picture>
           <span>Sound Db</span>
         </a>
         <nav aria-label={k.menuChinh}>
@@ -104,9 +108,9 @@ const dangO = (href: string) => duongDan.startsWith(href);
           </div>
           <nav aria-label={k.heSinhThai}>
             <ul class="chan-trang__lien-ket">
-              <li><a href="https://tsudev.com/terms" target="_blank" rel="noopener noreferrer">{k.dieuKhoan}</a></li>
-              <li><a href="https://tsudev.com/privacy" target="_blank" rel="noopener noreferrer">{k.riengTu}</a></li>
-              <li><a href="https://tsudev.com/projects" target="_blank" rel="noopener noreferrer">{k.sanPhamKhac}</a></li>
+              <li><a href="https://tsudev.com/terms" target="_blank" rel="noopener noreferrer"><DauTsuDev />{k.dieuKhoan}</a></li>
+              <li><a href="https://tsudev.com/privacy" target="_blank" rel="noopener noreferrer"><DauTsuDev />{k.riengTu}</a></li>
+              <li><a href="https://tsudev.com/projects" target="_blank" rel="noopener noreferrer"><DauTsuDev />{k.sanPhamKhac}</a></li>
             </ul>
           </nav>
           <nav aria-label={k.duAn}>

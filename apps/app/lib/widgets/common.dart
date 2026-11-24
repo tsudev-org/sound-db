@@ -114,3 +114,20 @@ class NoticeBanner extends StatelessWidget {
 /// Thông báo chung ở cuối màn hình.
 void showMessage(BuildContext context, String text) =>
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text), behavior: SnackBarBehavior.floating));
+
+/// Dấu hiệu TsuDEV đặt trước mọi liên kết tới tsudev.com (tsudev-standards v5.1.0 BRAND_ASSETS 4.1.0): >= 16 px,
+/// nhãn trợ năng "TsuDEV". Ảnh sinh bởi apps/web/scripts/brand-assets.mjs (cùng nguồn chân trang web).
+class TsuDevMark extends StatelessWidget {
+  const TsuDevMark({super.key, this.size = 20});
+
+  final double size;
+
+  @override
+  Widget build(BuildContext context) => Image.asset(
+    'assets/brand/tsudev-mark.png',
+    width: size,
+    height: size,
+    semanticLabel: 'TsuDEV',
+    filterQuality: FilterQuality.medium,
+  );
+}

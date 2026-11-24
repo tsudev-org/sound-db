@@ -1,5 +1,5 @@
 {
-  "_ghi_chu": "Cấu hình dây chuyền thương hiệu (apps/web/scripts/brand-assets.mjs). Logo riêng Sound Db do chủ dự án giao 20/11/2026 (phiếu logs/handover/20261120-LG1): source/logo-sound-db.png, PNG 1024x1024 nền navy đặc, SHA-256 32c1ae43...1955. Góc phải dưới ảnh gốc có dấu ✦ của công cụ tạo ảnh (x/y ~880-930) ⇒ `crop` lấy vuông 704 px quanh logo (159..862), không sửa pixel tệp gốc; bản 1024 là phóng to từ 704 (nợ BRAND_ASSETS mục 15 - có bản gốc sạch lớn hơn thì bỏ crop). Khối nhà làm ở chân trang web giữ logo tsudev (brand/logo-tsudev-*). Chạy lại `node apps/web/scripts/brand-assets.mjs`; CI chạy với --check. og-image (23/11/2026, phiếu STD50): màu nhấn + hoạ tiết song-am theo .standards/tokens/products/sounddb.json (accent/primary chế độ Tối).",
+  "_ghi_chu": "Cấu hình dây chuyền thương hiệu (apps/web/scripts/brand-assets.mjs). Logo riêng Sound Db do chủ dự án giao 20/11/2026 (phiếu logs/handover/20261120-LG1): source/logo-sound-db.png, PNG 1024x1024 nền navy đặc, SHA-256 32c1ae43...1955. Góc phải dưới ảnh gốc có dấu ✦ của công cụ tạo ảnh (x/y ~880-930) ⇒ `crop` lấy vuông 704 px quanh logo (159..862), không sửa pixel tệp gốc; bản 1024 là phóng to từ 704 (nợ BRAND_ASSETS mục 15 - có bản gốc sạch lớn hơn thì bỏ crop). Khối nhà làm ở chân trang web giữ logo tsudev (brand/logo-tsudev-*). Chạy lại `node apps/web/scripts/brand-assets.mjs`; CI chạy với --check. og-image (23/11/2026, phiếu STD50): màu nhấn + hoạ tiết song-am theo .standards/tokens/products/sounddb.json (accent/primary chế độ Tối). LG2 (24/11/2026, phiếu logs/handover/20261124-LG2): logo vector xoá nền do tsudev packages/brand/build-vector-marks.js (nhánh feat/logo-vector-xoa-nen, commit 2ad4016) sinh từ CHÍNH source/logo-sound-db.png - source/mark.svg (bản Tối, SHA-256 0b23b345...fc9c), mark-light.svg (bản Sáng, d618dd8c...edd2), mark-adaptive.svg (tự đổi, c4f89139...109b). Khi có khối `vector`, MỌI bản sinh từ SVG; PNG gốc giữ làm gốc của gốc (đổi logo: thay PNG ⇒ chạy lại dây chuyền tsudev ⇒ chép lại 3 SVG). `crop` chỉ dùng khi bỏ `vector`.",
   "id": "sound-db",
   "name": "Sound Db",
   "source": "source/logo-sound-db.png",
@@ -30,5 +30,11 @@
     1024
   ],
   "ogMotif": "song-am",
-  "ogMotifColor": "#AFD985"
+  "ogMotifColor": "#AFD985",
+  "vector": {
+    "dark": "source/mark.svg",
+    "light": "source/mark-light.svg",
+    "adaptive": "source/mark-adaptive.svg",
+    "scale": 0.78
+  }
 }
