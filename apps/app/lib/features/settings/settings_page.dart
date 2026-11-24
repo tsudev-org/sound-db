@@ -13,7 +13,7 @@ import '../../widgets/common.dart';
 import '../account/sign_in_page.dart';
 import 'calibration.dart';
 
-const appVersion = String.fromEnvironment('SOUNDDB_VERSION', defaultValue: '26.11.2302');
+const appVersion = String.fromEnvironment('SOUNDDB_VERSION', defaultValue: '26.11.2401');
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});

@@ -6,6 +6,25 @@ Theo `.standards/docs/VERSIONING.md` mục 3. Ngày dạng DD/MM/YYYY.
 
 - iOS chờ tài khoản Apple Developer.
 
+## 26.11.2401 - 24/11/2026
+
+### Mới
+- Lịch sử (app + web): tìm theo nhãn/ghi chú không cần gõ dấu ("duong giai" khớp "đường giai") và lọc theo khoảng
+  thời gian (7 ngày qua, 1 tháng qua, 1 năm qua, tuỳ chọn).
+- Đăng nhập bằng mã QR: ở màn Đăng nhập chọn "Quét để đăng nhập", quét mã hiện ở tsudev.com trên máy tính đã đăng nhập
+  (Android cần Google Play Services; luôn có nút đăng nhập thường). Màn đăng nhập thống nhất với hệ TsuDEV.
+
+### Sửa
+- Lịch sử tự cập nhật ngay sau khi lưu phiên đo, không cần bấm Tải lại (QA-07).
+- Chữ cỡ lớn (200 %) + bàn phím mở: kết quả tìm Lịch sử vẫn hiện và cuộn được, chân bảng không tràn (QA-08).
+- Máy phát tín hiệu dừng hẳn khi app ra nền (an toàn thính giác) và nút hiển thị đúng trạng thái khi quay lại (QA-09).
+- Khi quyền micro bị từ chối vĩnh viễn, thông báo lỗi có nút "Mở cài đặt" tới trang quyền của app (Android) (QA-10).
+- Biểu tượng thanh điều hướng đủ tương phản (4,45:1 giao diện Sáng, 6,21:1 Tối; trước đó ~1,2:1).
+
+### Thay đổi
+- Logo vector mới (xoá nền), biểu tượng app dựng lại từ vector - nét hơn ở mọi cỡ; dấu hiệu TsuDEV trước liên kết
+  tsudev.com.
+
 ## 26.11.2302 - 23/11/2026
 
 ### Sửa
