@@ -20,6 +20,7 @@ export const vi = {
     sanPhamKhac: 'Sản phẩm khác',
     duAn: 'Dự án',
     baoMatRiengTu: 'Bảo mật và quyền riêng tư',
+    baoMatTinCay: 'Báo lỗ hổng, bằng chứng tin cậy',
     baoLoi: 'Báo lỗi, góp ý',
     giaoDien: 'Giao diện',
     cheDo: { light: 'Sáng', dark: 'Tối', system: 'Hệ thống' },
@@ -125,6 +126,36 @@ export const vi = {
       và kém nhạy dưới 50 Hz. Dùng Sound Db để khảo sát, theo dõi và so sánh; với phép đo có giá trị pháp lý, dùng
       thiết bị đã kiểm định.</p>`,
   },
+  security: {
+    tieuDe: 'Bảo mật và bằng chứng tin cậy',
+    moTa: 'Báo lỗ hổng của Sound Db và bằng chứng tin cậy tự kiểm chứng được: OpenSSF, SSL Labs, Mozilla Observatory, chữ ký bản phát hành, kèm ngày đo.',
+    h1: 'Bảo mật và bằng chứng tin cậy',
+    baoLoHong: 'Báo lỗ hổng',
+    baoLoHongDan: 'Phát hiện lỗ hổng? Gửi báo cáo <strong>riêng tư</strong> qua email hoặc GitHub Security Advisories, đừng mở issue công khai. Chúng tôi phản hồi trong vòng <strong>7 ngày</strong>. Chi tiết quy trình: <a href="https://github.com/tsudev-org/sound-db/blob/main/SECURITY.md" target="_blank" rel="noopener noreferrer">SECURITY.md</a>.',
+    bangChung: 'Bằng chứng tự kiểm chứng',
+    bangChungDan: 'Mỗi dòng trỏ tới trang kết quả do bên thứ ba lưu trữ, bấm để tự kiểm. Điểm ghi đúng số đo vào ngày đo, kể cả khi chưa cao.',
+    cot: ['Bằng chứng', 'Kết quả', 'Kiểm chứng', 'Ngày đo'],
+    kiemChung: 'Kiểm chứng ↗',
+    ten: {
+      E1: 'OpenSSF Best Practices',
+      E2: 'OpenSSF Scorecard',
+      E3: 'Chữ ký bản phát hành',
+      E4: 'security.txt',
+      E5: 'Qualys SSL Labs',
+      E6: 'Mozilla HTTP Observatory',
+      E7: 'HSTS preload',
+      E8: 'Ký mã Windows (Authenticode)',
+      E9: 'Tín nhiệm mạng (NCA)',
+      E10: 'Kênh báo lỗ hổng riêng',
+    },
+    tuKiem: 'Tự kiểm bản tải về',
+    tuKiemDan: 'Tải <code>SHA256SUMS.txt</code> cùng thư mục với tệp cài từ <a href="https://github.com/tsudev-org/sound-db/releases/latest" target="_blank" rel="noopener noreferrer">trang phát hành</a>, rồi chạy lệnh dưới. <code>gh attestation verify</code> xác nhận tệp được dựng bởi GitHub Actions từ mã nguồn công khai của repo.',
+    chuaCo: 'Chưa có / không áp dụng',
+    thieu: {
+      E8: 'chưa có - bản Windows chưa được ký Authenticode; chưa nộp đơn SignPath Foundation (cần chủ dự án điền đơn và xác nhận email). Hiện dùng SHA-256 và chứng thực nguồn gốc ở trên.',
+      E9: 'chưa nộp - Sound Db không bán hàng trên website; việc nộp do tsudev.com làm cho cả hệ.',
+    },
+  },
   baoMat: {
     tieuDe: 'Bảo mật và quyền riêng tư',
     moTa: 'Cách Sound Db bảo vệ dữ liệu: âm thanh không rời thiết bị, đăng nhập TsuDEV bằng PKCE, token mã hóa, tự xóa dữ liệu và báo lỗ hổng.',
@@ -152,7 +183,7 @@ export const vi = {
     </ul>
     <h2>Báo lỗ hổng</h2>
     <p>Gửi báo cáo riêng tư qua <a href="${REPO_URL}/security/advisories/new" target="_blank" rel="noopener noreferrer">GitHub Security Advisories</a>.
-      Xem thêm <a href="/.well-known/security.txt">security.txt</a>.</p>`,
+      Xem thêm <a href="/.well-known/security.txt">security.txt</a> và <a href="/security/">bằng chứng tin cậy</a>.</p>`,
   },
   dangNhap: {
     tieuDe: 'Đăng nhập',

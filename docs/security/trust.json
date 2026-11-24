@@ -1,0 +1,54 @@
+{
+  "$comment": "Nguồn chân lý của trang /security (SEC2). Chỉ ghi số đo THẬT kèm liên kết trang kết quả của bên thứ ba + ngày đo; không có liên kết thì không ghi vào evidence. scripts/check-dist.mjs kiểm khuôn lúc build.",
+  "evidence": [
+    {
+      "id": "E1",
+      "status": "passing (100%)",
+      "url": "https://www.bestpractices.dev/projects/16974",
+      "measured": "2026-11-25"
+    },
+    {
+      "id": "E2",
+      "status": "6.3 / 10",
+      "url": "https://scorecard.dev/viewer/?uri=github.com/tsudev-org/sound-db",
+      "measured": "2026-11-25"
+    },
+    {
+      "id": "E3",
+      "status": "SHA256SUMS.txt + GitHub artifact attestation; VirusTotal 0/73 (v26.11.2401)",
+      "url": "https://github.com/tsudev-org/sound-db/releases/latest",
+      "measured": "2026-11-25"
+    },
+    {
+      "id": "E4",
+      "status": "RFC 9116",
+      "url": "https://sound.tsudev.com/.well-known/security.txt",
+      "measured": "2026-11-25"
+    },
+    {
+      "id": "E5",
+      "status": "A+ (4/4 endpoints)",
+      "url": "https://www.ssllabs.com/ssltest/analyze.html?d=sound.tsudev.com&hideResults=on",
+      "measured": "2026-11-25"
+    },
+    {
+      "id": "E6",
+      "status": "A+ (140, 12/12)",
+      "url": "https://developer.mozilla.org/en-US/observatory/analyze?host=sound.tsudev.com",
+      "measured": "2026-11-25"
+    },
+    {
+      "id": "E7",
+      "status": "header max-age=63072000; includeSubDomains; preload - tsudev.com: status unknown (not yet preloaded)",
+      "url": "https://hstspreload.org/?domain=tsudev.com",
+      "measured": "2026-11-25"
+    },
+    {
+      "id": "E10",
+      "status": "SECURITY.md + Private vulnerability reporting",
+      "url": "https://github.com/tsudev-org/sound-db/security",
+      "measured": "2026-11-25"
+    }
+  ],
+  "missing": ["E8", "E9"]
+}

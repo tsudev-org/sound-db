@@ -1,0 +1,55 @@
+---
+// Trang /security (SEC2): báo lỗ hổng + bằng chứng tin cậy TỰ KIỂM CHỨNG ĐƯỢC. Số liệu lấy lúc build từ
+// docs/security/trust.json - mỗi mục có liên kết tới trang kết quả của bên thứ ba và ngày đo; không gọi API ngoài lúc xem.
+import Trang from '../layouts/Trang.astro';
+import du from '../../../../docs/security/trust.json';
+import { t, type Lang } from '../i18n';
+import { PHIEN_BAN, REPO_URL } from '../lib/site';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const v = t(lang).security;
+const ngay = (d: string) => new Date(`${d}T00:00:00Z`).toLocaleDateString(lang === 'vi' ? 'vi-VN' : 'en-GB', { timeZone: 'UTC' });
+const ten = v.ten as Record<string, string>;
+const thieu = v.thieu as Record<string, string>;
+---
+<Trang lang={lang} tieuDe={v.tieuDe} moTa={v.moTa} duongDan="/security/">
+  <div class="khung van-ban">
+    <h1>{v.h1}</h1>
+
+    <h2 id="bao-lo-hong">{v.baoLoHong}</h2>
+    <p set:html={v.baoLoHongDan} />
+    <ul>
+      <li><a href="mailto:security@tsudev.com">security@tsudev.com</a></li>
+      <li><a href={`${REPO_URL}/security/advisories/new`} target="_blank" rel="noopener noreferrer">GitHub Security Advisories</a></li>
+      <li><a href="/.well-known/security.txt">security.txt</a> (RFC 9116)</li>
+    </ul>
+
+    <h2>{v.bangChung}</h2>
+    <p>{v.bangChungDan}</p>
+    <div class="cuon-ngang" tabindex="0" role="region" aria-label={v.bangChung}>
+      <table class="bang">
+        <thead><tr>{v.cot.map((c) => <th scope="col">{c}</th>)}</tr></thead>
+        <tbody>
+          {du.evidence.map((e) => (
+            <tr>
+              <td>{ten[e.id]}</td>
+              <td>{e.status}</td>
+              <td><a href={e.url} target="_blank" rel="noopener noreferrer">{v.kiemChung}</a></td>
+              <td>{ngay(e.measured)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    <h2>{v.tuKiem}</h2>
+    <p set:html={v.tuKiemDan} />
+    <pre tabindex="0" aria-label="Linux / macOS"><code>sha256sum -c SHA256SUMS.txt --ignore-missing
+gh attestation verify sound-db_{PHIEN_BAN}_linux-x64.tar.gz --repo tsudev-org/sound-db</code></pre>
+    <pre tabindex="0" aria-label="Windows PowerShell"><code>Get-FileHash .\sound-db_{PHIEN_BAN}_windows-x64.zip -Algorithm SHA256</code></pre>
+
+    <h2>{v.chuaCo}</h2>
+    <ul>{du.missing.map((id) => <li><strong>{ten[id]}</strong>: {thieu[id]}</li>)}</ul>
+  </div>
+</Trang>

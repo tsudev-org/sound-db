@@ -19,6 +19,7 @@ export const en: Dict = {
     sanPhamKhac: 'Other products',
     duAn: 'Project',
     baoMatRiengTu: 'Security and privacy',
+    baoMatTinCay: 'Vulnerability reports, trust evidence',
     baoLoi: 'Report a bug, give feedback',
     giaoDien: 'Theme',
     cheDo: { light: 'Light', dark: 'Dark', system: 'System' },
@@ -124,6 +125,36 @@ export const en: Dict = {
       and lose sensitivity below 50 Hz. Use Sound Db to survey, monitor and compare; for legally binding measurements, use
       certified equipment.</p>`,
   },
+  security: {
+    tieuDe: 'Security and trust evidence',
+    moTa: 'Report a Sound Db vulnerability and check self-verifiable trust evidence: OpenSSF, SSL Labs, Mozilla Observatory, release signatures, with dates.',
+    h1: 'Security and trust evidence',
+    baoLoHong: 'Report a vulnerability',
+    baoLoHongDan: 'Found a vulnerability? Send a <strong>private</strong> report by email or GitHub Security Advisories; please do not open a public issue. We respond within <strong>7 days</strong>. Process details: <a href="https://github.com/tsudev-org/sound-db/blob/main/SECURITY.md" target="_blank" rel="noopener noreferrer">SECURITY.md</a>.',
+    bangChung: 'Self-verifiable evidence',
+    bangChungDan: 'Each row links to a result page hosted by a third party, so you can check it yourself. Scores are shown exactly as measured on the date given, even when not top marks.',
+    cot: ['Evidence', 'Result', 'Verify', 'Measured'],
+    kiemChung: 'Verify ↗',
+    ten: {
+      E1: 'OpenSSF Best Practices',
+      E2: 'OpenSSF Scorecard',
+      E3: 'Release signatures',
+      E4: 'security.txt',
+      E5: 'Qualys SSL Labs',
+      E6: 'Mozilla HTTP Observatory',
+      E7: 'HSTS preload',
+      E8: 'Windows code signing (Authenticode)',
+      E9: 'Vietnam NCA trust mark',
+      E10: 'Private vulnerability reporting',
+    },
+    tuKiem: 'Verify your download',
+    tuKiemDan: 'Download <code>SHA256SUMS.txt</code> into the same folder as the installer from the <a href="https://github.com/tsudev-org/sound-db/releases/latest" target="_blank" rel="noopener noreferrer">release page</a>, then run the commands below. <code>gh attestation verify</code> confirms the file was built by GitHub Actions from the public source of this repository.',
+    chuaCo: 'Not yet / not applicable',
+    thieu: {
+      E8: 'not yet - the Windows build is not Authenticode-signed; no SignPath Foundation application has been filed (the project owner must fill in the form and confirm by email). SHA-256 and provenance attestation above apply meanwhile.',
+      E9: 'not filed - Sound Db does not sell anything on its website; filing is handled by tsudev.com for the whole ecosystem.',
+    },
+  },
   baoMat: {
     tieuDe: 'Security and privacy',
     moTa: 'How Sound Db protects your data: audio never leaves the device, TsuDEV sign-in with PKCE, encrypted tokens, automatic data deletion and vulnerability reports.',
@@ -151,7 +182,7 @@ export const en: Dict = {
     </ul>
     <h2>Reporting vulnerabilities</h2>
     <p>Send a private report through <a href="${REPO_URL}/security/advisories/new" target="_blank" rel="noopener noreferrer">GitHub Security Advisories</a>.
-      See also <a href="/.well-known/security.txt">security.txt</a>.</p>`,
+      See also <a href="/.well-known/security.txt">security.txt</a> and the <a href="/en/security/">trust evidence</a>.</p>`,
   },
   dangNhap: {
     tieuDe: 'Sign in',
