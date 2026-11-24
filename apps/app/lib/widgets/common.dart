@@ -16,6 +16,7 @@ class RunButton extends StatelessWidget {
     final m = AppScope.of(context).measurement;
     return VisibleListenableBuilder(
       listenable: m,
+      select: () => m.state,
       builder: (context, _) {
         final running = m.state == MeterState.running;
         final starting = m.state == MeterState.starting;
@@ -136,12 +137,16 @@ class TsuDevMark extends StatelessWidget {
 /// Như [ListenableBuilder] nhưng KHÔNG dựng lại khi trang chứa nó đang ẩn (TickerMode tắt - vỏ app tắt cho trang ẩn của
 /// IndexedStack); có thông báo lỡ khi ẩn thì dựng lại MỘT lần lúc hiện lại. Dùng cho mọi widget nghe
 /// MeasurementController (báo 20 lần/giây): trang ẩn dựng lại theo nhịp đo làm app vẽ 20 khung/giây ở mọi tab (QA-11).
+///
+/// [select] (tuỳ chọn): chỉ dựng lại khi giá trị nó trả về đổi (so bằng `==` - dùng chuỗi đã định dạng hoặc record,
+/// KHÔNG dùng double NaN). Mỗi phần của trang chọn đúng số nó hiển thị ⇒ nhịp đo không dựng lại cả trang (QA-11 bước 3).
 class VisibleListenableBuilder extends StatefulWidget {
-  const VisibleListenableBuilder({super.key, required this.listenable, required this.builder, this.child});
+  const VisibleListenableBuilder({super.key, required this.listenable, required this.builder, this.child, this.select});
 
   final Listenable listenable;
   final TransitionBuilder builder;
   final Widget? child;
+  final Object? Function()? select;
 
   @override
   State<VisibleListenableBuilder> createState() => _VisibleListenableBuilderState();
@@ -151,6 +156,7 @@ class _VisibleListenableBuilderState extends State<VisibleListenableBuilder> {
   ValueListenable<TickerModeData>? _mode;
   bool _visible = true;
   bool _missed = false;
+  Object? _selected;
 
   @override
   void initState() {
@@ -179,6 +185,12 @@ class _VisibleListenableBuilderState extends State<VisibleListenableBuilder> {
   }
 
   void _changed() {
+    final select = widget.select;
+    if (select != null) {
+      final value = select();
+      if (value == _selected) return;
+      _selected = value;
+    }
     if (_visible) {
       setState(() {});
     } else {
@@ -204,5 +216,66 @@ class _VisibleListenableBuilderState extends State<VisibleListenableBuilder> {
   }
 
   @override
-  Widget build(BuildContext context) => widget.builder(context, widget.child);
+  Widget build(BuildContext context) {
+    _selected = widget.select?.call();
+    return widget.builder(context, widget.child);
+  }
+}
+
+/// Báo [onDemand] `true` khi trang chứa nó bắt đầu HIỂN THỊ, `false` khi ẩn hoặc bị gỡ (theo TickerMode như
+/// [VisibleListenableBuilder]). Dùng để xin phần tính toán chỉ trang đó cần (dò cao độ, phổ) - QA-11.
+/// [owner] là đối tượng nhận nhu cầu: đổi owner ⇒ nhả nhu cầu ở owner cũ rồi xin ở owner mới.
+class DemandWhileVisible extends StatefulWidget {
+  const DemandWhileVisible({super.key, required this.owner, required this.onDemand, required this.child});
+
+  final Object owner;
+  final ValueChanged<bool> onDemand;
+  final Widget child;
+
+  @override
+  State<DemandWhileVisible> createState() => _DemandWhileVisibleState();
+}
+
+class _DemandWhileVisibleState extends State<DemandWhileVisible> {
+  ValueListenable<TickerModeData>? _mode;
+  bool _demanding = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final mode = TickerMode.getValuesNotifier(context);
+    if (!identical(mode, _mode)) {
+      _mode?.removeListener(_sync);
+      _mode = mode..addListener(_sync);
+    }
+    _sync();
+  }
+
+  @override
+  void didUpdateWidget(DemandWhileVisible oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!identical(oldWidget.owner, widget.owner) && _demanding) {
+      oldWidget.onDemand(false);
+      _demanding = false;
+      _sync();
+    }
+  }
+
+  void _sync() => _set(_mode?.value.enabled ?? false);
+
+  void _set(bool wanted) {
+    if (wanted == _demanding) return;
+    _demanding = wanted;
+    widget.onDemand(wanted);
+  }
+
+  @override
+  void dispose() {
+    _mode?.removeListener(_sync);
+    _set(false);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
 }

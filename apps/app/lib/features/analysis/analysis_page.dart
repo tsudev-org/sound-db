@@ -18,7 +18,9 @@ class AnalysisPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
+    final m = AppScope.of(context).measurement;
+    // Phổ chỉ tính đủ nhịp khi trang này hiển thị (QA-11 bước 3).
+    return DemandWhileVisible(owner: m, onDemand: m.demandSpectrum, child: DefaultTabController(
       length: 3,
       child: Scaffold(
         appBar: AppBar(
@@ -35,7 +37,7 @@ class AnalysisPage extends StatelessWidget {
         ),
         body: const TabBarView(children: [_SpectrumTab(), _SpectrogramTab(), _OctaveTab()]),
       ),
-    );
+    ));
   }
 }
 

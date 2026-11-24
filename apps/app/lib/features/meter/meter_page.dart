@@ -37,16 +37,13 @@ class MeterPage extends StatelessWidget {
       ),
       body: VisibleListenableBuilder(
         listenable: Listenable.merge([m, settings]),
+        // Khung trang chỉ dựng lại khi lỗi, hiệu chuẩn, trọng số hoặc "đã có số đo" đổi; số đo 20 lần/giây nằm ở các
+        // phần con, mỗi phần chỉ dựng khi chuỗi nó hiển thị đổi (QA-11 bước 3: dựng cả ListView mỗi nhịp = 32 % CPU Dart).
+        select: () =>
+            (m.error, m.errorCode, m.snapshot == null, settings.weighting, settings.timeWeighting, settings.calibrated),
         builder: (context, _) {
-          final p = context.palette;
-          final s = m.snapshot;
+          final hasData = m.snapshot != null;
           final w = settings.weighting, t = settings.timeWeighting;
-          final level = s?.level(w, t) ?? double.nan;
-          final zone = level >= SdbMeterZones.danger
-              ? p.chartLevelDanger
-              : level >= SdbMeterZones.caution
-              ? p.chartLevelCaution
-              : p.chartLevelSafe;
           return ListView(
             padding: const EdgeInsets.all(SdbSpacing.s4),
             children: [
@@ -64,44 +61,58 @@ class MeterPage extends StatelessWidget {
                 NoticeBanner(message: context.l10n.meterNotCalibrated),
                 const SizedBox(height: SdbSpacing.s3),
               ],
-              // Vùng live CHỈ mang tên vùng mức (nút chứa bọc ngoài): số đo đổi 20 lần/giây, nếu là vùng live thì
-              // TalkBack đọc dồn liên tục (QA-05). Số hiện tại ở nút con - chạm mặt đồng hồ để nghe.
-              Semantics(
-                container: true,
-                liveRegion: s != null,
-                label: s == null
-                    ? null
-                    : level >= SdbMeterZones.danger
-                    ? context.l10n.meterZoneDanger
-                    : level >= SdbMeterZones.caution
-                    ? context.l10n.meterZoneCaution
-                    : context.l10n.meterZoneSafe,
-                child: Center(
-                  child: Semantics(
+              VisibleListenableBuilder(
+                listenable: m,
+                select: () => formatNumber(m.snapshot?.level(w, t) ?? double.nan),
+                builder: (context, _) {
+                  final p = context.palette;
+                  final s = m.snapshot;
+                  final level = s?.level(w, t) ?? double.nan;
+                  final zone = level >= SdbMeterZones.danger
+                      ? p.chartLevelDanger
+                      : level >= SdbMeterZones.caution
+                      ? p.chartLevelCaution
+                      : p.chartLevelSafe;
+                  // Vùng live CHỈ mang tên vùng mức (nút chứa bọc ngoài): số đo đổi 20 lần/giây, nếu là vùng live thì
+                  // TalkBack đọc dồn liên tục (QA-05). Số hiện tại ở nút con - chạm mặt đồng hồ để nghe.
+                  return Semantics(
                     container: true,
-                    label: context.l10n.meterLevelSemantics('L${w.label}${t.label}', formatNumber(level)),
-                    child: LevelDial(
-                      level: s == null ? double.nan : level,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text('L${w.label}${t.label}', style: TextStyle(color: p.textMuted, fontSize: 16)),
-                          Text(
-                            formatNumber(level),
-                            style: TextStyle(
-                              fontSize: 64,
-                              fontWeight: FontWeight.w600,
-                              color: s == null ? p.textMuted : zone,
-                              fontFeatures: const [FontFeature.tabularFigures()],
-                              height: 1.05,
-                            ),
+                    liveRegion: s != null,
+                    label: s == null
+                        ? null
+                        : level >= SdbMeterZones.danger
+                        ? context.l10n.meterZoneDanger
+                        : level >= SdbMeterZones.caution
+                        ? context.l10n.meterZoneCaution
+                        : context.l10n.meterZoneSafe,
+                    child: Center(
+                      child: Semantics(
+                        container: true,
+                        label: context.l10n.meterLevelSemantics('L${w.label}${t.label}', formatNumber(level)),
+                        child: LevelDial(
+                          level: s == null ? double.nan : level,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text('L${w.label}${t.label}', style: TextStyle(color: p.textMuted, fontSize: 16)),
+                              Text(
+                                formatNumber(level),
+                                style: TextStyle(
+                                  fontSize: 64,
+                                  fontWeight: FontWeight.w600,
+                                  color: s == null ? p.textMuted : zone,
+                                  fontFeatures: const [FontFeature.tabularFigures()],
+                                  height: 1.05,
+                                ),
+                              ),
+                              Text('dB(${w.label})', style: TextStyle(color: p.textSecondary, fontSize: 18)),
+                            ],
                           ),
-                          Text('dB(${w.label})', style: TextStyle(color: p.textSecondary, fontSize: 18)),
-                        ],
+                        ),
                       ),
                     ),
-                  ),
-                ),
+                  );
+                },
               ),
               const SizedBox(height: SdbSpacing.s4),
               Wrap(
@@ -136,63 +147,90 @@ class MeterPage extends StatelessWidget {
               const SizedBox(height: SdbSpacing.s4),
               SizedBox(
                 height: 160,
-                child: RepaintBoundary(
-                  child: CustomPaint(
-                    painter: LevelHistoryPainter(m.levelHistory, p, capacity: MeasurementController.historyLength),
-                  ),
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    // Lưới + nhãn dB tĩnh: lớp riêng, không vẽ lại theo nhịp (6,6 % CPU Dart khi vẽ cùng đường mức).
+                    RepaintBoundary(child: CustomPaint(painter: DbGridPainter(palette: context.palette))),
+                    VisibleListenableBuilder(
+                      listenable: m,
+                      select: () => m.displayVersion,
+                      builder: (context, _) => RepaintBoundary(
+                        child: CustomPaint(
+                          painter: LevelHistoryPainter(
+                            m.levelHistory,
+                            context.palette,
+                            capacity: MeasurementController.historyLength,
+                            version: m.historyVersion,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              Text(context.l10n.meterLast2Min, style: TextStyle(color: p.textMuted, fontSize: 12)),
+              Text(context.l10n.meterLast2Min, style: TextStyle(color: context.palette.textMuted, fontSize: 12)),
               const SizedBox(height: SdbSpacing.s4),
-              StatGrid(
-                children: [
-                  StatTile(
-                    label: 'L${w.label}eq',
-                    value: formatNumber(s?.leq[w.index] ?? double.nan),
-                    hint: context.l10n.meterLeqHint,
-                  ),
-                  StatTile(
-                    label: 'L${w.label}${t.label}max',
-                    value: formatNumber(s?.max[w.index][t.index] ?? double.nan),
-                  ),
-                  StatTile(
-                    label: 'L${w.label}${t.label}min',
-                    value: formatNumber(s?.min[w.index][t.index] ?? double.nan),
-                  ),
-                  StatTile(
-                    label: 'L${w.label}peak',
-                    value: formatNumber(s?.peak[w.index] ?? double.nan),
-                    hint: context.l10n.meterPeakHint,
-                  ),
-                  StatTile(
-                    label: 'LAF10',
-                    value: formatNumber(s?.percentiles[2] ?? double.nan),
-                    hint: context.l10n.meterL10Hint,
-                  ),
-                  StatTile(label: 'LAF50', value: formatNumber(s?.percentiles[3] ?? double.nan)),
-                  StatTile(
-                    label: 'LAF90',
-                    value: formatNumber(s?.percentiles[4] ?? double.nan),
-                    hint: context.l10n.meterL90Hint,
-                  ),
-                  StatTile(label: 'LAE (SEL)', value: formatNumber(s?.selA ?? double.nan)),
-                  StatTile(label: context.l10n.duration, value: formatDuration(s?.elapsedSeconds ?? 0)),
-                ],
+              VisibleListenableBuilder(
+                listenable: m,
+                select: () => _statKey(m.snapshot, w, t),
+                builder: (context, _) {
+                  final s = m.snapshot;
+                  return StatGrid(
+                    children: [
+                      StatTile(
+                        label: 'L${w.label}eq',
+                        value: formatNumber(s?.leq[w.index] ?? double.nan),
+                        hint: context.l10n.meterLeqHint,
+                      ),
+                      StatTile(
+                        label: 'L${w.label}${t.label}max',
+                        value: formatNumber(s?.max[w.index][t.index] ?? double.nan),
+                      ),
+                      StatTile(
+                        label: 'L${w.label}${t.label}min',
+                        value: formatNumber(s?.min[w.index][t.index] ?? double.nan),
+                      ),
+                      StatTile(
+                        label: 'L${w.label}peak',
+                        value: formatNumber(s?.peak[w.index] ?? double.nan),
+                        hint: context.l10n.meterPeakHint,
+                      ),
+                      StatTile(
+                        label: 'LAF10',
+                        value: formatNumber(s?.percentiles[2] ?? double.nan),
+                        hint: context.l10n.meterL10Hint,
+                      ),
+                      StatTile(label: 'LAF50', value: formatNumber(s?.percentiles[3] ?? double.nan)),
+                      StatTile(
+                        label: 'LAF90',
+                        value: formatNumber(s?.percentiles[4] ?? double.nan),
+                        hint: context.l10n.meterL90Hint,
+                      ),
+                      StatTile(label: 'LAE (SEL)', value: formatNumber(s?.selA ?? double.nan)),
+                      StatTile(label: context.l10n.duration, value: formatDuration(s?.elapsedSeconds ?? 0)),
+                    ],
+                  );
+                },
               ),
               const SizedBox(height: SdbSpacing.s4),
-              _DoseCard(snapshot: s),
+              VisibleListenableBuilder(
+                listenable: m,
+                select: () => _DoseCard.shownValues(m.snapshot),
+                builder: (context, _) => _DoseCard(snapshot: m.snapshot),
+              ),
               const SizedBox(height: SdbSpacing.s4),
               Wrap(
                 spacing: SdbSpacing.s2,
                 runSpacing: SdbSpacing.s2,
                 children: [
                   OutlinedButton.icon(
-                    onPressed: s == null ? null : m.resetSession,
+                    onPressed: hasData ? m.resetSession : null,
                     icon: const Icon(Icons.restart_alt),
                     label: Text(context.l10n.resetSession),
                   ),
                   FilledButton.icon(
-                    onPressed: s == null ? null : () => saveCurrentSession(context),
+                    onPressed: hasData ? () => saveCurrentSession(context) : null,
                     icon: const Icon(Icons.save_outlined),
                     label: Text(context.l10n.saveSession),
                   ),
@@ -206,9 +244,21 @@ class MeterPage extends StatelessWidget {
   }
 }
 
+/// Chuỗi các số thẻ thống kê đang hiển thị - thẻ chỉ dựng lại khi chuỗi này đổi.
+String _statKey(LevelSnapshot? s, Weighting w, TimeWeighting t) => s == null
+    ? ''
+    : '${[s.leq[w.index], s.max[w.index][t.index], s.min[w.index][t.index], s.peak[w.index], s.percentiles[2], s.percentiles[3], s.percentiles[4], s.selA].map(formatNumber).join('|')}'
+          '|${formatDuration(s.elapsedSeconds)}';
+
 class _DoseCard extends StatelessWidget {
   const _DoseCard({required this.snapshot});
   final LevelSnapshot? snapshot;
+
+  /// Chuỗi đang hiển thị (liều, TWA) - thẻ chỉ dựng lại khi chuỗi này đổi.
+  static String shownValues(LevelSnapshot? s) => s == null
+      ? ''
+      : '${formatPercent(s.doseNioshPercent, digits: 2)}|${formatNumber(s.twaNiosh)}|'
+            '${formatPercent(s.doseOshaPercent, digits: 2)}|${formatNumber(s.twaOsha)}';
 
   @override
   Widget build(BuildContext context) {

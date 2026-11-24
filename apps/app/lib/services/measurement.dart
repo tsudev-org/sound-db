@@ -46,6 +46,14 @@ class MeasurementController extends ChangeNotifier {
 
   /// Mức tức thời (trọng số đang chọn) mỗi 100 ms trong 2 phút gần nhất.
   final List<double> levelHistory = [];
+
+  /// Tăng mỗi khi [snapshot] được làm mới (10 lần/giây, mỗi 2 nhịp) hoặc phiên bị xoá. Trang Đo mức và đồ thị chỉ
+  /// dựng/vẽ lại theo số này: trọng số F = 125 ms nên 10 khung/giây đủ cho mắt, và gom đồ thị (10 điểm/giây) vào
+  /// cùng khung với số đo thay vì hai khung lệch nhịp (QA-11 bước 3 vòng 2).
+  int displayVersion = 0;
+
+  /// Tăng mỗi khi [levelHistory] đổi - đồ thị chỉ vẽ lại khi số này đổi (10 lần/giây, không phải 20).
+  int historyVersion = 0;
   static const int historyLength = 1200;
 
   /// Phổ đồ: mỗi hàng 256 ô tần số log (20 Hz - Nyquist), tối đa 240 hàng.
@@ -74,6 +82,37 @@ class MeasurementController extends ChangeNotifier {
 
   @visibleForTesting
   bool get pitchDemanded => _pitchDemand > 0;
+
+  /// Số màn đang HIỂN THỊ cần phổ (Phân tích: phổ FFT, phổ đồ, dải octave). FFT phổ chiếm 18 % CPU Dart ở tab Đo mức
+  /// dù tab đó không hiện phổ (hồ sơ máy thật QA-11 bước 3, 25/11/2026). Không ai xem ⇒ chỉ phân tích mỗi
+  /// [_accumulateEvery] nhịp để tích luỹ 1/3 octave cho phiên lưu.
+  int _spectrumDemand = 0;
+
+  /// Tích luỹ 1/3 octave của phiên mỗi 4 nhịp (200 ms) dù có ai xem phổ hay không - trọng số theo thời gian giữ đều.
+  /// Khung FFT 8192 mẫu @ 48 kHz = 171 ms, phổ đã làm trơn hàm mũ ⇒ 5 khung/giây đủ cho mức trung bình dải.
+  static const int _accumulateEvery = 4;
+  int _tickIndex = 0;
+  int _spectrumAnalyses = 0;
+
+  /// Màn cần phổ gọi `true` khi bắt đầu hiển thị, `false` khi ẩn (gọi theo cặp). Bắt đầu xem lại ⇒ xoá phổ đồ cũ
+  /// (khoảng thời gian không xem không có hàng - giữ hàng cũ sẽ ghép hai thời điểm xa nhau như liền nhau).
+  void demandSpectrum(bool wanted) {
+    final before = _spectrumDemand;
+    _spectrumDemand = math.max(0, _spectrumDemand + (wanted ? 1 : -1));
+    if (before == 0 && _spectrumDemand > 0) {
+      spectrogram.clear();
+      // Trang vừa hiện: công bố ngay phổ đã phân tích gần nhất (≤ 200 ms), không chờ nhịp kế. KHÔNG báo listener - hàm
+      // này được gọi trong lúc dựng cây; các phần nghe đã lỡ thông báo khi ẩn sẽ tự dựng lại lúc hiện.
+      if (_spectrumAnalyses > 0) _publishSpectrum();
+    }
+  }
+
+  @visibleForTesting
+  bool get spectrumDemanded => _spectrumDemand > 0;
+
+  /// Số lần đã phân tích phổ (test kiểm nhịp phân tích).
+  @visibleForTesting
+  int get spectrumAnalyses => _spectrumAnalyses;
 
   Engine get engine => _engine;
   double get sampleRate => _engine.sampleRate;
@@ -150,6 +189,8 @@ class MeasurementController extends ChangeNotifier {
     _engine.resetSession();
     startedAt = state == MeterState.running ? DateTime.now() : null;
     levelHistory.clear();
+    historyVersion++;
+    displayVersion++;
     spectrogram.clear();
     _laeqPerSecond.clear();
     _secondStartSum = 0;
@@ -180,12 +221,31 @@ class MeasurementController extends ChangeNotifier {
       final s = _engine.meter.snapshot();
       levelHistory.add(s.level(settings.weighting, settings.timeWeighting));
       if (levelHistory.length > historyLength) levelHistory.removeAt(0);
+      historyVersion++;
     }
   }
 
   void _onTick() {
     if (_engine.totalSamples < _engine.spectrum.size) return;
-    _engine.analyzeSpectrum();
+    final tick = _tickIndex++;
+    final accumulate = tick % _accumulateEvery == 0;
+    final show = _spectrumDemand > 0;
+    if (show || accumulate) {
+      _engine.analyzeSpectrum();
+      _spectrumAnalyses++;
+    }
+    if (accumulate) _accumulateThirdOctave();
+    if (show) _publishSpectrum();
+    pitch = _pitchDemand > 0 ? _engine.detectPitch() : null;
+    if (tick.isEven) {
+      snapshot = _engine.meter.snapshot();
+      displayVersion++;
+    }
+    notifyListeners();
+  }
+
+  /// Phần chỉ trang Phân tích hiển thị: phổ dB, giữ đỉnh, đỉnh mạnh nhất, dải octave, một hàng phổ đồ.
+  void _publishSpectrum() {
     final spectrum = _engine.spectrum;
     if (spectrumDb.length != spectrum.bins) {
       spectrumDb = Float64List(spectrum.bins);
@@ -194,13 +254,9 @@ class MeasurementController extends ChangeNotifier {
     spectrum.spectrumDb(settings.weighting, spectrumDb);
     spectrum.spectrumDb(settings.weighting, peakHoldDb, fromPeakHold: true);
     peak = spectrum.dominantPeak(20, math.min(20000, sampleRate / 2 - spectrum.binHz * 8));
-    pitch = _pitchDemand > 0 ? _engine.detectPitch() : null;
     thirdOctave = _engine.bandLevels(3, settings.weighting);
     fullOctave = _engine.bandLevels(1, settings.weighting);
-    _accumulateThirdOctave();
     _appendSpectrogramRow();
-    snapshot = _engine.meter.snapshot();
-    notifyListeners();
   }
 
   void _accumulateThirdOctave() {
