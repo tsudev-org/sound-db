@@ -71,6 +71,7 @@ npx npm@11 install && npm test && npm run build
 | Bản ghi đồng bộ (chỉ người dùng TsuDEV Pro) chưa mã hoá đầu cuối (PRODUCT_POLICY 7.1 N3) | Bảng điều khiển web đọc dữ liệu ở máy chủ (ADR-0005 mục 3) | Chuyển sang TsuDEV Sync (`tsusync`) khi thư viện Dart ổn định |
 | Lời xin quyền micro iOS/macOS (`NSMicrophoneUsageDescription`) chỉ tiếng Việt; app/web đã vi + en (20/11/2026) | Bản dịch `InfoPlist.strings` cần thêm nhóm biến thể vào dự án Xcode, không làm được trên máy dev Linux | Thêm `en.lproj/InfoPlist.strings` khi có phiên trên macOS (cùng đợt nộp App Store) |
 | Tìm/lọc Lịch sử (24/11/2026, app + web) xếp theo thời gian, không theo điểm liên quan (`SEARCH_AND_FILTER.md` mục 5); không facet, không tìm gần đúng; API giữ `items/total` + thêm `meta.query_normalized` | Lịch sử là dữ liệu đo của chính người dùng, vài nghìn dòng; người dùng nhớ phiên theo thời điểm. Khớp = mọi từ (đã bỏ dấu) nằm trong `search_norm` (tính lúc ghi) | Xét lại khi có yêu cầu thật hoặc số phiên một người > 10.000 |
+| Đăng nhập QR (24/11/2026, ADR-0008): app chỉ làm vai thiết bị mới (Đ1); vai xác nhận Đ2 không có; Android quét cần Google Play Services (ML Kit unbundled) | App không giữ token tsudev (ADR-0003); ML Kit nhúng vượt ngân sách APK 25 MB | Đ2 khi tsudev_ui có route nhận access token OIDC cho app; máy không GMS vẫn đăng nhập bằng nút thường |
 | Không ghim chứng chỉ (pinning) | Dữ liệu D2, không phải D3 (`LANGUAGE_SELECTION.md` mục 4) | Xét lại nếu dữ liệu nâng lên D3 |
 
 ### B.5. Việc riêng của repo cần biết trước khi sửa

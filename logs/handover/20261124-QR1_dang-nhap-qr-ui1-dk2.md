@@ -61,3 +61,9 @@ xanh nhạt, chưa chọn rõ trên nền thanh, hai chế độ. Chip đã ch�
   là confidential (xác thực client thay cho DPoP); app nộp `code`+`state` về `/auth/app/xd-callback` để máy chủ đổi mã
   rồi cấp token app như cũ. (b) Vai xác nhận Đ2 trong app Sound Db cần access token tsudev + DPoP - app KHÔNG có (ADR-0003)
   ⇒ Sound Db chỉ làm vai "thiết bị mới" (Đ1), vai xác nhận để app tsudev chung. Cần ADR-0008 khi IdP chốt.
+- 24/11/2026 - sound-db-c9: **QR3 làm xong phần của app** (sau khi tsudev_ui v0.4.0 + tsudev#374 deploy, chuẩn
+  CROSS_DEVICE_LOGIN v1.1.0 bỏ DPoP cho mã): `TsuSignInScreen` thay nút đăng nhập ở Cài đặt; "Quét để đăng nhập" (Đ1,
+  Android/iOS) ⇒ `TsuXdLink.parse` ⇒ mở `/x/<id>` trong trình duyệt hệ thống ⇒ "Tiếp tục đăng nhập" theo ADR-0003 (không
+  đổi máy chủ). Vai xác nhận Đ2 không làm (app không giữ token tsudev). ADR-0008. Test `qr_sign_in_test.dart` 13 ca (T9).
+  `mobile_scanner` 7.5.0 ML Kit unbundled: APK release arm64 23,0 MiB, x64 **24,5 MiB** (ngưỡng 25 MiB - còn ~0,5 MiB).
+  CHƯA: E2E Đ1 trên máy thật (cần máy tính đăng nhập tài khoản tsudev thật - 👤; điện thoại đang rút).

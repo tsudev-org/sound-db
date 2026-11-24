@@ -216,5 +216,18 @@
   "historyNoMatchQuery": "No measurement sessions match \"{query}\". Check the spelling, try other words or widen the time range.",
   "historyNoMatch": "No measurement sessions in this time range. Try widening the range.",
   "historyResultCount": "{count, plural, =1{1 matching session} other{{count} matching sessions}}",
-  "openSettings": "Open settings"
+  "openSettings": "Open settings",
+  "signInWelcome": "Welcome to Sound Db",
+  "signInTagline": "Sign in to sync across devices (TsuDEV Pro) and get badges. Every measuring feature works without signing in.",
+  "signInWithTsudev": "Continue with TsuDEV account",
+  "signInGuest": "Continue without signing in",
+  "xdScanTitle": "Scan to sign in",
+  "xdScanHint": "On a computer that is signed in, open tsudev.com ⇒ Account ⇒ Sign in on phone.",
+  "xdNotTsudev": "This QR code is not from tsudev.",
+  "xdApproveElsewhere": "This code is for approving a new device. Scan it with a tsudev app that is signed in.",
+  "xdCameraDenied": "Sound Db needs camera access to scan the code. You can still sign in with \"Continue with TsuDEV account\".",
+  "xdCameraError": "Could not open the camera. You can still sign in with \"Continue with TsuDEV account\".",
+  "xdContinueTitle": "Confirm on the page that just opened",
+  "xdContinueBody": "Follow the tsudev.com page that just opened: wait for the computer to tap Allow, check it is your account, type the code shown on the computer. Then come back and tap Continue signing in.",
+  "xdContinue": "Continue signing in"
 }

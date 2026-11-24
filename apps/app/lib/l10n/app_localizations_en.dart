@@ -768,4 +768,49 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get openSettings => 'Open settings';
+
+  @override
+  String get signInWelcome => 'Welcome to Sound Db';
+
+  @override
+  String get signInTagline =>
+      'Sign in to sync across devices (TsuDEV Pro) and get badges. Every measuring feature works without signing in.';
+
+  @override
+  String get signInWithTsudev => 'Continue with TsuDEV account';
+
+  @override
+  String get signInGuest => 'Continue without signing in';
+
+  @override
+  String get xdScanTitle => 'Scan to sign in';
+
+  @override
+  String get xdScanHint =>
+      'On a computer that is signed in, open tsudev.com ⇒ Account ⇒ Sign in on phone.';
+
+  @override
+  String get xdNotTsudev => 'This QR code is not from tsudev.';
+
+  @override
+  String get xdApproveElsewhere =>
+      'This code is for approving a new device. Scan it with a tsudev app that is signed in.';
+
+  @override
+  String get xdCameraDenied =>
+      'Sound Db needs camera access to scan the code. You can still sign in with \"Continue with TsuDEV account\".';
+
+  @override
+  String get xdCameraError =>
+      'Could not open the camera. You can still sign in with \"Continue with TsuDEV account\".';
+
+  @override
+  String get xdContinueTitle => 'Confirm on the page that just opened';
+
+  @override
+  String get xdContinueBody =>
+      'Follow the tsudev.com page that just opened: wait for the computer to tap Allow, check it is your account, type the code shown on the computer. Then come back and tap Continue signing in.';
+
+  @override
+  String get xdContinue => 'Continue signing in';
 }

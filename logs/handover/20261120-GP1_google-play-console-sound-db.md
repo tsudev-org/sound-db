@@ -47,3 +47,9 @@ GP1 mục 4 bước 1-7 đạt cho app này; ghi một dòng vào mục 5 phiế
 Theo tsudev-standards v4.2.0 `STORE_SUBMISSION.md` mục 0.1 (PR tsudev-standards #65): mọi trường Play Console điền như
 chủ dự án tự điền, KHÔNG chọn/ghi "do AI thực hiện". Câu hỏi về tính năng thật của app (có tính năng AI tạo sinh
 không...) trả lời đúng mã, ghi tệp mã làm nguồn trong `docs/store/google-play.md`.
+
+## Bổ sung 24/11/2026 (sound-db-c9, ADR-0008)
+
+- Bản kế tiếp có quyền `android.permission.CAMERA` (plugin `mobile_scanner`, `uses-feature camera required=false`) CHỈ để quét
+  mã QR "Quét để đăng nhập". Data safety: KHÔNG thu thập ảnh/video (xử lý trên máy, không lưu, không gửi). Đây là tính
+  năng thật của app ⇒ khai đúng như vậy (không phải câu hỏi "do AI").

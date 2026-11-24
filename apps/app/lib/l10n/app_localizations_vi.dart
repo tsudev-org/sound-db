@@ -758,4 +758,49 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get openSettings => 'Mở cài đặt';
+
+  @override
+  String get signInWelcome => 'Chào mừng tới Sound Db';
+
+  @override
+  String get signInTagline =>
+      'Đăng nhập để đồng bộ giữa các thiết bị (TsuDEV Pro) và nhận huy hiệu. Mọi chức năng đo vẫn dùng được khi không đăng nhập.';
+
+  @override
+  String get signInWithTsudev => 'Tiếp tục với tài khoản TsuDEV';
+
+  @override
+  String get signInGuest => 'Dùng tiếp không đăng nhập';
+
+  @override
+  String get xdScanTitle => 'Quét để đăng nhập';
+
+  @override
+  String get xdScanHint =>
+      'Trên máy tính đã đăng nhập, mở tsudev.com ⇒ Tài khoản ⇒ Đăng nhập trên điện thoại.';
+
+  @override
+  String get xdNotTsudev => 'Mã QR này không phải của tsudev.';
+
+  @override
+  String get xdApproveElsewhere =>
+      'Mã này để cho phép một thiết bị mới. Hãy quét bằng app tsudev đã đăng nhập.';
+
+  @override
+  String get xdCameraDenied =>
+      'Sound Db cần quyền camera để quét mã. Bạn vẫn có thể đăng nhập bằng nút \"Tiếp tục với tài khoản TsuDEV\".';
+
+  @override
+  String get xdCameraError =>
+      'Không mở được camera. Bạn vẫn có thể đăng nhập bằng nút \"Tiếp tục với tài khoản TsuDEV\".';
+
+  @override
+  String get xdContinueTitle => 'Xác nhận trên trang vừa mở';
+
+  @override
+  String get xdContinueBody =>
+      'Làm theo trang tsudev.com vừa mở: chờ máy tính bấm Cho phép, kiểm tra đúng tài khoản của bạn, gõ mã hiện trên máy tính. Xong thì quay lại đây và bấm Tiếp tục đăng nhập.';
+
+  @override
+  String get xdContinue => 'Tiếp tục đăng nhập';
 }
