@@ -32,6 +32,9 @@ dependencies:
     sdk: flutter
 
   record: ^7.2.0
+  # QR3 (CROSS_DEVICE_LOGIN v1.1.0): quét QR đăng nhập; Android dùng ML Kit UNBUNDLED (android/gradle.properties) -
+  # bản nhúng thêm 3-10 MB/ABI, vượt ngân sách APK 25 MB (LANGUAGE_SELECTION 5.1).
+  mobile_scanner: 7.5.0
   sqflite: ^2.4.6
   sqflite_common_ffi: ^2.4.7
   flutter_secure_storage: ^11.2.0
@@ -56,7 +59,7 @@ dependencies:
   tsudev_ui:
     git:
       url: https://github.com/tsudev-org/tsudev-ui-flutter.git
-      ref: v0.3.0
+      ref: v0.4.0
 
 dev_dependencies:
   flutter_test:

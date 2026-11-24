@@ -524,6 +524,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.0"
+  mobile_scanner:
+    dependency: "direct main"
+    description:
+      name: mobile_scanner
+      sha256: "175c62fc813c2bd762757359a2088f8cbdb72020cf85d4cd27fc4d3fe59be058"
+      url: "https://pub.dev"
+    source: hosted
+    version: "7.5.0"
   native_toolchain_c:
     dependency: transitive
     description:
@@ -884,11 +892,11 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "v0.3.0"
-      resolved-ref: "5186f47af83fc8fb1e8150e7611e2502d086ffd3"
+      ref: "v0.4.0"
+      resolved-ref: "9c37b6698a160d6f51e35ae229352de8e1abd339"
       url: "https://github.com/tsudev-org/tsudev-ui-flutter.git"
     source: git
-    version: "0.3.0"
+    version: "0.4.0"
   typed_data:
     dependency: transitive
     description:

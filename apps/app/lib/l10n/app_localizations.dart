@@ -1399,6 +1399,84 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Mở cài đặt'**
   String get openSettings;
+
+  /// No description provided for @signInWelcome.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chào mừng tới Sound Db'**
+  String get signInWelcome;
+
+  /// No description provided for @signInTagline.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đăng nhập để đồng bộ giữa các thiết bị (TsuDEV Pro) và nhận huy hiệu. Mọi chức năng đo vẫn dùng được khi không đăng nhập.'**
+  String get signInTagline;
+
+  /// No description provided for @signInWithTsudev.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiếp tục với tài khoản TsuDEV'**
+  String get signInWithTsudev;
+
+  /// No description provided for @signInGuest.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dùng tiếp không đăng nhập'**
+  String get signInGuest;
+
+  /// No description provided for @xdScanTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quét để đăng nhập'**
+  String get xdScanTitle;
+
+  /// No description provided for @xdScanHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trên máy tính đã đăng nhập, mở tsudev.com ⇒ Tài khoản ⇒ Đăng nhập trên điện thoại.'**
+  String get xdScanHint;
+
+  /// No description provided for @xdNotTsudev.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mã QR này không phải của tsudev.'**
+  String get xdNotTsudev;
+
+  /// No description provided for @xdApproveElsewhere.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mã này để cho phép một thiết bị mới. Hãy quét bằng app tsudev đã đăng nhập.'**
+  String get xdApproveElsewhere;
+
+  /// No description provided for @xdCameraDenied.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sound Db cần quyền camera để quét mã. Bạn vẫn có thể đăng nhập bằng nút \"Tiếp tục với tài khoản TsuDEV\".'**
+  String get xdCameraDenied;
+
+  /// No description provided for @xdCameraError.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không mở được camera. Bạn vẫn có thể đăng nhập bằng nút \"Tiếp tục với tài khoản TsuDEV\".'**
+  String get xdCameraError;
+
+  /// No description provided for @xdContinueTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xác nhận trên trang vừa mở'**
+  String get xdContinueTitle;
+
+  /// No description provided for @xdContinueBody.
+  ///
+  /// In vi, this message translates to:
+  /// **'Làm theo trang tsudev.com vừa mở: chờ máy tính bấm Cho phép, kiểm tra đúng tài khoản của bạn, gõ mã hiện trên máy tính. Xong thì quay lại đây và bấm Tiếp tục đăng nhập.'**
+  String get xdContinueBody;
+
+  /// No description provided for @xdContinue.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiếp tục đăng nhập'**
+  String get xdContinue;
 }
 
 class _AppLocalizationsDelegate

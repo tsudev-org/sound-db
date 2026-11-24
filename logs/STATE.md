@@ -162,6 +162,7 @@
 - 20/11/2026 - TsuDEV Pro: gate 402 máy chủ, kênh RP, xoá có xác minh: `docs/adr/0005-*`
 - 20/11/2026 - (ĐỀ XUẤT) Đồng bộ sang tsusync, mã hoá đầu cuối: `docs/adr/0006-*`
 - 20/11/2026 - Tên miền chuẩn sound.tsudev.com, tên cũ giữ vĩnh viễn: `docs/adr/0007-*`
+- 24/11/2026 - Đăng nhập QR: app chỉ làm vai thiết bị mới qua trình duyệt hệ thống, giữ ADR-0003: `docs/adr/0008-*`
 - 17/11/2026 - Dùng logo tsudev chung cho tới khi có logo riêng được duyệt.
 
 ## Sự cố bảo mật

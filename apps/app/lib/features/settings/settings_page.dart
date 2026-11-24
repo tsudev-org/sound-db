@@ -7,10 +7,10 @@ import '../../core/format.dart';
 import '../../l10n/l10n.dart';
 import '../../pro/pro_page.dart';
 import '../../sync/api_config.dart';
-import '../../sync/auth_service.dart';
 import '../../theme/app_theme.dart';
 import '../../theme/tokens.g.dart';
 import '../../widgets/common.dart';
+import '../account/sign_in_page.dart';
 import 'calibration.dart';
 
 const appVersion = String.fromEnvironment('SOUNDDB_VERSION', defaultValue: '26.11.2302');
@@ -162,19 +162,10 @@ class _AccountSection extends StatelessWidget {
           Text(l.guestMode, style: TextStyle(color: p.textSecondary)),
           const SizedBox(height: SdbSpacing.s3),
           FilledButton.icon(
+            // Màn đăng nhập thống nhất (AUTH_AND_ACCOUNT 13.2) + Quét để đăng nhập (CROSS_DEVICE_LOGIN Đ1).
             onPressed: auth.busy
                 ? null
-                : () async {
-                    try {
-                      await auth.signIn(deviceName: services.deviceModel);
-                      await services.pro.refresh();
-                      await sync.syncNow();
-                    } on AuthException catch (e) {
-                      if (context.mounted) showMessage(context, e.message);
-                    } catch (e) {
-                      if (context.mounted) showMessage(context, l.signInFailed('$e'));
-                    }
-                  },
+                : () => Navigator.of(context).push<bool>(MaterialPageRoute(builder: (_) => const SignInPage())),
             icon: const Icon(Icons.login),
             label: Text(l.signInButton),
           ),
