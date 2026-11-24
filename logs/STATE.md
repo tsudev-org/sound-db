@@ -1,7 +1,8 @@
 # STATE.md - Trạng thái project Sound Db
 
-> **PHIÊN KẾ TIẾP ĐỌC TRƯỚC:** `logs/handover/20261124-08_ban-giao-sound-db.md` (việc còn lại theo thứ tự, bẫy mới, prompt
-> khởi động chuẩn ở mục 5; phiếu 07 mục 3-4 vẫn áp dụng). Phiên `sound-db-56` kết thúc tối 24/11/2026, main sạch, LOCKS trống.
+> **PHIÊN KẾ TIẾP ĐỌC TRƯỚC:** `logs/handover/20261125-09_ban-giao-sound-db.md` (P1 QA-11 bước 3 → P2 SEC2 → P3 phát hành →
+> P4 hàng đợi; bẫy mục 5; phiếu 07 mục 4 + 08 mục 4 vẫn áp dụng). Phiên `sound-db-56` kết thúc rạng sáng 25/11/2026, main
+> sạch, LOCKS trống. Điện thoại SM-M325FV đang cắm USB.
 
 > **Phiên kế tiếp (phiếu toàn hệ 20261117-P2):** đọc `~/projects/logs/handover/20261117-P2_ke-hoach-phan-phoi-tin-cay-da-nen-tang.md` hàng 2 (`sound-db`) ở mục 3
 > + `.standards/docs/DISTRIBUTION_TRUST.md` (chuẩn v3.7.0) + `.standards/docs/VERSIONING.md` mục 2. Khuôn thẻ/tên tệp mới chỉ áp
@@ -32,8 +33,10 @@
 - [ ] 👤 QR3 E2E trên máy thật: máy tính đăng nhập tsudev.com ⇒ Tài khoản ⇒ Đăng nhập trên điện thoại ⇒ app Sound Db
   "Quét để đăng nhập" (ADR-0008). DK2: chờ duyệt nhãn tín nhiệm. Dependabot npm (TS 7, vitest 5): cần `astro check` hỗ
   trợ TS 7 + `vitest-pool-workers` hỗ trợ vitest 5 trước khi nhận (PR #48 đã revert).
-- [ ] QA-11 CPU: ĐÃ SỬA phần lớn 24/11 tối (bảng dải octave lập sẵn trùng bit + chỉ dò cao độ ở Bộ chỉnh âm; x86 giảm ~75 %).
-  Còn đo `cpu_rate` trên máy thật (👤 cắm điện thoại), mục tiêu < 0,3 lõi; chưa đạt ⇒ FFT thực (Rust + vector + Dart).
+- [ ] **QA-11 bước 3** (phiếu 09 P1): máy thật sau #54 + #60: Đo mức 73 / Phân tích 74-76 / Bộ chỉnh âm 69-71 / Cài đặt 18-19
+  jiffies/s (trước 88-93). Còn tab đang hiển thị ~0,7 lõi ⇒ hồ sơ DevTools, DSP sang isolate, giảm vẽ. Mục tiêu < 30 ở Đo mức.
+- [ ] **SEC2** trang `/security` bằng chứng tự kiểm chứng + `security.txt` Contact `security@tsudev.com` (phiếu 09 P2,
+  phiếu `logs/handover/20261125-SEC2_*`).
 - [ ] 👤 TalkBack thật: bật TalkBack, vuốt qua Đo mức khi đang đo - chỉ đọc vùng mức khi đổi, không đọc dồn (QA-05).
 - [ ] **ƯU TIÊN 1 - Kiểm thử toàn diện trên smartphone thật qua adb** (5 phase: kết nối + smoke, chức năng từng tab,
   phi chức năng + bảo mật, sửa lỗi + chuẩn hoá mã, phát hành bản sửa). Kế hoạch + lệnh + tiêu chí:
@@ -57,6 +60,11 @@
 | --- | --- | --- |
 
 ## Đã hoàn thành (mới nhất trên cùng)
+
+- 25/11/2026 rạng sáng - `sound-db-56` (máy thật SM-M325FV): **26.11.2401 nghiệm thu** - SHA256 + `gh attestation verify`
+  đạt, cài đè gói chính giữ Lịch sử 2/2, Cài đặt hiện 26.11.2401. **QA-11**: đo theo luồng thấy chi phí chính là trang
+  ẩn của IndexedStack dựng lại 20 lần/giây ⇒ `VisibleListenableBuilder` (PR #60): Cài đặt 88-92 ⇒ 18-19 jiffies/s, tab
+  đang đo 88-93 ⇒ 69-76. Test trùng bit DSP (PR #59). Script đo `scripts/android/qa11-cpu.sh` + `thr.sh`. Nhận phiếu SEC2.
 
 - 24/11/2026 tối - `sound-db-56` (tiếp `sound-db-f9`/`sound-db-10` bị tắt đột ngột): **Bản 26.11.2401** (PR #53, Release
   run 45409204596 đạt, Latest). **QA-11** (PR #54): hồ sơ CPU `packages/dsp-dart/tool/bench.dart` - `bandLevels` 51 %,
