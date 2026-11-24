@@ -76,7 +76,13 @@ jobs:
               [ "${SKIP_ANDROID:-}" = 1 ] && exit 0
               flutter build apk "${args[@]}" --split-per-abi
               cp build/app/outputs/flutter-apk/app-arm64-v8a-release.apk "$GITHUB_WORKSPACE/out/sound-db_${V}_arm64-setup.apk"
-              cp build/app/outputs/flutter-apk/app-x86_64-release.apk "$GITHUB_WORKSPACE/out/sound-db_${V}_x64-setup.apk" ;;
+              cp build/app/outputs/flutter-apk/app-x86_64-release.apk "$GITHUB_WORKSPACE/out/sound-db_${V}_x64-setup.apk"
+              # Ngân sách tốc độ (tsudev-standards v5.1.0 LANGUAGE_SELECTION 5.1): APK mỗi ABI <= 25 MB, vượt ⇒ chặn.
+              for f in "$GITHUB_WORKSPACE"/out/*.apk; do
+                size=$(stat -c %s "$f")
+                echo "$(basename "$f"): $((size / 1024)) KB"
+                [ "$size" -le $((25 * 1024 * 1024)) ] || { echo "::error::$(basename "$f") vượt 25 MB"; exit 1; }
+              done ;;
             linux)
               flutter build linux "${args[@]}"
               # Chặn hồi quy: không tệp nào được đòi GLIBC mới hơn mức khai trong packaging/package.json.
