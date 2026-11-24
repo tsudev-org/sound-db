@@ -1,0 +1,32 @@
+{
+  "$schema": "https://unpkg.com/knip@6.44.2/schema.json",
+  "workspaces": {
+    ".": {
+      "entry": [
+        "scripts/*.mjs"
+      ]
+    },
+    "apps/web": {
+      "entry": [
+        "src/scripts/*.ts",
+        "public/*.js",
+        "public/worklet/*.js",
+        "scripts/*.mjs"
+      ],
+      "project": [
+        "src/**/*.{ts,astro,mjs}",
+        "scripts/*.mjs"
+      ]
+    },
+    "services/sync-api": {
+      "vitest": false,
+      "entry": [
+        "test/**/*.ts"
+      ],
+      "project": [
+        "src/**/*.ts",
+        "test/**/*.ts"
+      ]
+    }
+  }
+}

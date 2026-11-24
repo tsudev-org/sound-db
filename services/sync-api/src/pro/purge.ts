@@ -11,8 +11,8 @@ import { GRACE_MS, fetchSubjectStatus, rpConfigured } from './entitlements';
  * Chưa có khoá RP ⇒ không làm gì (hoãn), `MUST NOT` xoá chỉ dựa vào `pro_until` đệm.
  * Chạy kèm ~1% yêu cầu `/api/*` (không còn Cron miễn phí); mỗi lượt tối đa VERIFY_PER_RUN tài khoản.
  */
-export const VERIFY_PER_RUN = 20;
-export const VERIFY_EVERY_MS = 24 * 3600 * 1000;
+const VERIFY_PER_RUN = 20;
+const VERIFY_EVERY_MS = 24 * 3600 * 1000;
 const CHUNK = 500;
 
 export interface PurgeResult {

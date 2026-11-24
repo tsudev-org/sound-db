@@ -8,7 +8,7 @@ export function clientIp(c: Context<AppEnv>): string {
   return c.req.header('CF-Connecting-IP') ?? 'unknown';
 }
 
-export async function ipHash(c: Context<AppEnv>): Promise<string> {
+async function ipHash(c: Context<AppEnv>): Promise<string> {
   return (await sha256Hex(`${c.env.IP_HASH_SALT}:${clientIp(c)}`)).slice(0, 32);
 }
 

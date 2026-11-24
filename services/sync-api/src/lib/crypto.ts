@@ -6,7 +6,7 @@ export function randomToken(bytes = 32): string {
   return base64Url(buf);
 }
 
-export function base64Url(data: Uint8Array): string {
+function base64Url(data: Uint8Array): string {
   let s = '';
   for (const b of data) s += String.fromCharCode(b);
   return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
@@ -30,4 +30,3 @@ export function timingSafeEqual(a: string, b: string): boolean {
   return diff === 0;
 }
 
-export const now = () => Date.now();

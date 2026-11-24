@@ -2,7 +2,7 @@
 // app là apps/app/lib/core/vi_text.dart - hai bản phải cho cùng kết quả (test cùng ca ở hai nơi).
 
 /** Bỏ dấu tiếng Việt. Xử lý riêng đ/Đ vì NFD không tách được hai ký tự này. */
-export function viRemoveDiacritics(input: string): string {
+function viRemoveDiacritics(input: string): string {
   return input
     .normalize('NFD')
     .replace(/[̀-ͯ]/g, '')

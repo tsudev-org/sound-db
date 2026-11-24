@@ -26,7 +26,7 @@ export const sessionData = z
   })
   .strict();
 
-export const calibrationData = z
+const calibrationData = z
   .object({
     v: z.literal(1),
     name: z.string().min(1).max(120),
@@ -35,10 +35,10 @@ export const calibrationData = z
   })
   .strict();
 
-export const KINDS = ['session', 'calibration'] as const;
+const KINDS = ['session', 'calibration'] as const;
 export type Kind = (typeof KINDS)[number];
 
-export const change = z.object({
+const change = z.object({
   kind: z.enum(KINDS),
   id: z.uuid(),
   updated_at: z.number().int().min(1_600_000_000_000),

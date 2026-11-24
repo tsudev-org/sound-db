@@ -5,7 +5,7 @@
  *   vòng lặp do hệ điều hành cấp nên được tự do, mọi phần khác khớp tuyệt đối).
  * Phải khớp `apps/app/lib/sync/api_config.dart`.
  */
-export const APP_SCHEME_REDIRECT = 'com.tsudev.sounddb:/auth/callback';
+const APP_SCHEME_REDIRECT = 'com.tsudev.sounddb:/auth/callback';
 
 export function isAllowedAppRedirect(value: string): boolean {
   if (value === APP_SCHEME_REDIRECT) return true;
