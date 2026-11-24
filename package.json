@@ -14,7 +14,8 @@
     "test": "npm --workspace services/sync-api test",
     "typecheck": "npm --workspaces run typecheck",
     "build": "npm run wasm && npm --workspace apps/web run build",
-    "deploy": "npm run build && npm --workspace services/sync-api run deploy"
+    "deploy": "npm run build && npm --workspace services/sync-api run deploy",
+    "knip": "knip --no-progress"
   },
   "engines": {
     "node": ">=22",
@@ -37,5 +38,8 @@
     "@cloudflare/vitest-pool-workers": {
       "zod": "4.6.7"
     }
+  },
+  "devDependencies": {
+    "knip": "6.44.2"
   }
 }

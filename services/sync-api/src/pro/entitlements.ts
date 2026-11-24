@@ -15,9 +15,9 @@ import { ApiError } from '../lib/errors';
  * Cả hai xác thực bằng client assertion `private_key_jwt` (RFC 7523): `iss` = `sub` = client_id, `aud` = đúng URL kênh,
  * `exp` 120 giây, `jti` một lần.
  */
-export const CACHE_MS = 24 * 3600 * 1000;
+const CACHE_MS = 24 * 3600 * 1000;
 export const GRACE_MS = 90 * 24 * 3600 * 1000;
-export const STATUS_MAX_SUBS = 100;
+const STATUS_MAX_SUBS = 100;
 
 export interface Entitlement {
   proUntil: number;
@@ -32,12 +32,12 @@ export type SubjectStatus = { status: 'ok'; proUntil: number } | { status: 'dele
 
 export const rpConfigured = (env: Env) => !!env.RP_PRIVATE_JWK;
 const tsudevOrigin = (env: Env) => new URL(env.OIDC_ISSUER).origin;
-export const rpAudience = (env: Env) => `${tsudevOrigin(env)}/api/rp/entitlements`;
-export const statusAudience = (env: Env) => `${rpAudience(env)}/status`;
+const rpAudience = (env: Env) => `${tsudevOrigin(env)}/api/rp/entitlements`;
+const statusAudience = (env: Env) => `${rpAudience(env)}/status`;
 
 let signing: { raw: string; key: JoseKey | Uint8Array; kid?: string } | null = null;
 
-export async function clientAssertion(env: Env, aud: string): Promise<string> {
+async function clientAssertion(env: Env, aud: string): Promise<string> {
   const raw = env.RP_PRIVATE_JWK ?? '';
   if (signing?.raw !== raw) {
     const jwk = JSON.parse(raw) as JWK;

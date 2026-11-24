@@ -6,7 +6,7 @@ import { acceptedIssuers } from '../lib/hosts';
 import { randomToken, sha256Hex } from '../lib/crypto';
 
 export const ACCESS_TTL_S = 15 * 60;
-export const REFRESH_TTL_MS = 30 * 24 * 60 * 60 * 1000;
+const REFRESH_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 export const WEB_SESSION_TTL_MS = 14 * 24 * 60 * 60 * 1000;
 const AUDIENCE = 'sounddb-api';
 

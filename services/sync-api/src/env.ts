@@ -19,7 +19,7 @@ export interface Env {
   RP_PRIVATE_JWK?: string;
 }
 
-export interface AuthContext {
+interface AuthContext {
   userId: string;
   deviceId: string | null;
   via: 'bearer' | 'cookie';
