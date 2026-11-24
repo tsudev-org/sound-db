@@ -10,6 +10,8 @@ import '../../theme/tokens.g.dart';
 import '../../widgets/charts.dart';
 import '../../widgets/common.dart';
 import '../../widgets/level_dial.dart';
+import '../../services/audio_input.dart';
+import '../../services/system_settings.dart';
 import 'save_session.dart';
 
 /// Màn hình chính: máy đo mức âm (sound level meter).
@@ -49,7 +51,13 @@ class MeterPage extends StatelessWidget {
             padding: const EdgeInsets.all(SdbSpacing.s4),
             children: [
               if (m.error != null) ...[
-                NoticeBanner(message: m.error!, danger: true),
+                NoticeBanner(
+                  message: m.error!,
+                  danger: true,
+                  action: m.errorCode == AudioInputException.permissionDenied && SystemSettings.supported
+                      ? TextButton(onPressed: SystemSettings.openAppSettings, child: Text(context.l10n.openSettings))
+                      : null,
+                ),
                 const SizedBox(height: SdbSpacing.s3),
               ],
               if (!settings.calibrated) ...[

@@ -755,4 +755,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String historyResultCount(int count) {
     return '$count phiên đo phù hợp';
   }
+
+  @override
+  String get openSettings => 'Mở cài đặt';
 }

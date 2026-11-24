@@ -215,5 +215,6 @@
   "historyRangeCustom": "Custom…",
   "historyNoMatchQuery": "No measurement sessions match \"{query}\". Check the spelling, try other words or widen the time range.",
   "historyNoMatch": "No measurement sessions in this time range. Try widening the range.",
-  "historyResultCount": "{count, plural, =1{1 matching session} other{{count} matching sessions}}"
+  "historyResultCount": "{count, plural, =1{1 matching session} other{{count} matching sessions}}",
+  "openSettings": "Open settings"
 }

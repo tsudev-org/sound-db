@@ -28,9 +28,7 @@
 
 - [ ] 👤 Điện thoại SM-M325FV: adb.exe Windows báo "unauthorized" sau `adb usb` (23/11) - thu hồi uỷ quyền gỡ lỗi USB,
   cắm lại, cho phép. Máy đang chạy bản thử 26.11.2302 versionCode 26114303 (cao hơn bản chính thức 26114302).
-- [ ] QA-06 web vs app lệch ~20 dB khi chưa hiệu chuẩn (phiếu 06 mục 6) - điều tra `getSettings()` Chrome Android.
-- [ ] Lịch sử chưa có ô tìm/lọc (`SEARCH_AND_FILTER.md`) - chủ dự án CHỐT 24/11: app + web, tối thiểu (tìm nhãn/thiết bị
-  bỏ dấu + lọc khoảng ngày) + test. Chưa làm.
+- [ ] 👤 TalkBack thật: bật TalkBack, vuốt qua Đo mức khi đang đo - chỉ đọc vùng mức khi đổi, không đọc dồn (QA-05).
 - [ ] **ƯU TIÊN 1 - Kiểm thử toàn diện trên smartphone thật qua adb** (5 phase: kết nối + smoke, chức năng từng tab,
   phi chức năng + bảo mật, sửa lỗi + chuẩn hoá mã, phát hành bản sửa). Kế hoạch + lệnh + tiêu chí:
   `logs/handover/20261117-06_ke-hoach-kiem-thu-smartphone-adb.md`. 👤 cần bật Gỡ lỗi không dây và chạy `adb pair`.
@@ -53,9 +51,13 @@
 
 ## Đã hoàn thành (mới nhất trên cùng)
 
-- 24/11/2026 - `sound-db-c9` (cắt ngang - hết hạn mức, PR #41): **SEC1 đóng**. QA-06: AGC Chrome Android đã tắt, chuỗi
-  thu chênh ~40 dB (phiếu 06 mục 6), còn chạy `mic_source_test.dart`. SDB-V1: ba repo CHƯA chuyển; excavator
-  scoop-bucket đỏ vì `tsudev-contact` (hash 404) ⇒ Scoop kẹt 26.11.1705. Phiếu 06 phần "CHƯA" chưa làm.
+- 24/11/2026 - `sound-db-c9` (PR #41): **SEC1 đóng**. **Tìm/lọc Lịch sử** app + web (không dấu, khoảng thời gian, DB v3 +
+  migration 0003 `search_norm`; lệch chuẩn ghi AGENTS B.4). **QA-06 đóng, không đổi offset** (Chrome thu nguồn `MIC` nhạy
+  hơn `UNPROCESSED` ~45-50 dB, một máy, không máy đo chuẩn). Phiếu 06 phần "CHƯA": sửa **QA-07** (Lịch sử không tự cập
+  nhật), **QA-08** (chữ 2.0 + bàn phím: kết quả 0 px), **QA-09** (Máy phát ra nền lệch trạng thái), **QA-10** (nút Mở cài
+  đặt khi từ chối quyền); ĐẠT: Bộ chỉnh âm 440,0 Hz/0 cent, 360×640 dp, Cài đặt (Tối, ngoại tuyến, hiệu chuẩn), quyền
+  "không hỏi lại" không crash. TalkBack thật cần 👤 nghe. SDB-V1: ba repo CHƯA chuyển; excavator scoop-bucket đỏ vì
+  `tsudev-contact` (hash 404) ⇒ Scoop kẹt 26.11.1705.
 
 - 23/11/2026 - `sound-db-38`: **Bản 26.11.2302** (Latest, PR #39, run 45212957432 mọi job đạt gồm VirusTotal): QA-03,
   QA-04, QA-05. `sha256sum -c SHA256SUMS.txt` + `gh attestation verify` APK arm64 đạt. Tên cũ + chuẩn song song.

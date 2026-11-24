@@ -1393,6 +1393,12 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'{count} phiên đo phù hợp'**
   String historyResultCount(int count);
+
+  /// No description provided for @openSettings.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mở cài đặt'**
+  String get openSettings;
 }
 
 class _AppLocalizationsDelegate

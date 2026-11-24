@@ -498,5 +498,6 @@
         "type": "int"
       }
     }
-  }
+  },
+  "openSettings": "Mở cài đặt"
 }

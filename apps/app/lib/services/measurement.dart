@@ -32,6 +32,9 @@ class MeasurementController extends ChangeNotifier {
 
   MeterState state = MeterState.idle;
   String? error;
+
+  /// Mã lỗi máy đọc được (vd. [AudioInputException.permissionDenied]) để giao diện chọn hành động kèm theo.
+  String? errorCode;
   DateTime? startedAt;
   LevelSnapshot? snapshot;
   PeakEstimate? peak;
@@ -83,6 +86,7 @@ class MeasurementController extends ChangeNotifier {
     final resuming = state == MeterState.paused;
     state = MeterState.starting;
     error = null;
+    errorCode = null;
     notifyListeners();
     try {
       if (!resuming) _resetSessionData();
@@ -100,6 +104,7 @@ class MeasurementController extends ChangeNotifier {
 
   void _onError(Object e) {
     error = e is AudioInputException ? e.message : l10nNow.errMicOpen('$e');
+    errorCode = e is AudioInputException ? e.code : null;
     state = MeterState.error;
     unawaited(_stopInput());
     notifyListeners();
