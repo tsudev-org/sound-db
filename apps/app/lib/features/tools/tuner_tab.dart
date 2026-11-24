@@ -1,16 +1,57 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:sounddb_dsp/sounddb_dsp.dart';
 
 import '../../app_scope.dart';
 import '../../core/format.dart';
+import '../../services/measurement.dart';
 import '../../l10n/l10n.dart';
 import '../../theme/app_theme.dart';
 import '../../theme/tokens.g.dart';
 import '../../widgets/common.dart';
 
 /// Đo tần số cơ bản (cao độ) + nốt nhạc + lệch cent, kèm tần số trội của phổ.
-class TunerTab extends StatelessWidget {
+class TunerTab extends StatefulWidget {
   const TunerTab({super.key});
+
+  @override
+  State<TunerTab> createState() => _TunerTabState();
+}
+
+/// Chỉ xin dò cao độ khi tab thực sự hiển thị: trang ẩn của IndexedStack bị tắt TickerMode (QA-11).
+class _TunerTabState extends State<TunerTab> {
+  ValueListenable<TickerModeData>? _visible;
+  MeasurementController? _controller;
+  bool _demanding = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final controller = AppScope.of(context).measurement;
+    final visible = TickerMode.getValuesNotifier(context);
+    if (!identical(controller, _controller) || !identical(visible, _visible)) {
+      _setDemand(false);
+      _visible?.removeListener(_sync);
+      _controller = controller;
+      _visible = visible..addListener(_sync);
+    }
+    _sync();
+  }
+
+  void _sync() => _setDemand(_visible?.value.enabled ?? false);
+
+  void _setDemand(bool wanted) {
+    if (wanted == _demanding) return;
+    _demanding = wanted;
+    _controller?.demandPitch(wanted);
+  }
+
+  @override
+  void dispose() {
+    _visible?.removeListener(_sync);
+    _setDemand(false);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

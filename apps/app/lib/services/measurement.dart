@@ -61,6 +61,20 @@ class MeasurementController extends ChangeNotifier {
   int _thirdOctaveFrames = 0;
   int _samplesSinceHistory = 0;
 
+  /// Số màn đang HIỂN THỊ cần cao độ. Dò cao độ (FFT 8192 thuận + ngược) chiếm ~1/2 DSP còn lại sau khi lập bảng dải
+  /// octave, nhưng chỉ Bộ chỉnh âm dùng; các trang nằm trong IndexedStack nên "đang gắn" không có nghĩa "đang xem"
+  /// (QA-11, 24/11/2026).
+  int _pitchDemand = 0;
+
+  /// Màn cần cao độ gọi `true` khi bắt đầu hiển thị, `false` khi ẩn (gọi theo cặp).
+  void demandPitch(bool wanted) {
+    _pitchDemand = math.max(0, _pitchDemand + (wanted ? 1 : -1));
+    if (_pitchDemand == 0) pitch = null;
+  }
+
+  @visibleForTesting
+  bool get pitchDemanded => _pitchDemand > 0;
+
   Engine get engine => _engine;
   double get sampleRate => _engine.sampleRate;
   bool get isRunning => state == MeterState.running;
@@ -180,7 +194,7 @@ class MeasurementController extends ChangeNotifier {
     spectrum.spectrumDb(settings.weighting, spectrumDb);
     spectrum.spectrumDb(settings.weighting, peakHoldDb, fromPeakHold: true);
     peak = spectrum.dominantPeak(20, math.min(20000, sampleRate / 2 - spectrum.binHz * 8));
-    pitch = _engine.detectPitch();
+    pitch = _pitchDemand > 0 ? _engine.detectPitch() : null;
     thirdOctave = _engine.bandLevels(3, settings.weighting);
     fullOctave = _engine.bandLevels(1, settings.weighting);
     _accumulateThirdOctave();

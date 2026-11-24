@@ -143,7 +143,11 @@ class _HomeShellState extends State<HomeShell> {
   @override
   Widget build(BuildContext context) {
     final wide = MediaQuery.sizeOf(context).width >= 840;
-    final body = IndexedStack(index: _index, children: [for (final d in _destinations) d.page]);
+    // Trang ẩn của IndexedStack vẫn bật TickerMode (Visibility.maintain) ⇒ tắt rõ ràng: hoạt ảnh trang ẩn dừng và màn
+    // cần dữ liệu tốn CPU (Bộ chỉnh âm xin dò cao độ) biết mình có đang hiển thị không (QA-11).
+    final body = IndexedStack(index: _index, children: [
+      for (var i = 0; i < _destinations.length; i++) TickerMode(enabled: i == _index, child: _destinations[i].page),
+    ]);
     if (wide) {
       return Scaffold(
         body: Row(children: [
