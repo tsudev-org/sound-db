@@ -111,6 +111,23 @@ npx npm@11 install && npm test && npm run build
   = ĐÚNG versionCode bản sắp phát hành (CI `--split-per-abi`: số dựng pubspec + mã ABI × 1000, arm64 = 2 ⇒ 26112302
   + 2000 = 26114302), KHÔNG cao hơn - nếu không bản
   chính thức sẽ bị Android từ chối như hạ cấp (23/11: bản thử 26114303 chặn 26.11.2302).
+- **Bẫy máy thật đã gặp (24/11, chi tiết AKB `LES-20261124-1053-*`)**:
+  - KHÔNG chạy `adb usb` (23/11: máy về "unauthorized", phải thu hồi uỷ quyền + cắm lại). adb của WSL qua Wi-Fi
+    (`adb.exe tcpip 5555` rồi `adb connect <ip>:5555`) dùng khoá RSA RIÊNG ⇒ máy hỏi cho phép lần nữa, tích "Luôn cho
+    phép". Không trỏ adb WSL sang khoá của Windows (bị chặn quyền).
+  - `flutter drive` cài lại gói ⇒ quyền `pm grant` trước đó MẤT (`AudioRecord ... check failed -1`) - test tự xin quyền,
+    tap "Trong khi dùng ứng dụng" bằng script nền.
+  - Đang đo ⇒ `uiautomator dump` hỏng (màn vẽ liên tục): bấm theo toạ độ (nút Tạm dừng 875,157 ở 1080×2400), dừng đo rồi
+    mới dump. Bấm đúng nhãn: `tapx` (khớp chính xác, hiểu `&amp;`) thay `tap_text` (chuỗi con).
+  - Chrome DevTools trên máy: `@chrome_devtools_remote` (không hậu tố) là của **Edge**; Chrome ở
+    `chrome_devtools_remote_$(pidof com.android.chrome)`. `adb.exe forward` chỉ mở localhost Windows ⇒ client CDP chạy
+    bằng `node.exe`. Không in danh sách tab (`/json`) - lộ tab cá nhân. Loa PC (`[console]::beep`) có lúc không phát ⇒
+    nguồn tông chuẩn: WebAudio trong Chrome trên chính máy (CDP) - Bộ chỉnh âm đọc 440,0 Hz.
+  - TalkBack bật bằng `settings put secure enabled_accessibility_services ...TalkBackService` mở trang hướng dẫn lần đầu;
+    cử chỉ `input swipe` KHÔNG được TalkBack nhận ⇒ nghe thử thật là việc 👤. Ghi lại giá trị cũ, tắt ngay sau khi thử.
+  - CPU: `cpu_rate` trong `ui.sh` (jiffies/giây từ `/proc/<pid>/stat`, 100 = một lõi). Đo dài: cáp USB có thể rớt và
+    người dùng có thể đóng app từ Gần đây (`am_kill ... remove task` - không phải crash) ⇒ ghi log theo phút.
+  - Chỉ `dart format` tệp mình sửa (`dart format lib` định dạng lại ~27 tệp, gồm tệp l10n sinh ra).
 - Đăng nhập: client OIDC `sounddb` phải được đăng ký trong bảng `OAuthClient` của tsudev với ĐÚNG hai redirect:
   `https://sound.tsudev.com/auth/callback` + tên cũ `https://sounddb.tsudev.com/auth/callback` (giữ vĩnh viễn, ADR-0007;
   phiếu `logs/handover/20261117-01_*`, tsudev SDB2).

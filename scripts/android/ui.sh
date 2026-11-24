@@ -48,6 +48,27 @@ tap_text() {
   sh_ input tap $xy
 }
 
+# Bấm nút có text/content-desc ĐÚNG BẰNG $1 (không phải chuỗi con). tap_text("Lưu") khớp nhầm "Lưu phiên đo" đứng
+# trước; mẫu nằm trong nháy nên ^...$ không dùng được (24/11/2026). Chữ có & ⇒ XML là &amp; - hàm tự đổi.
+tapx() {
+  local want b x1 y1 x2 y2
+  want=${1//&/&amp;}
+  b=$(dump | grep -oE "<node [^>]*>" | grep -F -e "text=\"$want\"" -e "content-desc=\"$want\"" | head -1)
+  [ -z "$b" ] && { echo "không thấy chính xác: $1" >&2; return 1; }
+  read -r x1 y1 x2 y2 <<<"$(grep -oE 'bounds="[^"]+"' <<<"$b" | grep -oE '[0-9]+' | tr '\n' ' ')"
+  sh_ input tap $(((x1 + x2) / 2)) $(((y1 + y2) / 2))
+}
+
+# CPU của app (jiffies/giây, CLK_TCK 100 ⇒ 100 = một lõi) trong ${1:-20} giây - QA-11. Đo cả khi đứng yên để so.
+cpu_rate() {
+  local pid c1 c2 n=${1:-20}
+  pid=$(sh_ pidof "$PKG") || { echo "app không chạy" >&2; return 1; }
+  c1=$(sh_ cat /proc/"$pid"/stat | awk '{print $14+$15}')
+  sleep "$n"
+  c2=$(sh_ cat /proc/"$pid"/stat | awk '{print $14+$15}')
+  echo $(((c2 - c1) / n))
+}
+
 wait_text() {
   local i
   for ((i = 0; i < ${2:-10}; i++)); do
