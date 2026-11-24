@@ -1,7 +1,7 @@
 # STATE.md - Trạng thái project Sound Db
 
-> **PHIÊN KẾ TIẾP ĐỌC TRƯỚC:** `logs/handover/20261124-07_ban-giao-sound-db.md` (việc còn lại theo thứ tự, bẫy, prompt
-> khởi động chuẩn ở mục 5). Phiên `sound-db-c9` kết thúc 18:00 24/11/2026, main sạch, LOCKS trống.
+> **PHIÊN KẾ TIẾP ĐỌC TRƯỚC:** `logs/handover/20261124-08_ban-giao-sound-db.md` (việc còn lại theo thứ tự, bẫy mới, prompt
+> khởi động chuẩn ở mục 5; phiếu 07 mục 3-4 vẫn áp dụng). Phiên `sound-db-56` kết thúc tối 24/11/2026, main sạch, LOCKS trống.
 
 > **Phiên kế tiếp (phiếu toàn hệ 20261117-P2):** đọc `~/projects/logs/handover/20261117-P2_ke-hoach-phan-phoi-tin-cay-da-nen-tang.md` hàng 2 (`sound-db`) ở mục 3
 > + `.standards/docs/DISTRIBUTION_TRUST.md` (chuẩn v3.7.0) + `.standards/docs/VERSIONING.md` mục 2. Khuôn thẻ/tên tệp mới chỉ áp
@@ -32,7 +32,8 @@
 - [ ] 👤 QR3 E2E trên máy thật: máy tính đăng nhập tsudev.com ⇒ Tài khoản ⇒ Đăng nhập trên điện thoại ⇒ app Sound Db
   "Quét để đăng nhập" (ADR-0008). DK2: chờ duyệt nhãn tín nhiệm. Dependabot npm (TS 7, vitest 5): cần `astro check` hỗ
   trợ TS 7 + `vitest-pool-workers` hỗ trợ vitest 5 trước khi nhận (PR #48 đã revert).
-- [ ] QA-11 CPU khi đo ~0,9 lõi (phiếu 06 mục 6): hồ sơ CPU, dàn 1/3 octave hạ mẫu hoặc isolate riêng (Rust + vector + Dart cùng PR).
+- [ ] QA-11 CPU: ĐÃ SỬA phần lớn 24/11 tối (bảng dải octave lập sẵn trùng bit + chỉ dò cao độ ở Bộ chỉnh âm; x86 giảm ~75 %).
+  Còn đo `cpu_rate` trên máy thật (👤 cắm điện thoại), mục tiêu < 0,3 lõi; chưa đạt ⇒ FFT thực (Rust + vector + Dart).
 - [ ] 👤 TalkBack thật: bật TalkBack, vuốt qua Đo mức khi đang đo - chỉ đọc vùng mức khi đổi, không đọc dồn (QA-05).
 - [ ] **ƯU TIÊN 1 - Kiểm thử toàn diện trên smartphone thật qua adb** (5 phase: kết nối + smoke, chức năng từng tab,
   phi chức năng + bảo mật, sửa lỗi + chuẩn hoá mã, phát hành bản sửa). Kế hoạch + lệnh + tiêu chí:
@@ -54,9 +55,14 @@
 
 | Task | Agent | Bắt đầu |
 | --- | --- | --- |
-| Phiếu 07 mục 2: phát hành 26.11.2401 → QA-11 CPU → Dependabot | sound-db-f9 | 20:16 24/11/2026 |
 
 ## Đã hoàn thành (mới nhất trên cùng)
+
+- 24/11/2026 tối - `sound-db-56` (tiếp `sound-db-f9`/`sound-db-10` bị tắt đột ngột): **Bản 26.11.2401** (PR #53, Release
+  run 45409204596 đạt, Latest). **QA-11** (PR #54): hồ sơ CPU `packages/dsp-dart/tool/bench.dart` - `bandLevels` 51 %,
+  dò cao độ 22 %; lập sẵn bảng dải octave + trọng số (126 762 giá trị trùng bit, `vectors.json` không đổi) + chỉ dò cao độ
+  khi Bộ chỉnh âm hiển thị (`TickerMode` cho trang ẩn của IndexedStack) ⇒ x86 giảm ~75 %; còn đo máy thật. **Dependabot**
+  npm bỏ qua TS ≥ 7, vitest ≥ 5 (PR #55). App 73 test.
 
 - 24/11/2026 chiều - `sound-db-c9` (phiếu điều phối `20261124-QR1` bản sao repo, `-LG2`): **UI1** biểu tượng thanh điều
   hướng 1,19:1 → 4,45:1 (Sáng) / 1,21 → 6,21 (Tối), dùng `TsuNavTheme` của `tsudev_ui` v0.3.0, test đo tương phản (PR #44,
