@@ -884,11 +884,11 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "v0.2.0"
-      resolved-ref: dc71dae1c9603430217cfea61d3acd61c1b52b6c
+      ref: "v0.3.0"
+      resolved-ref: "5186f47af83fc8fb1e8150e7611e2502d086ffd3"
       url: "https://github.com/tsudev-org/tsudev-ui-flutter.git"
     source: git
-    version: "0.2.0"
+    version: "0.3.0"
   typed_data:
     dependency: transitive
     description:
