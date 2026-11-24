@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../app_scope.dart';
@@ -13,7 +14,7 @@ class RunButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final m = AppScope.of(context).measurement;
-    return ListenableBuilder(
+    return VisibleListenableBuilder(
       listenable: m,
       builder: (context, _) {
         final running = m.state == MeterState.running;
@@ -130,4 +131,78 @@ class TsuDevMark extends StatelessWidget {
     semanticLabel: 'TsuDEV',
     filterQuality: FilterQuality.medium,
   );
+}
+
+/// Như [ListenableBuilder] nhưng KHÔNG dựng lại khi trang chứa nó đang ẩn (TickerMode tắt - vỏ app tắt cho trang ẩn của
+/// IndexedStack); có thông báo lỡ khi ẩn thì dựng lại MỘT lần lúc hiện lại. Dùng cho mọi widget nghe
+/// MeasurementController (báo 20 lần/giây): trang ẩn dựng lại theo nhịp đo làm app vẽ 20 khung/giây ở mọi tab (QA-11).
+class VisibleListenableBuilder extends StatefulWidget {
+  const VisibleListenableBuilder({super.key, required this.listenable, required this.builder, this.child});
+
+  final Listenable listenable;
+  final TransitionBuilder builder;
+  final Widget? child;
+
+  @override
+  State<VisibleListenableBuilder> createState() => _VisibleListenableBuilderState();
+}
+
+class _VisibleListenableBuilderState extends State<VisibleListenableBuilder> {
+  ValueListenable<TickerModeData>? _mode;
+  bool _visible = true;
+  bool _missed = false;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.listenable.addListener(_changed);
+  }
+
+  @override
+  void didUpdateWidget(VisibleListenableBuilder oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.listenable != widget.listenable) {
+      oldWidget.listenable.removeListener(_changed);
+      widget.listenable.addListener(_changed);
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final mode = TickerMode.getValuesNotifier(context);
+    if (!identical(mode, _mode)) {
+      _mode?.removeListener(_modeChanged);
+      _mode = mode..addListener(_modeChanged);
+    }
+    _visible = mode.value.enabled;
+  }
+
+  void _changed() {
+    if (_visible) {
+      setState(() {});
+    } else {
+      _missed = true;
+    }
+  }
+
+  void _modeChanged() {
+    final visible = _mode!.value.enabled;
+    if (visible == _visible) return;
+    _visible = visible;
+    if (visible && _missed) {
+      _missed = false;
+      setState(() {});
+    }
+  }
+
+  @override
+  void dispose() {
+    widget.listenable.removeListener(_changed);
+    _mode?.removeListener(_modeChanged);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.builder(context, widget.child);
 }

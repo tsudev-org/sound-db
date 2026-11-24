@@ -35,7 +35,7 @@ class MeterPage extends StatelessWidget {
           const RunButton(),
         ],
       ),
-      body: ListenableBuilder(
+      body: VisibleListenableBuilder(
         listenable: Listenable.merge([m, settings]),
         builder: (context, _) {
           final p = context.palette;
