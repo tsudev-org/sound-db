@@ -79,6 +79,30 @@ for (const [ten, duong] of lienKet) {
   const dich = join(dist, duong);
   if (!existsSync(dich) && !existsSync(join(dich, 'index.html'))) loi.push(`${ten}: liên kết gãy ${duong}`);
 }
+// SEC2 / RFC 9116: security.txt còn hạn và hạn ≤ 1 năm (tính từ lúc build - CI đỏ trước khi tệp hết hạn), Contact đầu
+// tiên là security@tsudev.com, Policy trỏ /security/. Mẫu: tsudev test/securityTxt.test.ts.
+const secTxt = readFileSync(join(dist, '.well-known/security.txt'), 'utf8');
+const het = Date.parse(secTxt.match(/^Expires:\s*(\S+)/m)?.[1] ?? '');
+const NAM = 365 * 24 * 3600 * 1000;
+if (!Number.isFinite(het)) loi.push('security.txt: thiếu/sai Expires');
+else if (het <= Date.now()) loi.push(`security.txt: Expires đã qua (${new Date(het).toISOString()}) - gia hạn`);
+else if (het - Date.now() > NAM + 24 * 3600 * 1000) loi.push('security.txt: Expires xa hơn 1 năm (RFC 9116 khuyên < 1 năm)');
+if (secTxt.match(/^Contact:\s*(\S+)/m)?.[1] !== 'mailto:security@tsudev.com') loi.push('security.txt: Contact đầu tiên phải là mailto:security@tsudev.com');
+if (!/^Policy: https:\/\/sound\.tsudev\.com\/security\/$/m.test(secTxt)) loi.push('security.txt: Policy phải trỏ /security/');
+// SEC2: mỗi bằng chứng có liên kết https của bên thứ ba + ngày đo thật (không ở tương lai, không chỗ trống chờ điền);
+// trang /security (vi + en) hiện đủ mục.
+const tin = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '../../../docs/security/trust.json'), 'utf8'));
+for (const e of tin.evidence) {
+  if (!/^https:\/\//.test(e.url ?? '')) loi.push(`trust.json ${e.id}: thiếu liên kết kiểm chứng https`);
+  const d = Date.parse(e.measured ?? '');
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(e.measured ?? '') || !(d <= Date.now() + 24 * 3600 * 1000)) loi.push(`trust.json ${e.id}: ngày đo sai ${e.measured}`);
+  if (!e.status || /PENDING|TODO/i.test(e.status)) loi.push(`trust.json ${e.id}: chưa có kết quả đo thật`);
+}
+for (const [trang, chu] of [['security/index.html', 'Báo lỗ hổng'], ['en/security/index.html', 'Report a vulnerability']]) {
+  const html = readFileSync(join(dist, trang), 'utf8');
+  if (!html.includes(chu) || !html.includes('mailto:security@tsudev.com')) loi.push(`${trang}: thiếu mục ${chu}`);
+  for (const e of tin.evidence) if (!html.includes(e.url.replace(/&/g, '&amp;'))) loi.push(`${trang}: thiếu liên kết ${e.id}`);
+}
 if (loi.length) {
   console.error(`check-dist: ${loi.length} lỗi\n  ${loi.join('\n  ')}`);
   process.exit(1);
