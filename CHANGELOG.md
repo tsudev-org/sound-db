@@ -6,6 +6,21 @@ Theo `.standards/docs/VERSIONING.md` mục 3. Ngày dạng DD/MM/YYYY.
 
 - iOS chờ tài khoản Apple Developer.
 
+## 26.11.2501 - 25/11/2026
+
+### Thay đổi
+- Đo ở màn Đo mức tốn ít CPU và pin hơn khoảng một nửa (điện thoại thật: ~0,8 lõi ⇒ ~0,35 lõi): phổ tần số chỉ tính đủ
+  nhịp khi trang Phân tích đang mở, màn Đo mức chỉ vẽ lại phần có số đổi, số đo cập nhật 10 lần/giây (QA-11).
+- Website: trang Bảo mật và bằng chứng tin cậy `/security/` - báo lỗ hổng qua security@tsudev.com, kết quả SSL Labs,
+  Mozilla Observatory, OpenSSF kèm liên kết kiểm chứng và ngày đo.
+
+### Changed (en)
+- Measuring on the Meter screen uses about half the CPU and battery (real phone: ~0.8 core ⇒ ~0.35 core): the frequency
+  spectrum is computed at full rate only while Analysis is open, the Meter screen redraws only what changed, readings
+  refresh 10 times per second (QA-11).
+- Website: new Security and trust evidence page `/en/security/` - report vulnerabilities to security@tsudev.com, SSL Labs,
+  Mozilla Observatory and OpenSSF results with verification links and dates.
+
 ## 26.11.2401 - 24/11/2026
 
 ### Mới
