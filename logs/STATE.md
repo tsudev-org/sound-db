@@ -26,8 +26,9 @@
   `~/projects/logs/handover/20261123-SDB-V1_*`) ⇒ đổi `packaging/package.json`, bỏ tên cũ ở `release.yml`. Đo 23/11
   19:55 (`gh api`): CHƯA repo nào chuyển; scoop + cask còn ở 26.11.1705 (chưa tự lên 26.11.2301) ⇒ giữ tên cũ.
 
-- [ ] QR3 đăng nhập QR (phiếu `20261124-QR1`): CHỜ QR1-IdP (`/api/xd` 404) + QR2-UI (`tsudev_ui` chưa có màn QR);
-  điểm DPoP vs ADR-0003 ghi ở phiếu - cần ADR-0008. DK2: chờ duyệt nhãn tín nhiệm.
+- [ ] 👤 QR3 E2E trên máy thật: máy tính đăng nhập tsudev.com ⇒ Tài khoản ⇒ Đăng nhập trên điện thoại ⇒ app Sound Db
+  "Quét để đăng nhập" (ADR-0008). DK2: chờ duyệt nhãn tín nhiệm. Dependabot npm (TS 7, vitest 5): cần `astro check` hỗ
+  trợ TS 7 + `vitest-pool-workers` hỗ trợ vitest 5 trước khi nhận (PR #48 đã revert).
 - [ ] QA-11 CPU khi đo ~0,9 lõi (phiếu 06 mục 6): hồ sơ CPU, dàn 1/3 octave hạ mẫu hoặc isolate riêng (Rust + vector + Dart cùng PR).
 - [ ] 👤 TalkBack thật: bật TalkBack, vuốt qua Đo mức khi đang đo - chỉ đọc vùng mức khi đổi, không đọc dồn (QA-05).
 - [ ] **ƯU TIÊN 1 - Kiểm thử toàn diện trên smartphone thật qua adb** (5 phase: kết nối + smoke, chức năng từng tab,
@@ -52,6 +53,17 @@
 | --- | --- | --- |
 
 ## Đã hoàn thành (mới nhất trên cùng)
+
+- 24/11/2026 chiều - `sound-db-c9` (phiếu điều phối `20261124-QR1` bản sao repo, `-LG2`): **UI1** biểu tượng thanh điều
+  hướng 1,19:1 → 4,45:1 (Sáng) / 1,21 → 6,21 (Tối), dùng `TsuNavTheme` của `tsudev_ui` v0.3.0, test đo tương phản (PR #44,
+  #47). **Chuẩn v5.1.0** + cổng CI: `--fatal-infos`, cây sạch sau dựng, ngân sách JS web ≤ 170 KB (6,0 KB), APK ≤ 25 MB
+  (21,6/23,1 MB) (PR #44); **knip** 6.44.2 + **cargo-machete** 0.9.2, xoá 2 mã chết (PR #46). **LG2** logo vector xoá nền,
+  `favicon.svg`, icon hệ điều hành dựng từ SVG (hết nợ crop 704 px) + dấu hiệu TsuDEV trước liên kết tsudev.com (web +
+  app); production đã deploy, ảnh Edge Sáng/Tối (PR #45). **QR3** đăng nhập QR vai thiết bị mới + `TsuSignInScreen`
+  (PR #51, ADR-0008) sau khi tsudev mở khoá; E2E máy thật chờ 👤. **Sự cố 24/11 17:45**: vòng chờ CI ghi CỨNG số PR nên
+  merge NHẦM Dependabot #48 (TS 7 + vitest 5, job web đỏ) ⇒ main đỏ; Deploy hỏng ở bước test TRƯỚC khi triển khai
+  (production không đổi, đã kiểm). Revert PR #50 ⇒ CI + Deploy xanh (fe62191). Từ nay chờ/merge theo TÊN NHÁNH lấy từ
+  `gh pr create`, chỉ merge khi 0 check không đạt.
 
 - 24/11/2026 - `sound-db-c9` (PR #41): **SEC1 đóng**. **Tìm/lọc Lịch sử** app + web (không dấu, khoảng thời gian, DB v3 +
   migration 0003 `search_norm`; lệch chuẩn ghi AGENTS B.4). **QA-06 đóng, không đổi offset** (Chrome thu nguồn `MIC` nhạy
