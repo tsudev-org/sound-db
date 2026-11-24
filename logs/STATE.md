@@ -26,6 +26,8 @@
   `~/projects/logs/handover/20261123-SDB-V1_*`) ⇒ đổi `packaging/package.json`, bỏ tên cũ ở `release.yml`. Đo 23/11
   19:55 (`gh api`): CHƯA repo nào chuyển; scoop + cask còn ở 26.11.1705 (chưa tự lên 26.11.2301) ⇒ giữ tên cũ.
 
+- [ ] QR3 đăng nhập QR (phiếu `20261124-QR1`): CHỜ QR1-IdP (`/api/xd` 404) + QR2-UI (`tsudev_ui` chưa có màn QR);
+  điểm DPoP vs ADR-0003 ghi ở phiếu - cần ADR-0008. DK2: chờ duyệt nhãn tín nhiệm.
 - [ ] QA-11 CPU khi đo ~0,9 lõi (phiếu 06 mục 6): hồ sơ CPU, dàn 1/3 octave hạ mẫu hoặc isolate riêng (Rust + vector + Dart cùng PR).
 - [ ] 👤 TalkBack thật: bật TalkBack, vuốt qua Đo mức khi đang đo - chỉ đọc vùng mức khi đổi, không đọc dồn (QA-05).
 - [ ] **ƯU TIÊN 1 - Kiểm thử toàn diện trên smartphone thật qua adb** (5 phase: kết nối + smoke, chức năng từng tab,

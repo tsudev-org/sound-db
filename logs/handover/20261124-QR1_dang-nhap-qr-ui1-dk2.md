@@ -47,3 +47,17 @@ xanh nhạt, chưa chọn rõ trên nền thanh, hai chế độ. Chip đã ch�
   (điểm vào thật: script Astro, `public/*.js`, test vitest khai tay) ⇒ xoá mã chết `langCua` (web i18n), `now` (crypto.ts),
   bỏ 17 `export` + 1 kiểu export thừa ở sync-api; khai `sharp` 0.35.5 cho script thương hiệu (trước mượn của Astro).
   `cargo-machete` 0.9.2 `--locked`: 0 phụ thuộc thừa. CI: `npm run knip` (job web) + `cargo machete` (job Rust).
+- 24/11/2026 - sound-db-c9: UI1 chuyển sang theme dùng chung `tsudev_ui` v0.3.0 (`TsuNavColors` + `tsuNavigationBarTheme`/
+  `RailTheme` + `tsuCompleteContainers`) - bỏ bản tự viết; test tương phản vẫn xanh. **LG2 deploy production** (run
+  Deploy 0010f32): ảnh Edge 1280 px `logs/qa/20261124/p5-lg2-web-{sang,toi}.png` - logo header không ô nền ở cả hai chế độ.
+- 24/11/2026 - sound-db-c9: **QR3 CHƯA LÀM ĐƯỢC - bị chặn bởi QR1-IdP + QR2-UI** (đo 16:30): `POST tsudev.com/api/xd/sessions`
+  404, discovery chưa có `tsudev_cross_device_endpoint`; `tsudev_ui` v0.3.0 chưa có `TsuSignInScreen`/`TsuQrScanner`/
+  `TsuCrossDeviceApprove`. CROSS_DEVICE_LOGIN mục 2 CẤM RP tự dựng ⇒ không làm tạm. **Điểm IdP phải chốt trước khi Sound Db
+  làm QR3** (gửi phiên tsudev/QR2): Sound Db là RP qua MÁY CHỦ (ADR-0003 - máy chủ giữ PKCE verifier, đổi mã ở token
+  endpoint, app không cầm token tsudev). Chuẩn mục 5 gắn mã uỷ quyền với `jkt` khoá DPoP TẠM của thiết bị mới ⇒ máy chủ
+  không có khoá đó thì không đổi được mã. Hướng đề xuất: (a) thiết bị mới = app Sound Db gọi `claim`/`verify` với
+  `client_id=sounddb`, `redirect_uri=https://sound.tsudev.com/auth/callback`, `code_challenge` do MÁY CHỦ sinh (máy chủ
+  tạo `login_requests` như luồng thường, trả cho app `state` + `code_challenge`), IdP KHÔNG gắn `jkt` cho mã khi client
+  là confidential (xác thực client thay cho DPoP); app nộp `code`+`state` về `/auth/app/xd-callback` để máy chủ đổi mã
+  rồi cấp token app như cũ. (b) Vai xác nhận Đ2 trong app Sound Db cần access token tsudev + DPoP - app KHÔNG có (ADR-0003)
+  ⇒ Sound Db chỉ làm vai "thiết bị mới" (Đ1), vai xác nhận để app tsudev chung. Cần ADR-0008 khi IdP chốt.

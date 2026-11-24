@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tsudev_ui/tsudev_ui.dart';
 
 import 'tokens.g.dart';
 
@@ -39,32 +40,38 @@ extension SdbThemeContext on BuildContext {
 
 ThemeData buildTheme(Brightness brightness) {
   final p = brightness == Brightness.dark ? SdbPalette.dark : SdbPalette.light;
-  final scheme = ColorScheme(
-    brightness: brightness,
-    primary: p.primary,
-    onPrimary: p.onPrimary,
-    secondary: p.textLink,
-    onSecondary: p.onPrimary,
-    // UI1 (24/11/2026): khai ĐỦ cặp *Container. Thiếu thì M3 lấy secondary/onSecondary ⇒ icon đang chọn của thanh điều
-    // hướng, Chip đã chọn... vẽ bằng onSecondary (trắng) trên nền nhạt - không thấy (1,2:1).
-    primaryContainer: p.bgSubtle,
-    onPrimaryContainer: p.textPrimary,
-    secondaryContainer: p.bgHover,
-    onSecondaryContainer: p.textPrimary,
-    tertiaryContainer: p.bgSubtle,
-    onTertiaryContainer: p.textPrimary,
-    error: p.danger,
-    onError: p.onStatus,
+  // UI1: khai ĐỦ cặp *Container (thiếu ⇒ M3 vẽ icon/chip đã chọn bằng onSecondary trắng trên nền nhạt, 1,2:1).
+  final scheme = tsuCompleteContainers(
+    ColorScheme(
+      brightness: brightness,
+      primary: p.primary,
+      onPrimary: p.onPrimary,
+      secondary: p.textLink,
+      onSecondary: p.onPrimary,
+      error: p.danger,
+      onError: p.onStatus,
+      surface: p.bgSurface,
+      onSurface: p.textPrimary,
+      onSurfaceVariant: p.textSecondary,
+      outline: p.borderControl,
+      outlineVariant: p.border,
+      surfaceContainerLowest: p.bgBase,
+      surfaceContainerLow: p.bgSurface,
+      surfaceContainer: p.bgSubtle,
+      surfaceContainerHigh: p.bgHover,
+      surfaceContainerHighest: p.bgHover,
+    ),
+    accent: p.primary,
     surface: p.bgSurface,
     onSurface: p.textPrimary,
-    onSurfaceVariant: p.textSecondary,
-    outline: p.borderControl,
-    outlineVariant: p.border,
-    surfaceContainerLowest: p.bgBase,
-    surfaceContainerLow: p.bgSurface,
-    surfaceContainer: p.bgSubtle,
-    surfaceContainerHigh: p.bgHover,
-    surfaceContainerHighest: p.bgHover,
+  );
+  final nav = TsuNavColors(
+    background: p.bgSurface,
+    indicator: p.primary.withValues(alpha: 0.14),
+    selected: p.primary,
+    unselected: p.iconNav,
+    selectedLabel: p.textPrimary,
+    unselectedLabel: p.textSecondary,
   );
   final border = OutlineInputBorder(
     borderRadius: BorderRadius.circular(SdbRadius.md),
@@ -112,29 +119,10 @@ ThemeData buildTheme(Brightness brightness) {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(SdbRadius.control)),
       ),
     ),
-    // UI1 + DESIGN_SYSTEM mục 1: biểu tượng trên nền THẬT >= 3:1 ở mọi trạng thái (test/icon_contrast_test.dart).
-    navigationBarTheme: NavigationBarThemeData(
-      backgroundColor: p.bgSurface,
-      indicatorColor: p.primary.withValues(alpha: 0.14),
-      surfaceTintColor: Colors.transparent,
-      iconTheme: WidgetStateProperty.resolveWith(
-        (s) => IconThemeData(color: s.contains(WidgetState.selected) ? p.primary : p.iconNav),
-      ),
-      labelTextStyle: WidgetStateProperty.resolveWith(
-        (s) => TextStyle(
-          color: s.contains(WidgetState.selected) ? p.textPrimary : p.textSecondary,
-          fontWeight: s.contains(WidgetState.selected) ? FontWeight.w600 : FontWeight.w500,
-        ),
-      ),
-    ),
-    navigationRailTheme: NavigationRailThemeData(
-      backgroundColor: p.bgSurface,
-      indicatorColor: p.primary.withValues(alpha: 0.14),
-      selectedIconTheme: IconThemeData(color: p.primary),
-      unselectedIconTheme: IconThemeData(color: p.iconNav),
-      selectedLabelTextStyle: TextStyle(color: p.textPrimary, fontWeight: FontWeight.w600),
-      unselectedLabelTextStyle: TextStyle(color: p.textSecondary, fontWeight: FontWeight.w500),
-    ),
+    // UI1 + DESIGN_SYSTEM mục 1: theme dùng chung của tsudev_ui (TsuNavColors ném lỗi khi biểu tượng/nền < 3:1);
+    // test/icon_contrast_test.dart đo lại tại IconTheme thật, Sáng/Tối.
+    navigationBarTheme: tsuNavigationBarTheme(nav),
+    navigationRailTheme: tsuNavigationRailTheme(nav),
     segmentedButtonTheme: SegmentedButtonThemeData(
       style: SegmentedButton.styleFrom(
         selectedBackgroundColor: p.primary,
