@@ -37,7 +37,29 @@ function o(text: string, cls?: string) {
   return td;
 }
 
-const state = { page: 1, size: 10, total: 0, q: '' };
+const state = { page: 1, size: 10, total: 0, q: '', khoang: 'tat-ca', tu: '', den: '' };
+const KHOANG = ['tat-ca', '7n', '30n', '1y', 'tuy-chon'];
+
+/** Khoảng [date_from, date_to) theo giờ địa phương của người xem (SEARCH_AND_FILTER.md mục 6.1, 7). */
+function khoangNgay(): { from?: string; to?: string } {
+  const homNay = new Date();
+  homNay.setHours(0, 0, 0, 0);
+  const lui = (ngay: number, thang = 0, nam = 0) =>
+    new Date(homNay.getFullYear() - nam, homNay.getMonth() - thang, homNay.getDate() - ngay).toISOString();
+  switch (state.khoang) {
+    case '7n': return { from: lui(6) };
+    case '30n': return { from: lui(0, 1) };
+    case '1y': return { from: lui(0, 0, 1) };
+    case 'tuy-chon': {
+      const ngay = (v: string, them = 0) => {
+        const [y, m, dd] = v.split('-').map(Number);
+        return new Date(y, m - 1, dd + them).toISOString();
+      };
+      return { from: state.tu ? ngay(state.tu) : undefined, to: state.den ? ngay(state.den, 1) : undefined };
+    }
+    default: return {};
+  }
+}
 let luotTai = 0; // chỉ hiển thị phản hồi của lượt tải MỚI NHẤT (bấm nhanh không bị phản hồi cũ đè)
 
 function baoLoi(e: unknown) {
@@ -70,7 +92,16 @@ async function taiPhien() {
   sel.disabled = true;
   const qs = new URLSearchParams({ page: String(state.page), page_size: String(state.size) });
   if (state.q) qs.set('q', state.q);
-  history.replaceState(null, '', `?page=${state.page}&page_size=${state.size}`);
+  const { from, to } = khoangNgay();
+  if (from) qs.set('date_from', from);
+  if (to) qs.set('date_to', to);
+  // Từ khoá + bộ lọc nằm trên URL (mục 6.4): chia sẻ được, tải lại giữ nguyên.
+  const url = new URLSearchParams({ page: String(state.page), page_size: String(state.size) });
+  if (state.q) url.set('q', state.q);
+  if (state.khoang !== 'tat-ca') url.set('khoang', state.khoang);
+  if (state.khoang === 'tuy-chon' && state.tu) url.set('tu', state.tu);
+  if (state.khoang === 'tuy-chon' && state.den) url.set('den', state.den);
+  history.replaceState(null, '', `?${url}`);
   try {
     const r = await api<{ items: SessionRow[]; total: number }>(`/api/v1/sessions?${qs}`);
     if (luot !== luotTai) return;
@@ -97,7 +128,7 @@ async function taiPhien() {
     );
     if (!r.items.length) {
       const tr = document.createElement('tr');
-      const td = o(state.q ? j.khongKhop : j.chuaCoPhien);
+      const td = o(state.q.length >= 2 ? dien(j.khongKhopTu, { x: state.q }) : state.khoang !== 'tat-ca' ? j.khongKhop : j.chuaCoPhien);
       td.colSpan = 6;
       tr.append(td);
       body.append(tr);
@@ -186,7 +217,18 @@ async function khoiDong() {
     $('thong-ke').textContent = dien(j.thongKe, { a: me.stats.sessions, b: me.stats.calibrations, c: thoiLuong(me.stats.measured_seconds) });
     hienPro(me.pro, me.stats.sessions + me.stats.calibrations > 0);
     state.size = docSoDong();
-    state.page = Math.max(1, Number(new URLSearchParams(location.search).get('page')) || 1);
+    const tham = new URLSearchParams(location.search);
+    state.page = Math.max(1, Number(tham.get('page')) || 1);
+    state.q = (tham.get('q') ?? '').slice(0, 100);
+    state.khoang = KHOANG.includes(tham.get('khoang') ?? '') ? (tham.get('khoang') as string) : 'tat-ca';
+    const ngayHopLe = (v: string | null) => (v && /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : '');
+    state.tu = ngayHopLe(tham.get('tu'));
+    state.den = ngayHopLe(tham.get('den'));
+    $<HTMLInputElement>('tim').value = state.q;
+    $<HTMLSelectElement>('khoang').value = state.khoang;
+    $<HTMLInputElement>('tu-ngay').value = state.tu;
+    $<HTMLInputElement>('den-ngay').value = state.den;
+    $('khoang-tuy-chon').hidden = state.khoang !== 'tuy-chon';
     $<HTMLSelectElement>('so-dong').value = String(state.size);
     await Promise.all([taiPhien(), taiThietBi(), taiHoatDong()]);
   } catch (e) {
@@ -220,8 +262,21 @@ $('tim').addEventListener('input', (ev) => {
     state.q = (ev.target as HTMLInputElement).value.trim();
     state.page = 1;
     an(taiPhien)();
-  }, 300);
+  }, 350);
 });
+$('khoang').addEventListener('change', (ev) => {
+  state.khoang = (ev.target as HTMLSelectElement).value;
+  $('khoang-tuy-chon').hidden = state.khoang !== 'tuy-chon';
+  state.page = 1;
+  an(taiPhien)();
+});
+for (const [id, khoa] of [['tu-ngay', 'tu'], ['den-ngay', 'den']] as const) {
+  $(id).addEventListener('change', (ev) => {
+    state[khoa] = (ev.target as HTMLInputElement).value;
+    state.page = 1;
+    an(taiPhien)();
+  });
+}
 $('nut-xuat').addEventListener('click', () => { location.href = '/api/v1/me/export'; });
 $('nut-dang-xuat').addEventListener('click', an(async () => {
   await api('/api/v1/auth/web-logout', { method: 'POST' });

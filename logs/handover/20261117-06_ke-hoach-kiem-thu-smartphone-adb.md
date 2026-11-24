@@ -135,9 +135,9 @@ Ghi lại vào phiếu: hãng/model, phiên bản Android, ABI (`getprop ro.prod
 | Phase | Trạng thái | PR | Ghi chú |
 | --- | --- | --- | --- |
 | 1 | xong (23/11) | #38 | Samsung SM-M325FV, Android 13, USB qua `adb.exe` Windows + Wi-Fi `adb tcpip 5555` cho adb/flutter của WSL. **Khởi động lạnh** (`am start -W`, 26.11.2301): 2137 ms lần đầu sau cài, rồi 856 / 681 ms; bản sửa: 950-1206 ms. **RAM** PSS: 96,8 MB đứng yên → 108-122 MB khi đo (Đo mức/Phân tích). **Nhịp vẽ khi đo** (log SurfaceFlinger, bản release): 26.11.2301 vẽ 78-81 khung/giây dù dữ liệu chỉ đổi 20 lần/giây ⇒ QA-04; bản sửa 19-20 khung/giây, đứng yên 0 khung. **Jank** (FrameTiming, `integration_test/perf_test.dart`, bản profile, 90 Hz): trước sửa build p90 25-33 ms / p99 60-68 ms (DSP chạy trong khung), sau sửa build p99 2,7-3,3 ms; raster p50 ~9,5 ms là chi phí nền của máy (Mali-G52, 1080×2400) - tỉ lệ "giật" của bộ đo KHÔNG dùng làm tiêu chí vì binding integration_test tự xin khung (~80/giây), xem LES-20261123-2011-102b trong AKB |
-| 2 | xong một phần (23/11) | #30, #31, #38 | **Nâng cấp 26.11.1705 → 26.11.2301** (`sha256sum -c SHA256SUMS.txt` + `gh attestation verify` đạt, `install -r`): Lịch sử từ 0/0 (QA-01) lên 2/2, dữ liệu 21/11 còn nguyên, nhãn `<b>QA 01</b>&"x` hiện dạng chữ (ảnh `p5-truoc/sau-nang-cap-lich-su.png`). **Âm chuẩn 1 kHz** (PC phát `[console]::beep(1000)`): app LAF 64,6 dB(A), Phân tích "Tần số trội 1000,0 Hz", mức đỉnh 64,6 dB - khớp; web `/do/` trên Chrome cùng máy, cùng chỗ: 84,3 dB(A), nền 62,3 (app nền ~41) ⇒ QA-06. **1200 bản ghi** (`integration_test/history_scale_test.dart`, gói `.profile`): đếm 2 ms, 100 dòng đầu/cuối 23/26 ms, mở tab tới "1-10 / 1200" 113 ms, sắp mới nhất trước đúng - ĐẠT. Tạm dừng/Tiếp tục ⇒ QA-03. CHƯA: Bộ chỉnh âm 440 Hz, Máy phát dừng khi ra nền, Cài đặt (giao diện/hiệu chuẩn/ngoại tuyến), đăng nhập + đồng bộ (👤), ô tìm/lọc Lịch sử (CHƯA CÓ tính năng - `SEARCH_AND_FILTER.md`, cần quyết định) |
-| 3 | bắt đầu (21/11, 23/11) | #38 | Deep link giả ⇒ không đăng nhập (ĐẠT, 21/11). 23/11: `allowBackup` tắt (cờ gói không có ALLOW_BACKUP) - ĐẠT; logcat không có token/bearer/cookie của app - ĐẠT; app bị `am kill` khi ở nền ⇒ mở lại bình thường - ĐẠT; `pm revoke RECORD_AUDIO` khi đang đo ⇒ Android giết tiến trình (hành vi hệ thống), log crash không có app - ĐẠT; mở lại + bấm đo ⇒ quyền về `granted`, đo được nhưng KHÔNG chụp được hộp thoại (uiautomator lỗi khi đang đo) - cần xem bằng mắt. Trợ năng ⇒ QA-05. CHƯA: TalkBack thật, `font_scale 2.0`, cỡ màn `wm size`, đo 30 phút (RAM/pin), quyền "không hỏi lại" |
-| 4 | QA-01..05 | #30, #31, #38 | |
+| 2 | xong một phần (23/11) | #30, #31, #38 | **Nâng cấp 26.11.1705 → 26.11.2301** (`sha256sum -c SHA256SUMS.txt` + `gh attestation verify` đạt, `install -r`): Lịch sử từ 0/0 (QA-01) lên 2/2, dữ liệu 21/11 còn nguyên, nhãn `<b>QA 01</b>&"x` hiện dạng chữ (ảnh `p5-truoc/sau-nang-cap-lich-su.png`). **Âm chuẩn 1 kHz** (PC phát `[console]::beep(1000)`): app LAF 64,6 dB(A), Phân tích "Tần số trội 1000,0 Hz", mức đỉnh 64,6 dB - khớp; web `/do/` trên Chrome cùng máy, cùng chỗ: 84,3 dB(A), nền 62,3 (app nền ~41) ⇒ QA-06. **1200 bản ghi** (`integration_test/history_scale_test.dart`, gói `.profile`): đếm 2 ms, 100 dòng đầu/cuối 23/26 ms, mở tab tới "1-10 / 1200" 113 ms, sắp mới nhất trước đúng - ĐẠT. Tạm dừng/Tiếp tục ⇒ QA-03. CHƯA (23/11): đăng nhập + đồng bộ (👤). **24/11** (bản profile `.profile`, cài song song): **Bộ chỉnh âm** - Chrome trên cùng máy phát sin 440 Hz (WebAudio qua CDP) ⇒ 440,0 Hz, MIDI 69, lệch -0,0 cent, độ rõ 100 % - ĐẠT (`p2-bo-chinh-am-440-chrome.png`). **Máy phát** 440 Hz phát được; ra nền ⇒ QA-09. **Cài đặt**: giao diện Tối đúng (`p2-cai-dat-toi-ngoai-tuyen-tat.png`); ngoại tuyến bật ⇒ bấm Đăng nhập không mở trình duyệt, báo "Đang bật Chế độ ngoại tuyến..." - ĐẠT; hiệu chuẩn nhập tay 250 ⇒ "Offset phải là số trong 0-200 dB", 110 ⇒ "Đã hiệu chuẩn · offset 110,00 dB" + banner Đo mức biến mất, Khôi phục mặc định về 120 - ĐẠT. **Tìm/lọc Lịch sử** (tính năng mới PR #41): `phien`/`tet`(→ "tét")/`duong giai` không dấu ĐẠT, rỗng kèm từ khoá ĐẠT, 7 ngày/1 năm/tuỳ chọn 20-24/11 ĐẠT; Lịch sử sau lưu ⇒ QA-07 |
+| 3 | bắt đầu (21/11, 23/11) | #38 | Deep link giả ⇒ không đăng nhập (ĐẠT, 21/11). 23/11: `allowBackup` tắt (cờ gói không có ALLOW_BACKUP) - ĐẠT; logcat không có token/bearer/cookie của app - ĐẠT; app bị `am kill` khi ở nền ⇒ mở lại bình thường - ĐẠT; `pm revoke RECORD_AUDIO` khi đang đo ⇒ Android giết tiến trình (hành vi hệ thống), log crash không có app - ĐẠT; mở lại + bấm đo ⇒ quyền về `granted`, đo được nhưng KHÔNG chụp được hộp thoại (uiautomator lỗi khi đang đo) - cần xem bằng mắt. Trợ năng ⇒ QA-05. **24/11:** `font_scale 2.0` ⇒ QA-08; `wm size 720x1280` + density 320 (360×640 dp) mọi tab không tràn, logcat không `overflow` - ĐẠT; quyền "không hỏi lại" ⇒ không crash, QA-10 (thiếu nút mở cài đặt); **Đo 30 phút** (bản profile, Đo mức, `logs/qa/20261124/p3-do-30-phut.tsv`): PSS 177 → 187 MB trong 3 phút đầu rồi phẳng 186-187,5 MB tới phút 24 - KHÔNG rò bộ nhớ; CPU ⇒ QA-11; phút 25 dữ liệu dừng vì cáp USB rớt + tác vụ bị đóng từ màn Gần đây (`am_kill ... remove task` 07:24:26, adj 900 - không phải crash). TalkBack (Samsung) bật được, tiêu điểm đầu vào tiêu đề "Đo mức âm" - nhưng cử chỉ `adb input swipe` không được TalkBack nhận và agent không nghe được ⇒ 👤 nghe thử thật (bật TalkBack, vuốt qua Đo mức khi đang đo: chỉ đọc vùng mức khi đổi, không đọc dồn); đã tắt lại (`enabled_accessibility_services` null, `accessibility_enabled 0`). |
+| 4 | QA-01..05, QA-07..10 (24/11) | #30, #31, #38, #41 | QA-11 (CPU ~0,9 lõi khi đo) MỞ - cần đổi DSP (Rust + vector + Dart) |
 | 5 | 26.11.2301 cài thử ĐẠT; **26.11.2302 phát hành** (23/11) | #36, #39 | `v26.11.2302` Latest (QA-03/04/05), run 45212957432 mọi job đạt (gồm VirusTotal); `sha256sum -c SHA256SUMS.txt` + `gh attestation verify` APK arm64 đạt. Cùng mã đã dựng release ký số tại máy và cài đè trên SM-M325FV (versionCode 26114303, dữ liệu giữ nguyên, 19-20 khung/giây khi đo). APK chính thức versionCode 26114302 THẤP hơn bản thử ⇒ chưa cài đè được (Android từ chối hạ cấp); adb.exe Windows còn "unauthorized" sau `adb usb` dù đã bấm Cho phép - bản chính thức kế tiếp sẽ cài đè bình thường |
 
 Danh sách lỗi (mã `QA-nn`, mức, tab, cách tái hiện, trạng thái):
@@ -168,6 +168,47 @@ Danh sách lỗi (mã `QA-nn`, mức, tab, cách tái hiện, trạng thái):
   máy đo chuẩn ⇒ chưa biết bên nào đúng tuyệt đối. **MỞ** - bước kế: in `track.getSettings()` trên Chrome Android
   (autoGainControl có thật sự tắt?), so nguồn `mic` vs `unprocessed` trên app; cân nhắc offset mặc định theo nền tảng
   (ghi ADR nếu đổi). Ảnh `p2-1khz-app-*.png`, `p2-1khz-web-chrome.png`, `p2-nen-web-chrome.png`.
+  **24/11 (sound-db-c9):** Chrome 158 Android `getSettings()` với ràng buộc `may-do.ts`: AGC/AEC/NS đều `false`, 48 kHz
+  ⇒ AGC KHÔNG phải nguyên nhân. Nền thô -33..-36 dBFS (bật xử lý mặc định: -102). Chuỗi thu Chrome nhạy hơn
+  `unprocessed` ~40 dB. CDD 5.4 (SHOULD): `VOICE_RECOGNITION` 90 dB SPL 1 kHz ⇒ -22,4 dBFS ⇒ offset ~112,4. Socket
+  `chrome_devtools_remote` là của Edge; Chrome ở `chrome_devtools_remote_<pid>`. Bước kế: chạy
+  `integration_test/mic_source_test.dart` (unprocessed/mic/voiceRecognition, tông 1 kHz) - lần 24/11 hỏng
+  `AudioRecord initialization check failed -1` (đóng tab Chrome `/do/`, force-stop app rồi chạy lại), có số ⇒ ADR + test.
+  **Kết luận 24/11 (sau):** lỗi `-1` là do `flutter drive` cài lại gói ⇒ mất quyền micro (test giờ tự xin quyền).
+  `dumpsys audio`: Chrome tắt xử lý ⇒ nguồn **`src:MIC`**; bật xử lý ⇒ `VOICE_COMMUNICATION`. Bộ đo nguồn thu (nền
+  phòng, 3 vòng xen kẽ, cùng lúc): `unprocessed` -75,2..-76,0 dBFS, `voiceRecognition` -52,3..-53,3, `mic` -23,3..-32,5
+  (dao động 9 dB giữa các vòng ⇒ có xử lý của hãng dù đã tắt AGC). Tông 1 kHz từ loa PC không tới máy lần này (mức tại
+  1 kHz ~-118 dBFS mọi nguồn) ⇒ so bằng nền rộng dải. **ĐÓNG - không đổi mã:** độ lệch web/app là do đường thu `MIC`
+  của Chrome trên Samsung nhạy hơn `UNPROCESSED` ~45-50 dB (offset 100 vs 120 bù được một phần). Bằng chứng chỉ một
+  máy, không có máy đo chuẩn, `MIC` lại dao động ⇒ KHÔNG đổi offset mặc định web (một con số cho mọi trình duyệt/hãng
+  sẽ sai ở máy khác); cả web lẫn app đã nói rõ "chưa hiệu chuẩn" và dẫn tới hiệu chuẩn. Xét lại khi có máy đo chuẩn
+  hoặc số đo ≥ 3 máy (khi đó ghi ADR). App giữ `unprocessed` (ít xử lý nhất, ổn định giữa các vòng).
+- **QA-07 - Trung bình - Lịch sử**: lưu phiên ở Đo mức rồi mở Lịch sử ⇒ vẫn "Chưa có phiên đo nào", 0-0 / 0 dù vừa
+  báo "Đã lưu"; phải bấm Tải lại. Tab nằm trong `IndexedStack`, chỉ tải một lần + chỉ nghe đồng bộ. Sửa: `LocalStore.changes`
+  (`ValueNotifier`, tăng ở mọi lần ghi/xoá sạch), Lịch sử nghe nó. Test `history_refresh_test.dart` đỏ → xanh; máy
+  thật: phiên 06:41 hiện ngay 1-3 / 3 (ảnh `logs/qa/20261124/p4-qa07-sau-sua.png`). **ĐÃ SỬA** PR #41.
+- **QA-08 - Cao (trợ năng) - Lịch sử**: `font_scale 2.0` + bàn phím mở khi gõ tìm ⇒ thanh tìm/lọc cố định chiếm hết
+  thẻ, danh sách còn 0 px - kết quả không hiện, không cuộn tới được; chip khoảng tuỳ chọn bị cắt; chân bảng tràn 199 px.
+  Sửa: thanh lọc cuộn cùng danh sách (`CustomScrollView`), `PaginationFooter` gọn theo tỉ lệ chữ + bỏ chiều cao cứng,
+  chip bỏ năm khi cùng năm, nhãn 2 dòng. Test `history_large_text_test.dart` đỏ → xanh (kiểm cả khi bỏ bản sửa); máy
+  thật ảnh `p3-font2-lich-su.png` (trước) → `p4-qa08-font2-ban-phim.png` (sau). **ĐÃ SỬA** PR #41.
+- **QA-09 - Trung bình - Công cụ > Phát tín hiệu**: đang phát 440 Hz, ra màn hình chính rồi quay lại ⇒ trình phát
+  `paused`/`idle` (không tiếng) nhưng nút vẫn "Dừng phát". Sửa: `WidgetsBindingObserver` dừng hẳn khi `paused`/`hidden`
+  (an toàn thính giác) + nút theo `onPlayerStateChanged`; chặn `setState` sau `dispose` khi phát lỗi. Test
+  `generator_lifecycle_test.dart` đỏ → xanh. **ĐÃ SỬA** PR #41.
+- **QA-10 - Thấp - Đo mức (quyền "không hỏi lại")**: `pm revoke` + cờ `user-fixed` ⇒ bấm Bắt đầu đo hiện banner lỗi
+  "cần quyền dùng micro... cấp quyền trong cài đặt hệ thống", không crash (ĐẠT) nhưng KHÔNG có nút mở thẳng trang quyền
+  của app. Sửa: `AudioInputException.code` + `MeasurementController.errorCode`, banner có nút "Mở cài đặt" (chỉ Android)
+  gọi kênh `com.tsudev.sounddb/system` → `ACTION_APPLICATION_DETAILS_SETTINGS` (`MainActivity.kt`). Test
+  `mic_permission_settings_test.dart` đỏ → xanh; máy thật: nút mở `com.android.settings/.applications.InstalledAppDetails`
+  của Sound Db (ảnh `p4-qa10-nut-mo-cai-dat.png`). **ĐÃ SỬA** PR #41. iOS chưa có nút (cần phiên macOS, AGENTS B.4).
+- **QA-11 - Trung bình - Đo mức (pin/CPU)**: khi đo, tiến trình dùng ~0,84-0,93 lõi CPU liên tục (CLK_TCK 100: 84 jiffies/s
+  ở tab Cài đặt - đồng hồ ẩn, 92 ở Đo mức, 93 ở Phân tích; đứng yên 0). Theo luồng: luồng chính (Dart, luồng UI gộp
+  platform) ~65 %, `1.raster` ~13 %, thu âm ~3 % ⇒ chi phí là DSP Dart chạy trên luồng chính, không phải vẽ. Đo 24 phút
+  liên tục: pin 80 → 76 % dù đang sạc USB, nhiệt độ pin 38,4 → 39,5 °C. **MỞ** - hướng sửa: đo hồ sơ CPU (DevTools
+  CPU profiler, bản profile) xem khâu nào (lọc trọng số A/C/Z, dàn lọc 1/3 octave ở 48 kHz, FFT); dàn 1/3 octave
+  nhiều tầng hạ mẫu (IEC 61260-1 cho phép) và/hoặc chuyển DSP sang isolate riêng. Đổi thuật toán ⇒ Rust tham chiếu +
+  `conformance/vectors.json` + Dart CÙNG PR (AGENTS B.3). Bộ đo: `/proc/<pid>/stat` cột 14+15 trong 20 s.
 
 Đo trên máy 21/11 (bằng chứng ảnh): FFT 8192 Hann 5,86 Hz/bin trọng số A hiển thị đúng, nhãn trục không tràn; Cài
 đặt hiện phiên bản 26.11.1705 và khối "Âm thanh không bao giờ rời thiết bị".

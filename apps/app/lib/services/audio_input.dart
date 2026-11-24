@@ -7,8 +7,13 @@ import 'package:record/record.dart';
 import '../l10n/l10n.dart';
 
 class AudioInputException implements Exception {
-  AudioInputException(this.message);
+  AudioInputException(this.message, {this.code});
+
+  /// Quyền micro bị từ chối - giao diện đưa người dùng tới trang quyền của app (QA-10).
+  static const permissionDenied = 'mic_permission';
+
   final String message;
+  final String? code;
   @override
   String toString() => message;
 }
@@ -40,7 +45,7 @@ class AudioInput {
   Future<void> start({InputDevice? device}) async {
     _recorderCreated = true;
     if (!await _recorder.hasPermission()) {
-      throw AudioInputException(l10nNow.errMicPermission);
+      throw AudioInputException(l10nNow.errMicPermission, code: AudioInputException.permissionDenied);
     }
     final config = RecordConfig(
       encoder: AudioEncoder.pcm16bits,

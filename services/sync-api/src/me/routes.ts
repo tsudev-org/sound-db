@@ -11,6 +11,7 @@ import { ApiError } from '../lib/errors';
 import { rateLimit } from '../lib/ratelimit';
 import { GRACE_MS, getEntitlement, requirePro, rpConfigured, type Entitlement } from '../pro/entitlements';
 import { recordJson, writeRecord } from '../sync/routes';
+import { MIN_QUERY_LENGTH, sessionSearchNorm, viNormalizeText } from '../lib/vi-text';
 import { sessionData } from '../sync/schema';
 
 /** Bộ mốc số bản ghi chuẩn (DATA_TABLE.md mục 2 và 8). */
@@ -151,6 +152,11 @@ meRoutes.delete('/api/v1/me', async (c) => {
 
 meRoutes.get('/api/v1/sessions', async (c) => {
   const { userId } = c.get('auth');
+  const isoDate = z
+    .string()
+    .datetime({ offset: true })
+    .transform((v) => new Date(v).toISOString())
+    .optional();
   const q = z
     .object({
       page: z.coerce.number().int().min(1).max(100000).default(1),
@@ -159,15 +165,36 @@ meRoutes.get('/api/v1/sessions', async (c) => {
         .int()
         .refine((v) => (PAGE_SIZES as readonly number[]).includes(v))
         .catch(10),
-      q: z.string().trim().max(100).optional(),
+      q: z.string().max(100).optional(),
+      // SEARCH_AND_FILTER.md mục 7: [date_from, date_to) theo mốc bắt đầu phiên, ISO 8601.
+      date_from: isoDate,
+      date_to: isoDate,
     })
     .safeParse(c.req.query());
   if (!q.success) throw new ApiError(400, 'invalid_request', 'Tham số không hợp lệ.');
-  const { page, page_size: size } = q.data;
-  const term = q.data.q ? `%${q.data.q.replace(/[\\%_]/g, (m) => `\\${m}`)}%` : null;
-  const where = `user_id = ?1 AND kind = 'session' AND deleted = 0${term ? " AND json_extract(data, '$.label') LIKE ?2 ESCAPE '\\'" : ''}`;
-  const binds = term ? [userId, term] : [userId];
-  const total = await c.env.DB.prepare(`SELECT COUNT(*) AS n FROM records WHERE ${where}`)
+  const { page, page_size: size, date_from: from, date_to: to } = q.data;
+  await backfillSearch(c.env.DB, userId);
+
+  // Từ khoá chuẩn hoá đã bỏ mọi dấu câu (gồm % _ \) ⇒ không ký tự đại diện nào lọt vào LIKE.
+  const normalized = viNormalizeText(q.data.q ?? '');
+  const terms = normalized.length < MIN_QUERY_LENGTH ? [] : normalized.split(' ');
+  const where = ["user_id = ? AND kind = 'session' AND deleted = 0"];
+  const binds: unknown[] = [userId];
+  for (const t of terms) {
+    where.push('search_norm LIKE ?');
+    binds.push(`%${t}%`);
+  }
+  // started_at do app ghi bằng toIso8601String UTC (cùng khuôn với toISOString) ⇒ so chuỗi đúng thứ tự thời gian.
+  if (from) {
+    where.push("json_extract(data, '$.started_at') >= ?");
+    binds.push(from);
+  }
+  if (to) {
+    where.push("json_extract(data, '$.started_at') < ?");
+    binds.push(to);
+  }
+  const w = where.join(' AND ');
+  const total = await c.env.DB.prepare(`SELECT COUNT(*) AS n FROM records WHERE ${w}`)
     .bind(...binds)
     .first<{ n: number }>();
   const rows = await c.env.DB.prepare(
@@ -179,13 +206,41 @@ meRoutes.get('/api/v1/sessions', async (c) => {
        json_extract(data, '$.summary.lafmax') AS lafmax,
        json_extract(data, '$.summary.lcpeak') AS lcpeak,
        json_extract(data, '$.device_model') AS device_model
-     FROM records WHERE ${where}
-     ORDER BY json_extract(data, '$.started_at') DESC LIMIT ${size} OFFSET ${(page - 1) * size}`,
+     FROM records WHERE ${w}
+     ORDER BY json_extract(data, '$.started_at') DESC, id DESC LIMIT ${size} OFFSET ${(page - 1) * size}`,
   )
     .bind(...binds)
     .all();
-  return c.json({ items: rows.results, total: total?.n ?? 0, page, page_size: size });
+  return c.json({
+    items: rows.results,
+    total: total?.n ?? 0,
+    page,
+    page_size: size,
+    meta: { total: total?.n ?? 0, page, page_size: size, query_normalized: normalized },
+  });
 });
+
+/** Điền `search_norm` cho bản ghi ghi trước migration 0003 (mỗi lượt tối đa 500, chỉ của người đang hỏi). */
+async function backfillSearch(db: D1Database, userId: string) {
+  const old = await db
+    .prepare("SELECT id, data FROM records WHERE user_id = ? AND kind = 'session' AND search_norm IS NULL LIMIT 500")
+    .bind(userId)
+    .all<{ id: string; data: string }>();
+  if (!old.results.length) return;
+  await db.batch(
+    old.results.map((r) => {
+      let norm = '';
+      try {
+        norm = sessionSearchNorm(JSON.parse(r.data) as Record<string, unknown>);
+      } catch {
+        // dữ liệu hỏng: để chuỗi rỗng, không lặp lại mỗi lần liệt kê
+      }
+      return db
+        .prepare("UPDATE records SET search_norm = ? WHERE user_id = ? AND kind = 'session' AND id = ?")
+        .bind(norm, userId, r.id);
+    }),
+  );
+}
 
 meRoutes.get('/api/v1/sessions/:id', async (c) => {
   const { userId } = c.get('auth');

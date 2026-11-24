@@ -44,12 +44,14 @@ npm --workspace services/sync-api run dev                # http://127.0.0.1:8787
 npm test                                                  # 17 test API trên workerd thật
 ```
 
-`services/sync-api/.dev.vars` (không commit):
+`services/sync-api/.dev.vars` (không commit) - sinh ngẫu nhiên tại máy, không chép bí mật thật vào đây:
 
+```bash
+printf 'SESSION_SECRET=%s\nIP_HASH_SALT=%s\nPUBLIC_ORIGIN=http://localhost:8787\n' \
+  "$(openssl rand -base64 48)" "$(openssl rand -base64 24)" > services/sync-api/.dev.vars && chmod 600 services/sync-api/.dev.vars
 ```
-SESSION_SECRET=<chuỗi ngẫu nhiên >= 32 ký tự>
-IP_HASH_SALT=<chuỗi ngẫu nhiên>
-```
+
+Bí mật thật (Cloudflare, khoá ký...) chỉ nhận bằng `tsu-nhan-bi-mat`, không dán vào chat/tệp - `docs/DEPLOYMENT.md` mục 2.
 
 ## Cổng kiểm
 

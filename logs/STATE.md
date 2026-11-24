@@ -26,17 +26,14 @@
   `~/projects/logs/handover/20261123-SDB-V1_*`) ⇒ đổi `packaging/package.json`, bỏ tên cũ ở `release.yml`. Đo 23/11
   19:55 (`gh api`): CHƯA repo nào chuyển; scoop + cask còn ở 26.11.1705 (chưa tự lên 26.11.2301) ⇒ giữ tên cũ.
 
-- [ ] 👤 Điện thoại SM-M325FV: adb.exe Windows báo "unauthorized" sau `adb usb` (23/11) - thu hồi uỷ quyền gỡ lỗi USB,
-  cắm lại, cho phép. Máy đang chạy bản thử 26.11.2302 versionCode 26114303 (cao hơn bản chính thức 26114302).
-- [ ] SEC1 (`logs/handover/20261123-SEC1_*` mục 2): rà README/docs/phiếu cũ, chỗ nào bảo dán token ⇒ đổi sang
-  `tsu-nhan-bi-mat`.
-- [ ] QA-06 web vs app lệch ~20 dB khi chưa hiệu chuẩn (phiếu 06 mục 6) - điều tra `getSettings()` Chrome Android.
-- [ ] Lịch sử chưa có ô tìm/lọc (`SEARCH_AND_FILTER.md`) - cần quyết định phạm vi (app + bảng điều khiển web).
+- [ ] QA-11 CPU khi đo ~0,9 lõi (phiếu 06 mục 6): hồ sơ CPU, dàn 1/3 octave hạ mẫu hoặc isolate riêng (Rust + vector + Dart cùng PR).
+- [ ] 👤 TalkBack thật: bật TalkBack, vuốt qua Đo mức khi đang đo - chỉ đọc vùng mức khi đổi, không đọc dồn (QA-05).
 - [ ] **ƯU TIÊN 1 - Kiểm thử toàn diện trên smartphone thật qua adb** (5 phase: kết nối + smoke, chức năng từng tab,
   phi chức năng + bảo mật, sửa lỗi + chuẩn hoá mã, phát hành bản sửa). Kế hoạch + lệnh + tiêu chí:
   `logs/handover/20261117-06_ke-hoach-kiem-thu-smartphone-adb.md`. 👤 cần bật Gỡ lỗi không dây và chạy `adb pair`.
-  Thêm: đo thời gian Argon2id (E2E1 rủi ro 2) + kiểm giao diện tiếng Anh trên máy thật. 23/11: Phase 1 xong, Phase 2-3
-  một phần (phiếu 06 mục 6 - danh sách "CHƯA" từng phase).
+  Thêm: đo thời gian Argon2id (E2E1 rủi ro 2) + kiểm giao diện tiếng Anh trên máy thật. 23/11: Phase 1 xong; 24/11:
+  Phase 2-3 xong trừ đăng nhập/đồng bộ + TalkBack nghe thật (👤); QA-07..10 đã sửa (PR #41), QA-11 mở. Phase 5: phát
+  hành bản sửa (versionCode arm64 = số dựng + 2000, phải > 26114303 đang cài trên máy).
 - [ ] 👤 Đăng nhập tsudev: ĐÃ HẾT TẮC (22:20 17/11) - `/auth/web/start` → `/oidc/auth` 303 → `/oidc/interaction/<uid>`
   307 → `tsudev.com/login` 200. Còn nghiệm thu bằng tài khoản tsudev thật của chủ dự án: đăng nhập web
   (sounddb.tsudev.com → Đăng nhập) + app, rồi đồng bộ hai thiết bị. Agent không có tài khoản ⇒ không tự làm được.
@@ -53,6 +50,15 @@
 | --- | --- | --- |
 
 ## Đã hoàn thành (mới nhất trên cùng)
+
+- 24/11/2026 - `sound-db-c9` (PR #41): **SEC1 đóng**. **Tìm/lọc Lịch sử** app + web (không dấu, khoảng thời gian, DB v3 +
+  migration 0003 `search_norm`; lệch chuẩn ghi AGENTS B.4). **QA-06 đóng, không đổi offset** (Chrome thu nguồn `MIC` nhạy
+  hơn `UNPROCESSED` ~45-50 dB, một máy, không máy đo chuẩn). Phiếu 06 phần "CHƯA": sửa **QA-07** (Lịch sử không tự cập
+  nhật), **QA-08** (chữ 2.0 + bàn phím: kết quả 0 px), **QA-09** (Máy phát ra nền lệch trạng thái), **QA-10** (nút Mở cài
+  đặt khi từ chối quyền - đã thử trên máy); mở **QA-11** (đo dùng ~0,9 lõi CPU - DSP trên luồng chính); đo 24 phút RAM
+  phẳng 187 MB; ĐẠT: Bộ chỉnh âm 440,0 Hz/0 cent, 360×640 dp, Cài đặt (Tối, ngoại tuyến, hiệu chuẩn), quyền
+  "không hỏi lại" không crash. TalkBack thật cần 👤 nghe. SDB-V1: ba repo CHƯA chuyển; excavator scoop-bucket đỏ vì
+  `tsudev-contact` (hash 404) ⇒ Scoop kẹt 26.11.1705.
 
 - 23/11/2026 - `sound-db-38`: **Bản 26.11.2302** (Latest, PR #39, run 45212957432 mọi job đạt gồm VirusTotal): QA-03,
   QA-04, QA-05. `sha256sum -c SHA256SUMS.txt` + `gh attestation verify` APK arm64 đạt. Tên cũ + chuẩn song song.

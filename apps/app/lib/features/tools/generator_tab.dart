@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:audioplayers/audioplayers.dart';
@@ -18,10 +19,11 @@ class GeneratorTab extends StatefulWidget {
   State<GeneratorTab> createState() => _GeneratorTabState();
 }
 
-class _GeneratorTabState extends State<GeneratorTab> {
+class _GeneratorTabState extends State<GeneratorTab> with WidgetsBindingObserver {
   // Tạo lười: chỉ khởi tạo bộ phát âm thanh khi người dùng bấm Phát.
   AudioPlayer? _playerInstance;
-  AudioPlayer get _player => _playerInstance ??= AudioPlayer(playerId: 'sounddb-generator');
+  AudioPlayer get _player => _playerInstance ??= _createPlayer();
+  StreamSubscription<PlayerState>? _stateSub;
   final SignalGenerator _generator = SignalGenerator(48000);
   bool _playing = false;
   double _logFrequency = math.log(1000);
@@ -29,8 +31,36 @@ class _GeneratorTabState extends State<GeneratorTab> {
 
   double get _frequency => math.exp(_logFrequency);
 
+  AudioPlayer _createPlayer() {
+    final player = AudioPlayer(playerId: 'sounddb-generator');
+    // QA-09: hệ điều hành có thể tạm dừng/dừng trình phát (mất tiêu điểm âm thanh, cuộc gọi...) ⇒ nút theo trạng
+    // thái THẬT của trình phát, không chỉ theo lần bấm.
+    _stateSub = player.onPlayerStateChanged.listen((s) {
+      final playing = s == PlayerState.playing;
+      if (mounted && !playing && _playing) setState(() => _playing = false);
+    }, onError: (_) {});
+    return player;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  /// QA-09: ra nền ⇒ dừng hẳn (an toàn thính giác - người dùng không còn thấy nút Dừng), nút về "Phát".
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (_playing && (state == AppLifecycleState.paused || state == AppLifecycleState.hidden)) {
+      _playerInstance?.stop();
+      setState(() => _playing = false);
+    }
+  }
+
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _stateSub?.cancel();
     _playerInstance?.dispose();
     super.dispose();
   }
@@ -46,7 +76,8 @@ class _GeneratorTabState extends State<GeneratorTab> {
       await _player.setReleaseMode(ReleaseMode.loop);
       await _player.play(BytesSource(wav, mimeType: 'audio/wav'));
     } catch (e) {
-      if (mounted) showMessage(context, context.l10n.playFailed('$e'));
+      if (!mounted) return;
+      showMessage(context, context.l10n.playFailed('$e'));
       setState(() => _playing = false);
     }
   }
@@ -54,7 +85,7 @@ class _GeneratorTabState extends State<GeneratorTab> {
   Future<void> _toggle() async {
     if (_playing) {
       await _player.stop();
-      setState(() => _playing = false);
+      if (mounted) setState(() => _playing = false);
     } else {
       setState(() => _playing = true);
       await _apply();

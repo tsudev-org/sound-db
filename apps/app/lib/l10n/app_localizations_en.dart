@@ -721,4 +721,51 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get proCheckAgain => 'Check Pro plan again';
+
+  @override
+  String get historySearchHint => 'Search label, note, device';
+
+  @override
+  String get historyClearSearch => 'Clear search';
+
+  @override
+  String get historyRangeLabel => 'Time range';
+
+  @override
+  String get historyRangeAll => 'Any time';
+
+  @override
+  String get historyRange7d => 'Last 7 days';
+
+  @override
+  String get historyRange30d => 'Last month';
+
+  @override
+  String get historyRange1y => 'Last year';
+
+  @override
+  String get historyRangeCustom => 'Custom…';
+
+  @override
+  String historyNoMatchQuery(String query) {
+    return 'No measurement sessions match \"$query\". Check the spelling, try other words or widen the time range.';
+  }
+
+  @override
+  String get historyNoMatch =>
+      'No measurement sessions in this time range. Try widening the range.';
+
+  @override
+  String historyResultCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count matching sessions',
+      one: '1 matching session',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get openSettings => 'Open settings';
 }

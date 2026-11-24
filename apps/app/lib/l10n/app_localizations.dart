@@ -1327,6 +1327,78 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Kiểm tra lại gói Pro'**
   String get proCheckAgain;
+
+  /// No description provided for @historySearchHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tìm theo nhãn, ghi chú, thiết bị'**
+  String get historySearchHint;
+
+  /// No description provided for @historyClearSearch.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá từ khoá'**
+  String get historyClearSearch;
+
+  /// No description provided for @historyRangeLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khoảng thời gian'**
+  String get historyRangeLabel;
+
+  /// No description provided for @historyRangeAll.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mọi lúc'**
+  String get historyRangeAll;
+
+  /// No description provided for @historyRange7d.
+  ///
+  /// In vi, this message translates to:
+  /// **'7 ngày qua'**
+  String get historyRange7d;
+
+  /// No description provided for @historyRange30d.
+  ///
+  /// In vi, this message translates to:
+  /// **'1 tháng qua'**
+  String get historyRange30d;
+
+  /// No description provided for @historyRange1y.
+  ///
+  /// In vi, this message translates to:
+  /// **'1 năm qua'**
+  String get historyRange1y;
+
+  /// No description provided for @historyRangeCustom.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuỳ chọn…'**
+  String get historyRangeCustom;
+
+  /// No description provided for @historyNoMatchQuery.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không tìm thấy phiên đo phù hợp với \"{query}\". Thử kiểm tra chính tả, từ khoá khác hoặc nới khoảng thời gian.'**
+  String historyNoMatchQuery(String query);
+
+  /// No description provided for @historyNoMatch.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không có phiên đo nào trong khoảng thời gian này. Thử nới khoảng thời gian.'**
+  String get historyNoMatch;
+
+  /// No description provided for @historyResultCount.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} phiên đo phù hợp'**
+  String historyResultCount(int count);
+
+  /// No description provided for @openSettings.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mở cài đặt'**
+  String get openSettings;
 }
 
 class _AppLocalizationsDelegate
