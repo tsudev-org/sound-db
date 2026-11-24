@@ -1,8 +1,8 @@
 # STATE.md - Trạng thái project Sound Db
 
-> **PHIÊN KẾ TIẾP ĐỌC TRƯỚC:** `logs/handover/20261125-09_ban-giao-sound-db.md` (P1 QA-11 bước 3 → P2 SEC2 → P3 phát hành →
-> P4 hàng đợi; bẫy mục 5; phiếu 07 mục 4 + 08 mục 4 vẫn áp dụng). Phiên `sound-db-56` kết thúc rạng sáng 25/11/2026, main
-> sạch, LOCKS trống. Điện thoại SM-M325FV đang cắm USB.
+> **PHIÊN KẾ TIẾP ĐỌC TRƯỚC:** `logs/handover/20261125-10_ban-giao-sound-db.md` (P1 nghiệm thu 26.11.2501 trên máy → P2 QA-11
+> bước 4 → P3 UI2 + chuẩn v6.0.0; bẫy mục 3; phiếu 09 mục 3 + 5 vẫn áp dụng). Phiên `sound-db-9d` kết thúc sáng 25/11/2026,
+> main sạch, LOCKS trống. Điện thoại SM-M325FV RỚT adb sau 02:20 - cần 👤 cắm lại.
 
 > **Phiên kế tiếp (phiếu toàn hệ 20261117-P2):** đọc `~/projects/logs/handover/20261117-P2_ke-hoach-phan-phoi-tin-cay-da-nen-tang.md` hàng 2 (`sound-db`) ở mục 3
 > + `.standards/docs/DISTRIBUTION_TRUST.md` (chuẩn v3.7.0) + `.standards/docs/VERSIONING.md` mục 2. Khuôn thẻ/tên tệp mới chỉ áp
@@ -33,10 +33,10 @@
 - [ ] 👤 QR3 E2E trên máy thật: máy tính đăng nhập tsudev.com ⇒ Tài khoản ⇒ Đăng nhập trên điện thoại ⇒ app Sound Db
   "Quét để đăng nhập" (ADR-0008). DK2: chờ duyệt nhãn tín nhiệm. Dependabot npm (TS 7, vitest 5): cần `astro check` hỗ
   trợ TS 7 + `vitest-pool-workers` hỗ trợ vitest 5 trước khi nhận (PR #48 đã revert).
-- [ ] **QA-11 bước 3** (phiếu 09 P1): máy thật sau #54 + #60: Đo mức 73 / Phân tích 74-76 / Bộ chỉnh âm 69-71 / Cài đặt 18-19
-  jiffies/s (trước 88-93). Còn tab đang hiển thị ~0,7 lõi ⇒ hồ sơ DevTools, DSP sang isolate, giảm vẽ. Mục tiêu < 30 ở Đo mức.
-- [ ] **SEC2** trang `/security` bằng chứng tự kiểm chứng + `security.txt` Contact `security@tsudev.com` (phiếu 09 P2,
-  phiếu `logs/handover/20261125-SEC2_*`).
+- [ ] **Nghiệm thu 26.11.2501 trên máy thật** (phiếu 10 P1): cài đè gói chính giữ dữ liệu + `cpu_rate` bản release.
+- [ ] **QA-11 bước 4** (phiếu 10 P2): Đo mức 32-38 jiffies/s sau #62 (trước 72-83), mục tiêu < 30 ⇒ DSP theo khối/FFT
+  thực (Rust + vector + Dart cùng PR).
+- [ ] **UI2** rà giao diện web + hiện đại hoá (`logs/handover/20261125-UI2_*`) + sync tsudev-standards v6.0.0.
 - [ ] 👤 TalkBack thật: bật TalkBack, vuốt qua Đo mức khi đang đo - chỉ đọc vùng mức khi đổi, không đọc dồn (QA-05).
 - [ ] **ƯU TIÊN 1 - Kiểm thử toàn diện trên smartphone thật qua adb** (5 phase: kết nối + smoke, chức năng từng tab,
   phi chức năng + bảo mật, sửa lỗi + chuẩn hoá mã, phát hành bản sửa). Kế hoạch + lệnh + tiêu chí:
@@ -60,6 +60,13 @@
 | --- | --- | --- |
 
 ## Đã hoàn thành (mới nhất trên cùng)
+
+- 25/11/2026 sáng - `sound-db-9d`: **QA-11 bước 3** (PR #62): hồ sơ CPU Dart máy thật qua VM service ⇒ dựng/vẽ 51 %,
+  FFT phổ thừa 18 % ⇒ phổ chỉ tính đủ nhịp khi Phân tích hiển thị, Đo mức dựng theo phần (`select:`), lưới đồ thị tĩnh,
+  số đo 10 Hz ⇒ Đo mức 72-83 ⇒ **32-38** jiffies/s (CHƯA < 30), Cài đặt 15. **SEC2** (PR #63): `/security/` + `/en/`
+  (SSL Labs A+ 4/4, Observatory A+ 140, Scorecard 6.3, BP 100 %, PVR bật), `security.txt` mailto security@, cổng
+  check-dist; production kiểm bằng nội dung. **Bản 26.11.2501** (PR #64, run 45510603646 đạt; SHA256 + 2 chứng thực +
+  VirusTotal 0/10 tệp; cài đè máy thật CHƯA - adb rớt). Dependabot #57, #58 merge (0 check không đạt).
 
 - 25/11/2026 rạng sáng - `sound-db-56` (máy thật SM-M325FV): **26.11.2401 nghiệm thu** - SHA256 + `gh attestation verify`
   đạt, cài đè gói chính giữ Lịch sử 2/2, Cài đặt hiện 26.11.2401. **QA-11**: đo theo luồng thấy chi phí chính là trang

@@ -39,7 +39,7 @@
     },
     {
       "id": "E7",
-      "status": "header max-age=63072000; includeSubDomains; preload - tsudev.com: status unknown (not yet preloaded)",
+      "status": "header max-age=63072000; includeSubDomains; preload - tsudev.com: pending (submitted 2026-11-25)",
       "url": "https://hstspreload.org/?domain=tsudev.com",
       "measured": "2026-11-25"
     },
