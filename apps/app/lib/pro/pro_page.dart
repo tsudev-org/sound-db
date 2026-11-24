@@ -7,6 +7,7 @@ import '../core/format.dart';
 import '../l10n/l10n.dart';
 import '../theme/app_theme.dart';
 import '../theme/tokens.g.dart';
+import '../widgets/common.dart';
 import 'pro_service.dart';
 
 /// Giá TsuDEV Pro trên web (VNĐ đã gồm thuế, PRODUCT_POLICY 7.2). Bản cửa hàng hiện giá cửa hàng trả về.
@@ -68,13 +69,13 @@ class ProPage extends StatelessWidget {
               FilledButton.icon(
                 key: const Key('pro-buy'),
                 onPressed: () => launchUrl(proBuyUrl, mode: LaunchMode.externalApplication),
-                icon: const Icon(Icons.workspace_premium_outlined),
+                icon: const TsuDevMark(),
                 label: Text(active ? l.proRenewWeb : l.proBuyWeb),
               ),
               const SizedBox(height: SdbSpacing.s2),
               OutlinedButton.icon(
                 onPressed: () => launchUrl(donateUrl, mode: LaunchMode.externalApplication),
-                icon: const Icon(Icons.favorite_outline),
+                icon: const TsuDevMark(),
                 label: Text(l.supportTsudev),
               ),
               const SizedBox(height: SdbSpacing.s2),

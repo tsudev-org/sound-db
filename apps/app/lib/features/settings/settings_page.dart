@@ -110,6 +110,7 @@ class SettingsPage extends StatelessWidget {
               onTap: () => launchUrl(Uri.parse(apiBase), mode: LaunchMode.externalApplication),
             ),
             ListTile(
+              leading: const TsuDevMark(size: 24),
               title: const Text('tsudev.com'),
               onTap: () => launchUrl(Uri.parse('https://tsudev.com'), mode: LaunchMode.externalApplication),
             ),

@@ -56,7 +56,7 @@ duyet(dist);
 const csp = readFileSync(join(dist, '_headers'), 'utf8').match(/Content-Security-Policy:\s*(.+)/)?.[1] ?? '';
 if (!/script-src 'self'(;| )/.test(csp)) loi.push(`_headers: CSP cần script-src 'self': ${csp}`);
 if (/'unsafe-(inline|eval)'/.test(csp)) loi.push(`_headers: CSP không được có 'unsafe-inline'/'unsafe-eval'`);
-for (const f of ['theme.js', 'lang.js', 'wasm/sounddb_dsp.js', 'wasm/sounddb_dsp_bg.wasm', 'worklet/thu-am.js', 'favicon.ico', 'favicon-96x96.png', 'apple-touch-icon.png', 'og-image.png', '.well-known/security.txt']) {
+for (const f of ['theme.js', 'lang.js', 'wasm/sounddb_dsp.js', 'wasm/sounddb_dsp_bg.wasm', 'worklet/thu-am.js', 'favicon.svg', 'favicon.ico', 'favicon-96x96.png', 'apple-touch-icon.png', 'og-image.png', '.well-known/security.txt']) {
   if (!existsSync(join(dist, f))) loi.push(`thiếu dist/${f}`);
 }
 // Điều khoản Pro đứng trước nút mua, NGUYÊN VĂN PRODUCT_POLICY mục 7.5 (vi), {giá} = 490.000 ₫ (mục 7.2).

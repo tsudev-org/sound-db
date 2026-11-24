@@ -5,6 +5,7 @@ import { duongDan as dd, t, type Lang } from '../i18n';
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const v = t(lang).bang;
+import DauTsuDev from '../components/DauTsuDev.astro';
 ---
 <Trang lang={lang} tieuDe={v.tieuDe} moTa={v.moTa} duongDan="/bang-dieu-khien/" anChiMuc>
   <div class="khung van-ban" id="bang">
@@ -26,8 +27,8 @@ const v = t(lang).bang;
         <p class="mo">{v.mienPhi}</p>
         <p class="dieu-khoan" id="dieu-khoan-pro">{v.dieuKhoan}</p>
         <p class="hang-nut">
-          <a id="nut-pro" class="nut nut--chinh nut--nho" href="https://tsudev.com/pro?app=sounddb" target="_blank" rel="noopener noreferrer">{v.xemPro}</a>
-          <a class="nut nut--phu nut--nho" href="https://tsudev.com/ung-ho?app=sounddb" target="_blank" rel="noopener noreferrer">{v.ungHo}</a>
+          <a id="nut-pro" class="nut nut--chinh nut--nho" href="https://tsudev.com/pro?app=sounddb" target="_blank" rel="noopener noreferrer"><DauTsuDev />{v.xemPro}</a>
+          <a class="nut nut--phu nut--nho" href="https://tsudev.com/ung-ho?app=sounddb" target="_blank" rel="noopener noreferrer"><DauTsuDev />{v.ungHo}</a>
         </p>
       </section>
       <p class="hang-nut">

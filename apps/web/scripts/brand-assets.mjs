@@ -17,6 +17,10 @@
  *                 logo khép kín giữ nguyên), làm mềm biên + khử nhân với trắng (không quầng xám
  *                 trên nền tối), cắt sát, chừa lề `padding`.
  *
+ *   - "vector"  : (khối `vector` trong brand.json, LG2 24/11/2026 - BRAND_ASSETS 15.4) logo SVG đã xoá nền: bản Tối
+ *                 (`dark`), bản Sáng (`light`), bản tự đổi (`adaptive`). MỌI đầu ra sinh từ SVG (không phóng to PNG):
+ *                 web dùng logo trong suốt; icon hệ điều hành + PWA + OG vẫn là ô nền đặc `solidBg`, logo `scale`.
+ *
  * Định dạng đầu ra (apps/web/public/ và assets/brand/app/):
  *   - brand/logo-<id>-{48,96,144,192}.{avif,webp} + brand/logo-<id>.png (512): <picture> ở
  *     header - AVIF/WebP nhỏ hơn PNG 5-20 lần, PNG chỉ là đường lui.
@@ -157,9 +161,40 @@ function buildIco(entries) {
 
 const esc = (s) => String(s).replace(/[<>&'"]/g, (c) => `&#${c.charCodeAt(0)};`);
 
+/** SVG ⇒ PNG vuông 1024 trong suốt, logo giữa (density cao: nét sắc, không phóng to ảnh điểm). */
+async function svgMark(rel) {
+  const svg = fs.readFileSync(path.join(ROOT, 'assets/brand', rel));
+  return sharp(svg, { density: 600 })
+    .resize(1024, 1024, { fit: 'contain', background: CLEAR, kernel: 'lanczos3' })
+    .png()
+    .toBuffer();
+}
+
+/** Ô nền đặc từ logo vector: `square` (iOS, maskable, apple-touch) và `rounded` (icon app, OG) bo theo `tileRadius`. */
+async function vectorTile(mark) {
+  const S = 1024;
+  const inner = Math.round(S * (CFG.vector.scale ?? 0.78));
+  const logo = await sharp(mark).resize(inner, inner, { fit: 'contain', background: CLEAR }).png().toBuffer();
+  const square = await sharp({ create: { width: S, height: S, channels: 4, background: hex(CFG.solidBg) } })
+    .composite([{ input: logo, top: (S - inner) >> 1, left: (S - inner) >> 1 }])
+    .png()
+    .toBuffer();
+  const r = Math.round(S * (CFG.tileRadius ?? 0.22));
+  const mask = Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="${S}" height="${S}"><rect width="${S}" height="${S}" rx="${r}" ry="${r}"/></svg>`);
+  return { rounded: await sharp(square).composite([{ input: mask, blend: 'dest-in' }]).png().toBuffer(), square };
+}
+
 async function main() {
-  const raw = fs.readFileSync(path.join(ROOT, 'assets/brand', CFG.source));
-  const { rounded, square } = CFG.mode === 'tile' ? await tile(raw) : await noWhite(raw);
+  const V = CFG.vector;
+  const markDark = V ? await svgMark(V.dark) : null;
+  const markLight = V ? await svgMark(V.light) : null;
+  const { rounded, square } = V
+    ? await vectorTile(markDark)
+    : CFG.mode === 'tile'
+      ? await tile(fs.readFileSync(path.join(ROOT, 'assets/brand', CFG.source)))
+      : await noWhite(fs.readFileSync(path.join(ROOT, 'assets/brand', CFG.source)));
+  // Web (header, favicon, PWA "any"): logo KHÔNG ô nền khi có vector - hết "ô nền tối" trên nền Sáng (LG2).
+  const webMark = markDark ?? rounded;
   const SOLID = hex(CFG.solidBg);
   const at = (size, src = rounded) =>
     sharp(src).resize(size, size, { fit: 'contain', background: CLEAR, kernel: 'lanczos3' }).png({ compressionLevel: 9 }).toBuffer();
@@ -180,19 +215,23 @@ async function main() {
     return buildIco(entries);
   };
 
-  // --- Logo cho giao diện website (<picture>).
-  for (const s of [48, 96, 144, 192]) {
-    const base = sharp(await at(s));
-    emit(pub(`brand/logo-${CFG.id}-${s}.avif`), await base.clone().avif({ quality: 70, effort: 9 }).toBuffer());
-    emit(pub(`brand/logo-${CFG.id}-${s}.webp`), await base.clone().webp({ quality: 90, effort: 6 }).toBuffer());
+  // --- Logo cho giao diện website (<picture>): bản Tối (mặc định) + bản Sáng khi có vector.
+  const variants = markLight ? [['', webMark], ['-light', markLight]] : [['', webMark]];
+  for (const [suffix, src] of variants) {
+    for (const s of [48, 96, 144, 192]) {
+      const base = sharp(await at(s, src));
+      emit(pub(`brand/logo-${CFG.id}${suffix}-${s}.avif`), await base.clone().avif({ quality: 70, effort: 9 }).toBuffer());
+      emit(pub(`brand/logo-${CFG.id}${suffix}-${s}.webp`), await base.clone().webp({ quality: 90, effort: 6 }).toBuffer());
+    }
+    emit(pub(`brand/logo-${CFG.id}${suffix}.png`), await png(512, src));
   }
-  emit(pub(`brand/logo-${CFG.id}.png`), await png(512));
 
-  // --- Favicon + PWA.
-  emit(pub('favicon.ico'), await ico(rounded));
-  for (const s of [16, 32, 96]) emit(pub(`favicon-${s}x${s}.png`), await png(s));
+  // --- Favicon + PWA. favicon.svg (vector, tự đổi theo prefers-color-scheme) đứng TRƯỚC favicon.ico trong <head>.
+  if (V) emit(pub('favicon.svg'), fs.readFileSync(path.join(ROOT, 'assets/brand', V.adaptive)));
+  emit(pub('favicon.ico'), await ico(webMark));
+  for (const s of [16, 32, 96]) emit(pub(`favicon-${s}x${s}.png`), await png(s, webMark));
   for (const s of [192, 512]) {
-    emit(pub(`android-chrome-${s}x${s}.png`), await png(s));
+    emit(pub(`android-chrome-${s}x${s}.png`), await png(s, webMark));
     emit(pub(`android-chrome-maskable-${s}x${s}.png`), await onSolid(s, 0.8, square));
   }
   // iOS tô đen chỗ trong suốt và tự bo góc: nền đặc, ô vuông đầy (tile) hoặc logo 86% (no-white).
@@ -246,6 +285,8 @@ async function main() {
   emit(flutter('windows/runner/resources/app_icon.ico'), await ico(rounded));
   // Icon trong bundle (data/flutter_assets/assets/brand/icon-512.png): tệp .desktop của gói Linux dùng.
   emit(flutter('assets/brand/icon-512.png'), await at(512));
+  // Dấu hiệu TsuDEV đặt trước liên kết tới tsudev.com trong app (BRAND_ASSETS 4.1.0) - cùng nguồn với chân trang web.
+  emit(flutter('assets/brand/tsudev-mark.png'), await png(96, fs.readFileSync(path.join(WEB, 'public/brand/logo-tsudev-256.png'))));
 
   // --- Ghi hoặc kiểm.
   const bad = [];
