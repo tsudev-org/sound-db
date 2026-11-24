@@ -227,6 +227,29 @@ Danh sách lỗi (mã `QA-nn`, mức, tab, cách tái hiện, trạng thái):
   tích 74-76 / Bộ chỉnh âm 69-71 / **Cài đặt 18-19**. CÒN: tab đang hiển thị vẫn ~0,7 lõi (vẽ 20 khung/giây + DSP trên
   luồng chính) ⇒ hồ sơ CPU DevTools cho widget Đo mức + chuyển DSP sang isolate. Bản 26.11.2401 chính thức đã cài đè gói
   chính: SHA256 + `gh attestation verify` đạt, Lịch sử 2/2 giữ nguyên, Cài đặt hiện 26.11.2401, log không lỗi.
+  **25/11 01:28-02:20 (sound-db-9d, bước 3, PR `perf/qa-11-buoc-3`) - CHƯA ĐẠT mục tiêu < 30, giảm một nửa.** Hồ sơ trước
+  (gói `.profile` 26112502, Đo mức đang đo): luồng chính 58 + `1.raster` 17 jiffies/s; hồ sơ CPU Dart 10 s qua VM service
+  (`scripts/android/cpu-profile.mjs` - cùng dữ liệu tab CPU Profiler của DevTools, `qa11-profile.sh`): dựng/vẽ khung
+  51 % (dựng lại cả ListView mỗi nhịp 32 %, lưới + nhãn đồ thị 2 phút 6,6 %), `_onTick` 24 % (FFT phổ 18 % dù Đo mức
+  không hiện phổ), `_onSamples` 5 %. Vòng 1: phổ chỉ tính đủ nhịp khi trang Phân tích hiển thị (`demandSpectrum` +
+  `DemandWhileVisible`; ẩn ⇒ 5 lần/giây cho 1/3 octave của phiên), `VisibleListenableBuilder(select:)` - trang Đo mức chỉ
+  dựng phần có chuỗi hiển thị đổi, lưới đồ thị lớp tĩnh, đường mức vẽ theo `historyVersion`. Vòng 2: `snapshot` + số
+  hiển thị 10 lần/giây (`displayVersion`, đồ thị cùng khung). Test `meter_tick_cost_test.dart` đỏ ⇒ xanh (app 79 test).
+  DSP không đổi thuật toán ⇒ Rust/`vectors.json` không đổi.
+
+  | Tab (đang đo) | Trước (26112502) | Vòng 1 (26112503) | Vòng 2 (26112504) |
+  | --- | --- | --- | --- |
+  | Đo mức | 72 / 83 | 32 / 38 | 38 / 34 |
+  | Phân tích | 75 / 79 | 72 / 81 | 88 / 74 |
+  | Bộ chỉnh âm | 66 / 72 | 64 / 68 | 73 / 66 |
+  | Cài đặt | 31 / 24 | 15 / 15 | 17 / 15 |
+
+  Sau vòng 1 (Đo mức): luồng chính 19,7, raster 11,6, thu âm 4,0, GPU `mali-cmar` 2,5; mẫu Dart: FFT tích luỹ 1/3 octave
+  21 %, lọc trọng số A/C/Z theo mẫu 22 %, khung vẽ 27 % (layout chữ số 11 %), `snapshot()` 5,6 %. Vòng 2 không đổi số
+  đo đáng kể (nhiễu 32-38) ⇒ khâu còn lại không phải tần suất khung. **Hướng tiếp (CẦN Rust + vector + Dart cùng PR)**:
+  FFT thực (đóng gói N/2 phức) cho phổ; lọc trọng số A/C/Z theo khối Float64List (hiện Biquad theo từng mẫu với 3 bộ
+  lọc + 3 hằng thời gian); tích luỹ 1/3 octave từ dàn lọc hạ mẫu thay vì FFT. Phân tích / Bộ chỉnh âm cần phổ + cao độ
+  20 lần/giây nên vẫn ~0,7 lõi. Hồ sơ luồng sau vòng 2 chưa lấy (cáp USB rớt sau 02:20).
 
 Đo trên máy 21/11 (bằng chứng ảnh): FFT 8192 Hann 5,86 Hz/bin trọng số A hiển thị đúng, nhãn trục không tràn; Cài
 đặt hiện phiên bản 26.11.1705 và khối "Âm thanh không bao giờ rời thiết bị".

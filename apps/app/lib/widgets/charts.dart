@@ -39,19 +39,35 @@ void _gridDb(Canvas canvas, Size size, double minDb, double maxDb, SdbPalette p,
   }
 }
 
-/// Đồ thị mức theo thời gian, tô màu theo vùng an toàn/lưu ý/nguy hại.
-class LevelHistoryPainter extends CustomPainter {
-  LevelHistoryPainter(this.values, this.palette, {this.minDb = 20, this.maxDb = 120, this.capacity = 1200});
+/// Lưới + nhãn dB của đồ thị mức (lớp tĩnh dưới [LevelHistoryPainter] - nhãn chữ tốn layout, không vẽ lại theo nhịp).
+class DbGridPainter extends CustomPainter {
+  const DbGridPainter({required this.palette, this.minDb = 20, this.maxDb = 120});
 
+  final SdbPalette palette;
+  final double minDb, maxDb;
+
+  @override
+  void paint(Canvas canvas, Size size) => _gridDb(canvas, size, minDb, maxDb, palette, LevelHistoryPainter.left);
+
+  @override
+  bool shouldRepaint(DbGridPainter old) => old.palette != palette || old.minDb != minDb || old.maxDb != maxDb;
+}
+
+/// Đồ thị mức theo thời gian, tô màu theo vùng an toàn/lưu ý/nguy hại. Lưới ở [DbGridPainter].
+/// [values] bị sửa tại chỗ ⇒ [version] (tăng mỗi lần đổi) quyết định có vẽ lại không.
+class LevelHistoryPainter extends CustomPainter {
+  LevelHistoryPainter(this.values, this.palette,
+      {this.minDb = 20, this.maxDb = 120, this.capacity = 1200, required this.version});
+
+  static const double left = 26.0;
   final List<double> values;
   final SdbPalette palette;
   final double minDb, maxDb;
   final int capacity;
+  final int version;
 
   @override
   void paint(Canvas canvas, Size size) {
-    const left = 26.0;
-    _gridDb(canvas, size, minDb, maxDb, palette, left);
     if (values.length < 2) return;
     final width = size.width - left;
     double y(double db) => size.height * (1 - ((db.isFinite ? db : minDb) - minDb).clamp(0, maxDb - minDb) / (maxDb - minDb));
@@ -78,7 +94,8 @@ class LevelHistoryPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(LevelHistoryPainter old) => true;
+  bool shouldRepaint(LevelHistoryPainter old) =>
+      old.version != version || old.palette != palette || old.minDb != minDb || old.maxDb != maxDb;
 }
 
 /// Phổ FFT trên trục tần số log, kèm đường giữ đỉnh và đánh dấu đỉnh mạnh nhất.

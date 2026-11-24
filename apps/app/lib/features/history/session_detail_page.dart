@@ -113,7 +113,11 @@ class _SessionDetailPageState extends State<SessionDetailPage> {
               const SizedBox(height: SdbSpacing.s2),
               SizedBox(
                 height: 180,
-                child: CustomPaint(painter: LevelHistoryPainter(s.seriesLaeq, p, capacity: s.seriesLaeq.length.clamp(2, 1 << 30))),
+                child: CustomPaint(
+                  painter: DbGridPainter(palette: p),
+                  foregroundPainter:
+                      LevelHistoryPainter(s.seriesLaeq, p, capacity: s.seriesLaeq.length.clamp(2, 1 << 30), version: 0),
+                ),
               ),
               if (s.thirdOctaveLzeq.isNotEmpty) ...[
                 const SizedBox(height: SdbSpacing.s4),
