@@ -55,7 +55,7 @@ class _SpectrumTabState extends State<_SpectrumTab> {
     final services = AppScope.of(context);
     final m = services.measurement;
     final settings = services.settings;
-    return ListenableBuilder(
+    return VisibleListenableBuilder(
       listenable: m,
       builder: (context, _) {
         final p = context.palette;
@@ -134,7 +134,7 @@ class _SpectrogramTab extends StatelessWidget {
   Widget build(BuildContext context) {
     final services = AppScope.of(context);
     final m = services.measurement;
-    return ListenableBuilder(
+    return VisibleListenableBuilder(
       listenable: m,
       builder: (context, _) {
         final p = context.palette;
@@ -194,7 +194,7 @@ class _OctaveTabState extends State<_OctaveTab> {
   Widget build(BuildContext context) {
     final services = AppScope.of(context);
     final m = services.measurement;
-    return ListenableBuilder(
+    return VisibleListenableBuilder(
       listenable: m,
       builder: (context, _) {
         final p = context.palette;

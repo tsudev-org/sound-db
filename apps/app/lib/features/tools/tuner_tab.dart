@@ -57,7 +57,7 @@ class _TunerTabState extends State<TunerTab> {
   Widget build(BuildContext context) {
     final services = AppScope.of(context);
     final m = services.measurement;
-    return ListenableBuilder(
+    return VisibleListenableBuilder(
       listenable: Listenable.merge([m, services.settings]),
       builder: (context, _) {
         final p = context.palette;

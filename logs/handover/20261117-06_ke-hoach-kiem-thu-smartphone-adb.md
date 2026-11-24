@@ -219,6 +219,14 @@ Danh sách lỗi (mã `QA-nn`, mức, tab, cách tái hiện, trạng thái):
   Số đo x86 (3 lượt xen kẽ, máy có tải): 105-129k ⇒ 22-35k µs CPU mỗi giây âm (giảm ~75 %) ở tab thường, ~50 % ở Bộ
   chỉnh âm. CÒN: đo `cpu_rate` trên SM-M325FV (mục tiêu < 0,3 lõi ở Đo mức); nếu chưa đạt ⇒ FFT thực (đóng gói N/2
   phức) cho phổ + NSDF, khâu lớn nhất còn lại (cần Rust + vector cùng PR).
+  **25/11 00:00-00:38 máy thật SM-M325FV** (bản profile, `cpu_rate` 20 s × 2 vòng, `logs/qa/20261124/qa11-cpu-*.tsv`):
+  trước (26.11.2302) Đo mức 90-91 / Phân tích 93 / Bộ chỉnh âm 88-89 / Cài đặt 88-92; sau PR #54: 77-82 / 90-91 / 80-85 /
+  74-76 - DSP không phải khâu chính. Theo luồng ở Cài đặt: luồng chính 55, `1.raster` 23, 19-21 khung/giây dù màn không
+  đổi ⇒ trang ẩn của IndexedStack dựng lại theo mỗi nhịp 50 ms. Sửa: `VisibleListenableBuilder` (bỏ qua thông báo khi
+  TickerMode tắt, dựng lại một lần khi hiện lại); test `hidden_pages_idle_test.dart` đỏ ⇒ xanh. Sau: Đo mức 73 / Phân
+  tích 74-76 / Bộ chỉnh âm 69-71 / **Cài đặt 18-19**. CÒN: tab đang hiển thị vẫn ~0,7 lõi (vẽ 20 khung/giây + DSP trên
+  luồng chính) ⇒ hồ sơ CPU DevTools cho widget Đo mức + chuyển DSP sang isolate. Bản 26.11.2401 chính thức đã cài đè gói
+  chính: SHA256 + `gh attestation verify` đạt, Lịch sử 2/2 giữ nguyên, Cài đặt hiện 26.11.2401, log không lỗi.
 
 Đo trên máy 21/11 (bằng chứng ảnh): FFT 8192 Hann 5,86 Hz/bin trọng số A hiển thị đúng, nhãn trục không tràn; Cài
 đặt hiện phiên bản 26.11.1705 và khối "Âm thanh không bao giờ rời thiết bị".
