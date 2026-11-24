@@ -86,6 +86,49 @@ class SpectrumAnalyzer {
   double _windowSum = 0, _windowSqSum = 0;
   int _frames = 0;
 
+  // QA-11: bin và trọng số là hằng với một bộ phân tích ⇒ lập bảng một lần. Giữ ĐÚNG biểu thức và thứ tự cộng của bản
+  // gốc (kết quả trùng bit, vectors.json không đổi). Trước: mỗi nhịp quét 78 dải × 4097 bin + pow/log từng bin.
+  final Map<Weighting, Float64List> _gainDbTable = {};
+  final Map<Weighting, Float64List> _gainLinTable = {};
+  final Map<(double, double), _BandPlan> _bandPlans = {};
+
+  Float64List _gainDb(Weighting w) => _gainDbTable.putIfAbsent(w, () {
+        final bin = binHz;
+        final t = Float64List(bins);
+        for (var k = 0; k < t.length; k++) {
+          t[k] = w == Weighting.z ? 0.0 : analogGainDb(w, k * bin);
+        }
+        return t;
+      });
+
+  Float64List _gainLin(Weighting w) => _gainLinTable.putIfAbsent(w, () {
+        final bin = binHz;
+        final t = Float64List(bins);
+        for (var k = 0; k < t.length; k++) {
+          t[k] = w == Weighting.z ? 1.0 : math.pow(10, analogGainDb(w, math.max(k * bin, 1e-9)) / 10).toDouble();
+        }
+        return t;
+      });
+
+  _BandPlan _plan(double loHz, double hiHz) {
+    final key = (loHz, hiHz);
+    final cached = _bandPlans[key];
+    if (cached != null) return cached;
+    if (_bandPlans.length >= 256) _bandPlans.clear();
+    final bin = binHz;
+    final ks = <int>[];
+    final overlaps = <double>[];
+    for (var k = 0; k < bins; k++) {
+      final center = k * bin;
+      final overlap = (math.min(center + bin / 2, hiHz) - math.max(center - bin / 2, loHz)) / bin;
+      if (overlap > 0) {
+        ks.add(k);
+        overlaps.add(overlap);
+      }
+    }
+    return _bandPlans[key] = _BandPlan(Int32List.fromList(ks), Float64List.fromList(overlaps));
+  }
+
   /// Công suất (mean-square) mỗi bin, đã trung bình.
   final Float64List power;
   final Float64List peakHold;
@@ -134,25 +177,20 @@ class SpectrumAnalyzer {
   /// Phổ dB (thang biên độ: một sin đọc ra đúng mức RMS của nó).
   void spectrumDb(Weighting weighting, Float64List out, {bool fromPeakHold = false}) {
     final source = fromPeakHold ? peakHold : power;
-    final bin = binHz;
+    final gain = _gainDb(weighting);
     for (var k = 0; k < bins; k++) {
-      final w = weighting == Weighting.z ? 0.0 : analogGainDb(weighting, k * bin);
-      out[k] = _amplitudeDb(source[k]) + w;
+      out[k] = _amplitudeDb(source[k]) + gain[k];
     }
   }
 
   double bandPower(double loHz, double hiHz, Weighting weighting) {
-    final bin = binHz;
+    final plan = _plan(loHz, hiHz);
+    final gain = _gainLin(weighting);
+    final ks = plan.bins, overlaps = plan.overlaps;
     var total = 0.0;
-    for (var k = 0; k < power.length; k++) {
-      final center = k * bin;
-      final overlap = (math.min(center + bin / 2, hiHz) - math.max(center - bin / 2, loHz)) / bin;
-      if (overlap > 0) {
-        final gain = weighting == Weighting.z
-            ? 1.0
-            : math.pow(10, analogGainDb(weighting, math.max(center, 1e-9)) / 10).toDouble();
-        total += overlap * power[k] * gain;
-      }
+    for (var j = 0; j < ks.length; j++) {
+      final k = ks[j];
+      total += overlaps[j] * power[k] * gain[k];
     }
     return total;
   }
@@ -194,4 +232,11 @@ class SpectrumAnalyzer {
       best,
     );
   }
+}
+
+/// Các bin (tăng dần) phủ một dải tần và tỷ lệ phủ của từng bin.
+class _BandPlan {
+  const _BandPlan(this.bins, this.overlaps);
+  final Int32List bins;
+  final Float64List overlaps;
 }

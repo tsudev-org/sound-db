@@ -209,6 +209,16 @@ Danh sách lỗi (mã `QA-nn`, mức, tab, cách tái hiện, trạng thái):
   CPU profiler, bản profile) xem khâu nào (lọc trọng số A/C/Z, dàn lọc 1/3 octave ở 48 kHz, FFT); dàn 1/3 octave
   nhiều tầng hạ mẫu (IEC 61260-1 cho phép) và/hoặc chuyển DSP sang isolate riêng. Đổi thuật toán ⇒ Rust tham chiếu +
   `conformance/vectors.json` + Dart CÙNG PR (AGENTS B.3). Bộ đo: `/proc/<pid>/stat` cột 14+15 trong 20 s.
+  **24/11 tối (sound-db-56) - SỬA PHẦN LỚN, chờ đo máy thật.** Hồ sơ CPU bằng `packages/dsp-dart/tool/bench.dart` (AOT, mô
+  phỏng 48 kHz + 20 nhịp/giây như app): `bandLevels` 51 % (78 dải × quét đủ 4097 bin + `pow`/`log` từng bin mỗi nhịp),
+  dò cao độ 22 % (chạy ở MỌI tab), FFT 12 %, `spectrumDb` 11 %, lọc A/C/Z mỗi mẫu chỉ 3 %. Sửa KHÔNG đổi thuật toán:
+  (1) `SpectrumAnalyzer` lập sẵn bảng (bin, độ phủ) mỗi dải + bảng hệ số trọng số theo bin, giữ đúng biểu thức và thứ
+  tự cộng ⇒ so 126 762 giá trị với công thức cũ: 0 khác bit, `vectors.json` không đổi, Rust không cần sửa; (2) chỉ dò
+  cao độ khi tab Bộ chỉnh âm hiển thị (`demandPitch` + `TickerMode`; trang ẩn của `IndexedStack` KHÔNG tự tắt
+  TickerMode ở Flutter 3.47 ⇒ vỏ app bọc `TickerMode(enabled: i == _index)`). Test `pitch_demand_test.dart` đỏ ⇒ xanh.
+  Số đo x86 (3 lượt xen kẽ, máy có tải): 105-129k ⇒ 22-35k µs CPU mỗi giây âm (giảm ~75 %) ở tab thường, ~50 % ở Bộ
+  chỉnh âm. CÒN: đo `cpu_rate` trên SM-M325FV (mục tiêu < 0,3 lõi ở Đo mức); nếu chưa đạt ⇒ FFT thực (đóng gói N/2
+  phức) cho phổ + NSDF, khâu lớn nhất còn lại (cần Rust + vector cùng PR).
 
 Đo trên máy 21/11 (bằng chứng ảnh): FFT 8192 Hann 5,86 Hz/bin trọng số A hiển thị đúng, nhãn trục không tràn; Cài
 đặt hiện phiên bản 26.11.1705 và khối "Âm thanh không bao giờ rời thiết bị".
