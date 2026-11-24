@@ -53,6 +53,13 @@
 
 ## Đã hoàn thành (mới nhất trên cùng)
 
+- 24/11/2026 chiều - `sound-db-c9` (phiếu điều phối `20261124-QR1` bản sao repo, `-LG2`): **UI1** biểu tượng thanh điều
+  hướng 1,19:1 → 4,45:1 (Sáng) / 1,21 → 6,21 (Tối), dùng `TsuNavTheme` của `tsudev_ui` v0.3.0, test đo tương phản (PR #44,
+  #47). **Chuẩn v5.1.0** + cổng CI: `--fatal-infos`, cây sạch sau dựng, ngân sách JS web ≤ 170 KB (6,0 KB), APK ≤ 25 MB
+  (21,6/23,1 MB) (PR #44); **knip** 6.44.2 + **cargo-machete** 0.9.2, xoá 2 mã chết (PR #46). **LG2** logo vector xoá nền,
+  `favicon.svg`, icon hệ điều hành dựng từ SVG (hết nợ crop 704 px) + dấu hiệu TsuDEV trước liên kết tsudev.com (web +
+  app); production đã deploy, ảnh Edge Sáng/Tối (PR #45). **QR3 bị chặn** bởi QR1-IdP + QR2-UI (xem hàng đợi).
+
 - 24/11/2026 - `sound-db-c9` (PR #41): **SEC1 đóng**. **Tìm/lọc Lịch sử** app + web (không dấu, khoảng thời gian, DB v3 +
   migration 0003 `search_norm`; lệch chuẩn ghi AGENTS B.4). **QA-06 đóng, không đổi offset** (Chrome thu nguồn `MIC` nhạy
   hơn `UNPROCESSED` ~45-50 dB, một máy, không máy đo chuẩn). Phiếu 06 phần "CHƯA": sửa **QA-07** (Lịch sử không tự cập
