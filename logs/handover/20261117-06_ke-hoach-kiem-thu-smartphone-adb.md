@@ -250,6 +250,8 @@ Danh sách lỗi (mã `QA-nn`, mức, tab, cách tái hiện, trạng thái):
   FFT thực (đóng gói N/2 phức) cho phổ; lọc trọng số A/C/Z theo khối Float64List (hiện Biquad theo từng mẫu với 3 bộ
   lọc + 3 hằng thời gian); tích luỹ 1/3 octave từ dàn lọc hạ mẫu thay vì FFT. Phân tích / Bộ chỉnh âm cần phổ + cao độ
   20 lần/giây nên vẫn ~0,7 lõi. Hồ sơ luồng sau vòng 2 chưa lấy (cáp USB rớt sau 02:20).
+  Bản **26.11.2501** (chứa #62) đã phát hành 25/11: SHA256 + `gh attestation verify` + VirusTotal đạt tại máy dev; cài đè
+  gói chính + `cpu_rate` bản release CHƯA làm (adb rớt) - phiếu 10 P1.
 
 Đo trên máy 21/11 (bằng chứng ảnh): FFT 8192 Hann 5,86 Hz/bin trọng số A hiển thị đúng, nhãn trục không tràn; Cài
 đặt hiện phiên bản 26.11.1705 và khối "Âm thanh không bao giờ rời thiết bị".

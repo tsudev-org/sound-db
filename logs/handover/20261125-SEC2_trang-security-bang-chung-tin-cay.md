@@ -20,3 +20,8 @@ E4 security.txt (Contact security@tsudev.com, test Expires) · E5 SSL Labs · E6
 ## Kết quả xử lý
 
 - 25/11/2026 - tsudev-8d: mở phiếu.
+- 25/11/2026 - sound-db-9d: **XONG** (PR #63, deploy đạt). `security.txt` Contact `mailto:security@tsudev.com` đứng đầu +
+  Policy `/security/`; trang `/security/` + `/en/security/` lấy số từ `docs/security/trust.json`: BP passing 100 %,
+  Scorecard 6.3, SSL Labs A+ (4/4 endpoint, API v3), Observatory A+ 140 (12/12, API v2), HSTS header đủ (tsudev.com chưa
+  preload), chữ ký Release + VirusTotal 0/73, PVR bật. "Chưa có": ký mã Windows (đơn SignPath cần 👤), NCA (tsudev.com
+  làm). Cổng `check-dist` chặn Expires hết hạn/> 1 năm, bằng chứng thiếu liên kết/ngày đo. Production kiểm bằng nội dung.
