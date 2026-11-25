@@ -22,6 +22,12 @@
 
 ## 2. Việc còn lại - làm THEO THỨ TỰ
 
+### P0. PRO3 (mới 25/11, làm TRƯỚC P3 phát hành để bản kế tiếp mang màn mua đúng 3.7.3)
+
+Phiếu `logs/handover/20261125-PRO3_pro-goi-tu-nguyen-ung-ho-tac-gia.md` (đọc mục 0 phiếu gốc ở `~/projects/logs/handover/`)
++ `.standards` v6.1.0 PRODUCT_POLICY 3.7 (đồng bộ `.standards` trước nếu repo còn v6.0.0). Một PR; xong ghi dòng kết quả
+vào phiếu PRO3 + hàng sound-db ở mục 3 phiếu gốc.
+
 ### P1. Việc 👤 có agent hỗ trợ (mỗi mục dừng đúng bước cần 👤, nhắn MỘT lần)
 
 1. **XONG 25/11** - chủ dự án đã chạy lệnh dưới: cả hai Environment có `required_reviewers` = `tsudev-tsudev`
@@ -83,7 +89,7 @@ ClusterFuzzLite nếu muốn).
 
 ```text
 Bạn là agent-sound, repo ~/projects/sound-db. Trả lời tiếng Việt. Làm ĐÚNG THỨ TỰ, không bỏ bước, không hỏi lại điều đã
-có trong phiếu. Mục tiêu: hoàn thành phiếu logs/handover/20261125-11_ban-giao-sound-db.md mục 2 (P1 → P2 → P3 → P4), mỗi
+có trong phiếu. Mục tiêu: hoàn thành phiếu logs/handover/20261125-11_ban-giao-sound-db.md mục 2 (P0 PRO3 → P1 → P2 → P3 → P4), mỗi
 việc có bằng chứng.
 
 0. ỦY QUYỀN SẴN: tạo nhánh, commit, đẩy, mở PR, chờ CI và MERGE PR của chính phiên theo TÊN NHÁNH khi 0 check không đạt;
@@ -94,6 +100,7 @@ việc có bằng chứng.
    phiếu 06 mục 6 dòng QA-11. `akb start "sound-db: phiếu 11 - việc 👤 có hỗ trợ, QA-11, phát hành"`; `akb search "QA-11"`.
    `git status`, `gh pr list`, ListAgents, `adb.exe devices -l` (trống ⇒ hỏi tôi cắm máy MỘT lần).
 2. GHI KHOÁ (LOCKS + "Đang thực hiện" STATE) trước khi sửa; nhả ngay khi xong từng vùng.
+2b. P0 PRO3: làm trọn trong một PR (phiếu PRO3 + PRODUCT_POLICY 3.7).
 3. P1: hỏi tôi MỘT lần gộp (Required reviewers, gỡ worktree qa11, sẵn sàng đăng nhập Pro/QR3 + nghe TalkBack) rồi làm
    từng mục theo trả lời.
 4. P2 QA-11: theo quyết định của tôi (đóng ở ~0,3 lõi hoặc dàn lọc hạ mẫu - Rust + vector + Dart cùng PR).

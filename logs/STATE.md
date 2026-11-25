@@ -13,6 +13,9 @@
 
 ## Hàng đợi task (làm từ trên xuống)
 
+- [ ] **PRO3** (25/11, từ `projects-d6`, chuẩn v6.1.0 PRODUCT_POLICY 3.7): Pro là gói TỰ NGUYỆN ủng hộ tác giả - rà lối
+  vào Pro, màn mua có câu định vị + ô xác nhận không chọn sẵn, giữ miễn phí tiếp cận/Sáng-Tối/xuất tệp, web không tự
+  nhận tiền, không logo BCT, không chữ "phi lợi nhuận/non-profit", README. Phiếu `logs/handover/20261125-PRO3_*`.
 - [ ] 👤 **Duyệt ADR-0006** (chuyển đồng bộ sang tsusync, mã hoá đầu cuối, mật khẩu đồng bộ riêng) + duyệt triển khai
   tsusync với `NAMESPACES` gồm `sounddb`. Kế hoạch E1-E5 + điều kiện P1-P4: phiếu `logs/handover/20261120-E2E1_*`.
   Chưa đủ P1-P3 ⇒ KHÔNG bắt đầu E1. Đo 20/11 23:10: ADR-0006 vẫn ĐỀ XUẤT; tsusync chưa deploy (`NAMESPACES` rỗng,
