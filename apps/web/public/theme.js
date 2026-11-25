@@ -10,7 +10,7 @@ if (location.hostname === 'sounddb.tsudev.com') location.replace('https://sound.
   var KHOA = 'tsudev-theme';
   var LUA_CHON = ['light', 'dark', 'system'];
   var MAC_DINH = 'system'; // PRODUCT_POLICY mục 1.2 (tsudev-standards v3.8.0): lần đầu theo hệ điều hành
-  var NEN = { light: '#fafafa', dark: '#0a0a0a' };   // --bg-base của lớp nền chung (.standards/tokens/tokens.css)
+  var NEN = { light: '#eef1f5', dark: '#0a0a0a' };   // --bg-base của lớp nền chung (.standards/tokens/tokens.css)
   var goc = document.documentElement;
   var heThong = null;
   try { heThong = window.matchMedia('(prefers-color-scheme: dark)'); } catch (e) { heThong = null; }
