@@ -133,13 +133,20 @@ jobs:
           sha256sum * > SHA256SUMS
           cp SHA256SUMS SHA256SUMS.txt
           cat SHA256SUMS
-      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+      - id: provenance
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
         with: { subject-path: 'out/*' }
+      # Đính gói chứng thực (Sigstore bundle, SLSA provenance) vào Release: người dùng kiểm ngoại tuyến bằng
+      # `gh attestation verify <tệp> --bundle <...>.intoto.jsonl --repo ...`, và OpenSSF Scorecard (Signed-Releases)
+      # chỉ nhận chữ ký/provenance nằm trong tài sản Release. Tạo SAU SHA256SUMS - không nằm trong tệp kiểm.
+      - name: Gói chứng thực vào Release
+        env: { BUNDLE: '${{ steps.provenance.outputs.bundle-path }}', V: '${{ needs.version.outputs.v }}' }
+        run: cp "$BUNDLE" "out/sound-db_${V}.intoto.jsonl"
       - name: Tạo bản phát hành
         env: { GH_TOKEN: '${{ github.token }}', V: '${{ needs.version.outputs.v }}' }
         run: |
           gh release create "$GITHUB_REF_NAME" out/* --repo "$GITHUB_REPOSITORY" --title "Sound Db $V" --draft \
-            --notes "Bản dựng tự động từ ${GITHUB_SHA}. Kiểm chứng: \`sha256sum -c SHA256SUMS.txt --ignore-missing\` và \`gh attestation verify <tệp> --repo $GITHUB_REPOSITORY\`."
+            --notes "Bản dựng tự động từ ${GITHUB_SHA}. Kiểm chứng: \`sha256sum -c SHA256SUMS.txt --ignore-missing\` và \`gh attestation verify <tệp> --repo $GITHUB_REPOSITORY\` (ngoại tuyến: thêm \`--bundle sound-db_${V}.intoto.jsonl\`)."
 
   # Quét VirusTotal khi Release còn NHÁP (DISTRIBUTION_TRUST.md mục 3, phiếu 20261117-P2 P1 bước 3). Mẫu dùng chung ở
   # tsudev-org/.github; chưa có bí mật VT_API_KEY thì bỏ qua (xanh). Có engine gắn cờ ⇒ Release ở nháp, job đỏ.
