@@ -2,14 +2,14 @@
   "$note": "Phần MỞ RỘNG riêng của Sound Db, ghép bởi scripts/build-tokens.mjs lên .standards/tokens/design-tokens.json (lớp nền) + .standards/tokens/products/sounddb.json (bản sắc, tsudev-standards v5.0.0) để sinh apps/app/lib/theme/tokens.g.dart và apps/web/src/styles/tokens.css. KHÔNG khai lại bảng màu/vai trò nhấn ở đây (phiếu STD50). chart.* = màu biểu đồ đo (đường phổ chart-line/fill lấy primary/glow của sản phẩm; peak/grid/axis/thang mức dB là trực quan hoá dữ liệu, mỗi màu >= 3:1 với bg-surface; kiểm bằng --check).",
   "meta": {
     "name": "sound-db-token-extensions",
-    "updated": "23/11/2026",
+    "updated": "25/11/2026",
     "base": ".standards/tokens/design-tokens.json"
   },
   "chart": {
     "light": {
       "peak": "#B45309",
-      "grid": "#D4D4D8",
-      "axis": "#52525B",
+      "grid": "#C3CBD6",
+      "axis": "#475569",
       "level-safe": "#15803D",
       "level-caution": "#B45309",
       "level-danger": "#DC2626"

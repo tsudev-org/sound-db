@@ -52,6 +52,11 @@ import DauTsuDev from '../components/DauTsuDev.astro';
     <meta name="color-scheme" content="dark light">
     <script is:inline src="/theme.js"></script>
     <script is:inline src="/lang.js"></script>
+    <!-- Font của màn đầu (tiêu đề 700 + chữ thường 400, latin + vietnamese) nạp song song với CSS - DESIGN_SYSTEM.md mục 4.
+         `crossorigin` BẮT BUỘC: font luôn tải chế độ CORS, thiếu thì bản preload bị bỏ và tải lại. -->
+    {['space-grotesk-700-latin', 'space-grotesk-700-vietnamese', 'be-vietnam-pro-400-latin', 'be-vietnam-pro-400-vietnamese'].map((f) => (
+      <link rel="preload" href={`/fonts/${f}.woff2`} as="font" type="font/woff2" crossorigin>
+    ))}
     {anChiMuc && <meta name="robots" content="noindex">}
     <link rel="canonical" href={url}>
     {!motNgonNgu && LANGS.map((l) => <link rel="alternate" hreflang={l} href={`${SITE}${dd(l, duongDan)}`}>)}

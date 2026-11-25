@@ -4,7 +4,8 @@
     ".": {
       "entry": [
         "scripts/*.mjs",
-        "scripts/android/*.mjs"
+        "scripts/android/*.mjs",
+        "scripts/web/*.cjs"
       ]
     },
     "apps/web": {
