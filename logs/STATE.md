@@ -13,6 +13,9 @@
 
 ## Hàng đợi task (làm từ trên xuống)
 
+- [ ] **PRO3** (25/11, từ `projects-d6`, chuẩn v6.1.0 PRODUCT_POLICY 3.7): Pro là gói TỰ NGUYỆN ủng hộ tác giả - rà lối
+  vào Pro, màn mua có câu định vị + ô xác nhận không chọn sẵn, giữ miễn phí tiếp cận/Sáng-Tối/xuất tệp, web không tự
+  nhận tiền, không logo BCT, không chữ "phi lợi nhuận/non-profit", README. Phiếu `logs/handover/20261125-PRO3_*`.
 - [ ] 👤 **Duyệt ADR-0006** (chuyển đồng bộ sang tsusync, mã hoá đầu cuối, mật khẩu đồng bộ riêng) + duyệt triển khai
   tsusync với `NAMESPACES` gồm `sounddb`. Kế hoạch E1-E5 + điều kiện P1-P4: phiếu `logs/handover/20261120-E2E1_*`.
   Chưa đủ P1-P3 ⇒ KHÔNG bắt đầu E1. Đo 20/11 23:10: ADR-0006 vẫn ĐỀ XUẤT; tsusync chưa deploy (`NAMESPACES` rỗng,
@@ -33,10 +36,8 @@
 - [ ] 👤 QR3 E2E trên máy thật: máy tính đăng nhập tsudev.com ⇒ Tài khoản ⇒ Đăng nhập trên điện thoại ⇒ app Sound Db
   "Quét để đăng nhập" (ADR-0008). DK2: chờ duyệt nhãn tín nhiệm. Dependabot npm (TS 7, vitest 5): cần `astro check` hỗ
   trợ TS 7 + `vitest-pool-workers` hỗ trợ vitest 5 trước khi nhận (PR #48 đã revert).
-- [ ] **QA-11 quyết định** (phiếu 11 P2): sau bước 4 (PR #68) Đo mức bản profile 31-32, bản release 26.11.2501 29-31
-  jiffies/s (gốc 72-83). Đề xuất 👤 chấp nhận ~0,3 lõi và đóng; nếu cần < 30 ⇒ tích luỹ 1/3 octave bằng dàn lọc hạ mẫu
-  (Rust + vector + Dart cùng PR).
-- [ ] **Việc 👤 có agent hỗ trợ** (phiếu 11 P1): Required reviewers ĐÃ BẬT (👤 chạy 25/11, AGENTS.md B.5), gỡ worktree sound-db-qa11 (CÒN thay đổi chưa commit - phải hỏi), Pro nghiệm thu, QR3 E2E,
+- [ ] **Việc 👤 có agent hỗ trợ** (phiếu 11 P1): Required reviewers ĐÃ BẬT (👤 chạy 25/11, AGENTS.md B.5), worktree sound-db-qa11 ĐÃ GỠ (bản sao
+  `logs/qa/qa11-worktree-20261125/`), **QA-11 ĐÓNG** (👤 chấp nhận ~0,3 lõi; đo lại ở bản phát hành kế tiếp), Pro nghiệm thu, QR3 E2E,
   TalkBack. SignPath: đo 0/6 (25/11) ⇒ KHÔNG nộp.
 - [ ] Phát hành bản kế tiếp (có QA-11 bước 4 + nền Sáng mới trong app + gói `.intoto.jsonl` tự đính kèm Release).
 - [ ] 👤 TalkBack thật: bật TalkBack, vuốt qua Đo mức khi đang đo - chỉ đọc vùng mức khi đổi, không đọc dồn (QA-05).

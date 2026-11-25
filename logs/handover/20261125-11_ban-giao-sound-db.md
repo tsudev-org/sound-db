@@ -22,6 +22,12 @@
 
 ## 2. Việc còn lại - làm THEO THỨ TỰ
 
+### P0. PRO3 (mới 25/11, làm TRƯỚC P3 phát hành để bản kế tiếp mang màn mua đúng 3.7.3)
+
+Phiếu `logs/handover/20261125-PRO3_pro-goi-tu-nguyen-ung-ho-tac-gia.md` (đọc mục 0 phiếu gốc ở `~/projects/logs/handover/`)
++ `.standards` v6.1.0 PRODUCT_POLICY 3.7 (đồng bộ `.standards` trước nếu repo còn v6.0.0). Một PR; xong ghi dòng kết quả
+vào phiếu PRO3 + hàng sound-db ở mục 3 phiếu gốc.
+
 ### P1. Việc 👤 có agent hỗ trợ (mỗi mục dừng đúng bước cần 👤, nhắn MỘT lần)
 
 1. **XONG 25/11** - chủ dự án đã chạy lệnh dưới: cả hai Environment có `required_reviewers` = `tsudev-tsudev`
@@ -34,14 +40,17 @@
    done
    ```
    Sau khi bật: MỖI Deploy/Release chờ 👤 bấm duyệt ⇒ ghi vào AGENTS.md B.5.
-2. **Worktree `~/projects/sound-db-qa11`** (nhánh `fix/qa-11-dsp-cpu`, chỉ có ở máy): CÒN thay đổi chưa commit - 4 tệp sửa
+2. **XONG 25/11** (👤 đồng ý): bản sao `logs/qa/qa11-worktree-20261125/` (tracked.patch + untracked.tgz, chỉ ở máy),
+   worktree + nhánh `fix/qa-11-dsp-cpu` đã gỡ. (Cũ:) **Worktree `~/projects/sound-db-qa11`** (nhánh `fix/qa-11-dsp-cpu`, chỉ có ở máy): CÒN thay đổi chưa commit - 4 tệp sửa
    (`tuner_tab.dart`, `measurement.dart`, `locale_test.dart`, `spectrum.dart`) + chưa theo dõi (`qa11_pitch_demand_test.dart`,
    `test/support/`, `qa11_band_cost_test.dart`, `packages/dsp-dart/tool/`). Trông như bản nháp của PR #54 (đã merge) ⇒
    theo phiếu 10 P4.1 phải HỎI 👤 trước khi gỡ. Đồng ý ⇒ `git -C ~/projects/sound-db-qa11 diff > <scratchpad>/qa11.patch`
    (giữ bản sao) rồi `git worktree remove --force ~/projects/sound-db-qa11 && git branch -D fix/qa-11-dsp-cpu`.
 3. **Pro nghiệm thu**, **QR3 E2E**, **TalkBack nghe thật**: như phiếu 10 P4.3-P4.5 (nguyên văn còn đúng; máy đang cắm).
 
-### P2. QA-11 - quyết định
+### P2. QA-11 - ĐÃ ĐÓNG 25/11 (chủ dự án chấp nhận ~0,3 lõi)
+
+Chỉ còn: đo `cpu_rate` Đo mức trên bản phát hành kế tiếp (có #68) và ghi số vào phiếu 06. Bối cảnh cũ:
 
 Bản release 26.11.2501 (có #62, CHƯA có #68) đã 29-31 ở Đo mức. Bước 4 hạ thêm ~10 % (bản profile 31-32). Phần còn
 lại: FFT tích luỹ 1/3 octave 5 lần/giây (~20 % Dart), lọc + tách sóng theo mẫu (~21 %, việc tối thiểu), raster 10 Hz.
@@ -80,7 +89,7 @@ ClusterFuzzLite nếu muốn).
 
 ```text
 Bạn là agent-sound, repo ~/projects/sound-db. Trả lời tiếng Việt. Làm ĐÚNG THỨ TỰ, không bỏ bước, không hỏi lại điều đã
-có trong phiếu. Mục tiêu: hoàn thành phiếu logs/handover/20261125-11_ban-giao-sound-db.md mục 2 (P1 → P2 → P3 → P4), mỗi
+có trong phiếu. Mục tiêu: hoàn thành phiếu logs/handover/20261125-11_ban-giao-sound-db.md mục 2 (P0 PRO3 → P1 → P2 → P3 → P4), mỗi
 việc có bằng chứng.
 
 0. ỦY QUYỀN SẴN: tạo nhánh, commit, đẩy, mở PR, chờ CI và MERGE PR của chính phiên theo TÊN NHÁNH khi 0 check không đạt;
@@ -91,6 +100,7 @@ việc có bằng chứng.
    phiếu 06 mục 6 dòng QA-11. `akb start "sound-db: phiếu 11 - việc 👤 có hỗ trợ, QA-11, phát hành"`; `akb search "QA-11"`.
    `git status`, `gh pr list`, ListAgents, `adb.exe devices -l` (trống ⇒ hỏi tôi cắm máy MỘT lần).
 2. GHI KHOÁ (LOCKS + "Đang thực hiện" STATE) trước khi sửa; nhả ngay khi xong từng vùng.
+2b. P0 PRO3: làm trọn trong một PR (phiếu PRO3 + PRODUCT_POLICY 3.7).
 3. P1: hỏi tôi MỘT lần gộp (Required reviewers, gỡ worktree qa11, sẵn sàng đăng nhập Pro/QR3 + nghe TalkBack) rồi làm
    từng mục theo trả lời.
 4. P2 QA-11: theo quyết định của tôi (đóng ở ~0,3 lõi hoặc dàn lọc hạ mẫu - Rust + vector + Dart cùng PR).
