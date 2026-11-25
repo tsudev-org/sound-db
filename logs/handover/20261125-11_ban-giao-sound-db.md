@@ -24,7 +24,8 @@
 
 ### P1. Việc 👤 có agent hỗ trợ (mỗi mục dừng đúng bước cần 👤, nhắn MỘT lần)
 
-1. **Required reviewers** cho Environment `release` + `production`: repo có `admin: true`, id `291851597` = `tsudev-tsudev`
+1. **XONG 25/11** - chủ dự án đã chạy lệnh dưới: cả hai Environment có `required_reviewers` = `tsudev-tsudev`
+   (`can_admins_bypass: true`). Ghi ở AGENTS.md B.5. (Nội dung cũ giữ để tra cứu:) **Required reviewers** cho Environment `release` + `production`: repo có `admin: true`, id `291851597` = `tsudev-tsudev`
    (đã kiểm). Lệnh PUT bị **bộ phân loại auto mode của Claude Code chặn** (25/11, "Destructive or Unwanted Actions") ⇒
    KHÔNG lách; 👤 tự chạy (dán vào ô lệnh với tiền tố `!`) hoặc cho phép rồi agent chạy:
    ```bash
