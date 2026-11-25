@@ -36,7 +36,7 @@ fs.mkdirSync(out, { recursive: true });
           const imgs = [...document.images].filter((i) => i.complete && i.naturalWidth === 0).map((i) => i.src);
           const theme = document.documentElement.dataset.theme;
           const bg = getComputedStyle(document.body).backgroundColor;
-          const emdash = (document.body.innerText.match(/[—–]/g) || []).length;
+          const emdash = (document.body.innerText.match(/[\u2014\u2013]/g) || []).length;
           return { scrollW: document.documentElement.scrollWidth, vw, over: over.slice(0, 5), imgs, theme, bg, emdash };
         });
         // Bàn phím: 12 lần Tab, phần tử nhận focus phải có viền focus nhìn thấy.
