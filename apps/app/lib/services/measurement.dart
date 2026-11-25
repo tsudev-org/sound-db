@@ -25,6 +25,7 @@ class MeasurementController extends ChangeNotifier {
   final AudioInput _input;
   late Engine _engine;
   StreamSubscription<Float32List>? _subscription;
+
   /// Nhịp hiển thị 20 lần/giây. KHÔNG dùng Ticker: nó xin khung ở mọi vsync (90 Hz) dù dữ liệu chỉ đổi mỗi 50 ms, mỗi
   /// khung raster lại toàn màn và DSP chạy trong khung ⇒ giật 27-56% trên máy thật (QA-04, 23/11/2026).
   Timer? _ticker;
@@ -119,11 +120,11 @@ class MeasurementController extends ChangeNotifier {
   bool get isRunning => state == MeterState.running;
 
   Engine _newEngine() => Engine(
-        sampleRate: _input.sampleRate.toDouble(),
-        fftSize: settings.fftSize,
-        window: settings.window,
-        calibrationOffsetDb: settings.calibrationOffsetDb,
-      );
+    sampleRate: _input.sampleRate.toDouble(),
+    fftSize: settings.fftSize,
+    window: settings.window,
+    calibrationOffsetDb: settings.calibrationOffsetDb,
+  );
 
   void _onSettings() {
     _engine.calibrationOffsetDb = settings.calibrationOffsetDb;
@@ -218,8 +219,8 @@ class MeasurementController extends ChangeNotifier {
     _samplesSinceHistory += block.length;
     if (_samplesSinceHistory >= fs ~/ 10) {
       _samplesSinceHistory = 0;
-      final s = _engine.meter.snapshot();
-      levelHistory.add(s.level(settings.weighting, settings.timeWeighting));
+      // Chỉ cần một mức - không dựng cả ảnh chụp (phân vị quét histogram) 10 lần/giây (QA-11 bước 4).
+      levelHistory.add(_engine.meter.instantDb(settings.weighting, settings.timeWeighting));
       if (levelHistory.length > historyLength) levelHistory.removeAt(0);
       historyVersion++;
     }
@@ -351,8 +352,9 @@ class MeasurementController extends ChangeNotifier {
       thirdOctaveLzeq: {
         if (_thirdOctaveFrames > 0)
           for (var i = 0; i < bands.length && i < _thirdOctavePowerSum.length; i++)
-            bands[i].nominalHz.toString():
-                double.parse((10 * math.log(_thirdOctavePowerSum[i] / _thirdOctaveFrames) / math.ln10).toStringAsFixed(1)),
+            bands[i].nominalHz.toString(): double.parse(
+              (10 * math.log(_thirdOctavePowerSum[i] / _thirdOctaveFrames) / math.ln10).toStringAsFixed(1),
+            ),
       },
       calibrationOffsetDb: settings.calibrationOffsetDb,
       deviceModel: deviceModel,

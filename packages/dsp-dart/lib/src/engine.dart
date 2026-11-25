@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'dart:typed_data';
 
 import 'level.dart';
@@ -13,11 +14,11 @@ class Engine {
     int fftSize = 8192,
     WindowKind window = WindowKind.hann,
     double calibrationOffsetDb = 0,
-  })  : meter = SoundLevelMeter(sampleRate, calibrationOffsetDb),
-        _spectrum = SpectrumAnalyzer(fftSize, sampleRate, window, calibrationOffsetDb),
-        _pitch = PitchDetector(pitchFrame, sampleRate),
-        thirdOctaveBands = octaveBands(3, 10, sampleRate / 2 / 1.13),
-        fullOctaveBands = octaveBands(1, 15, sampleRate / 2 / 1.42);
+  }) : meter = SoundLevelMeter(sampleRate, calibrationOffsetDb),
+       _spectrum = SpectrumAnalyzer(fftSize, sampleRate, window, calibrationOffsetDb),
+       _pitch = PitchDetector(pitchFrame, sampleRate),
+       thirdOctaveBands = octaveBands(3, 10, sampleRate / 2 / 1.13),
+       fullOctaveBands = octaveBands(1, 15, sampleRate / 2 / 1.42);
 
   static const int ringSize = 65536;
   static const int pitchFrame = 4096;
@@ -51,9 +52,20 @@ class Engine {
 
   void push(Float32List samples) {
     meter.process(samples);
-    for (var i = 0; i < samples.length; i++) {
-      _ring[_ringPos] = samples[i];
-      _ringPos = (_ringPos + 1) & (ringSize - 1);
+    // Chép vào vòng đệm theo đoạn liền (tối đa hai đoạn) thay vì từng mẫu.
+    var src = 0;
+    var left = samples.length;
+    if (left > ringSize) {
+      src = left - ringSize;
+      left = ringSize;
+      _ringPos = (_ringPos + src) & (ringSize - 1);
+    }
+    while (left > 0) {
+      final run = math.min(left, ringSize - _ringPos);
+      _ring.setRange(_ringPos, _ringPos + run, samples, src);
+      _ringPos = (_ringPos + run) & (ringSize - 1);
+      src += run;
+      left -= run;
     }
     _totalSamples += samples.length;
   }
@@ -74,8 +86,9 @@ class Engine {
 
   List<Band> bands(int fraction) => fraction == 1 ? fullOctaveBands : thirdOctaveBands;
 
-  List<double> bandLevels(int fraction, Weighting weighting) =>
-      [for (final b in bands(fraction)) _spectrum.bandLevelDb(b.lowerHz, b.upperHz, weighting)];
+  List<double> bandLevels(int fraction, Weighting weighting) => [
+    for (final b in bands(fraction)) _spectrum.bandLevelDb(b.lowerHz, b.upperHz, weighting),
+  ];
 
   void resetSession() {
     meter.resetSession();

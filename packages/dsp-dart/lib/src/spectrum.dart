@@ -41,11 +41,11 @@ enum WindowKind {
   }
 
   int get lobeHalfWidth => switch (this) {
-        WindowKind.rectangular => 1,
-        WindowKind.hann || WindowKind.hamming => 4,
-        WindowKind.blackmanHarris => 6,
-        WindowKind.flatTop => 7,
-      };
+    WindowKind.rectangular => 1,
+    WindowKind.hann || WindowKind.hamming => 4,
+    WindowKind.blackmanHarris => 6,
+    WindowKind.flatTop => 7,
+  };
 }
 
 enum Averaging { none, exponential, linear }
@@ -60,13 +60,14 @@ class PeakEstimate {
 /// Bộ phân tích phổ - bản port của `SpectrumAnalyzer` (Rust).
 class SpectrumAnalyzer {
   SpectrumAnalyzer(this.size, this.sampleRate, this.windowKind, this.calibrationOffsetDb)
-      : assert(size >= 64 && size <= 65536 && (size & (size - 1)) == 0),
-        _fft = Fft(size),
-        _window = windowKind.coefficients(size),
-        _re = Float64List(size),
-        _im = Float64List(size),
-        power = Float64List(size ~/ 2 + 1),
-        peakHold = Float64List(size ~/ 2 + 1) {
+    : assert(size >= 64 && size <= 65536 && (size & (size - 1)) == 0),
+      _fft = RealFft(size),
+      _window = windowKind.coefficients(size),
+      _frame = Float64List(size),
+      _re = Float64List(size ~/ 2 + 1),
+      _im = Float64List(size ~/ 2 + 1),
+      power = Float64List(size ~/ 2 + 1),
+      peakHold = Float64List(size ~/ 2 + 1) {
     for (final w in _window) {
       _windowSum += w;
       _windowSqSum += w * w;
@@ -80,9 +81,10 @@ class SpectrumAnalyzer {
   Averaging averaging = Averaging.exponential;
   double expAlpha = 0.3;
 
-  final Fft _fft;
+  /// FFT thực (QA-11 bước 4): nửa chi phí FFT phức cùng cỡ; [_re]/[_im] chỉ giữ bin 0..N/2.
+  final RealFft _fft;
   final Float64List _window;
-  final Float64List _re, _im;
+  final Float64List _frame, _re, _im;
   double _windowSum = 0, _windowSqSum = 0;
   int _frames = 0;
 
@@ -93,22 +95,22 @@ class SpectrumAnalyzer {
   final Map<(double, double), _BandPlan> _bandPlans = {};
 
   Float64List _gainDb(Weighting w) => _gainDbTable.putIfAbsent(w, () {
-        final bin = binHz;
-        final t = Float64List(bins);
-        for (var k = 0; k < t.length; k++) {
-          t[k] = w == Weighting.z ? 0.0 : analogGainDb(w, k * bin);
-        }
-        return t;
-      });
+    final bin = binHz;
+    final t = Float64List(bins);
+    for (var k = 0; k < t.length; k++) {
+      t[k] = w == Weighting.z ? 0.0 : analogGainDb(w, k * bin);
+    }
+    return t;
+  });
 
   Float64List _gainLin(Weighting w) => _gainLinTable.putIfAbsent(w, () {
-        final bin = binHz;
-        final t = Float64List(bins);
-        for (var k = 0; k < t.length; k++) {
-          t[k] = w == Weighting.z ? 1.0 : math.pow(10, analogGainDb(w, math.max(k * bin, 1e-9)) / 10).toDouble();
-        }
-        return t;
-      });
+    final bin = binHz;
+    final t = Float64List(bins);
+    for (var k = 0; k < t.length; k++) {
+      t[k] = w == Weighting.z ? 1.0 : math.pow(10, analogGainDb(w, math.max(k * bin, 1e-9)) / 10).toDouble();
+    }
+    return t;
+  });
 
   _BandPlan _plan(double loHz, double hiHz) {
     final key = (loHz, hiHz);
@@ -152,10 +154,9 @@ class SpectrumAnalyzer {
     }
     mean /= size;
     for (var i = 0; i < size; i++) {
-      _re[i] = (frame[i] - mean) * _window[i];
-      _im[i] = 0;
+      _frame[i] = (frame[i] - mean) * _window[i];
     }
-    _fft.transform(_re, _im);
+    _fft.forward(_frame, _re, _im);
     final norm = size * _windowSqSum;
     final last = size ~/ 2;
     _frames++;
