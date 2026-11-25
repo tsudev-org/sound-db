@@ -252,6 +252,30 @@ Danh sách lỗi (mã `QA-nn`, mức, tab, cách tái hiện, trạng thái):
   20 lần/giây nên vẫn ~0,7 lõi. Hồ sơ luồng sau vòng 2 chưa lấy (cáp USB rớt sau 02:20).
   Bản **26.11.2501** (chứa #62) đã phát hành 25/11: SHA256 + `gh attestation verify` + VirusTotal đạt tại máy dev; cài đè
   gói chính + `cpu_rate` bản release CHƯA làm (adb rớt) - phiếu 10 P1.
+  **25/11 09:50 (sound-db-ff, phiếu 10 P1) - nghiệm thu 26.11.2501 ĐẠT**: `sha256sum -c SHA256SUMS.txt --ignore-missing`
+  OK, `gh attestation verify` 2 chứng thực `release.yml@refs/tags/v26.11.2501`; `adb install -r` đè gói chính 26114401 ⇒
+  26114501, Lịch sử giữ 2/2, Cài đặt "Phiên bản 26.11.2501". `cpu_rate` BẢN RELEASE (`QA_PKG=com.tsudev.sounddb
+  qa11-cpu.sh`): Đo mức 29 / 31, Phân tích 78 / 72, Bộ chỉnh âm 74 / 66, Cài đặt 13 / 16, đứng yên 0.
+  **25/11 10:00-10:50 (sound-db-ff, bước 4, PR `perf/qa-11-dsp-block-rfft`) - CHƯA ĐẠT < 30 ở bản profile, giảm ~10 %.**
+  Không đổi thuật toán ⇒ Rust/`vectors.json` không đổi (conformance Dart + Rust xanh). Vòng 1: lọc A/C/Z theo khối (mỗi
+  khâu chạy hết đoạn với biến cục bộ, đoạn cắt đúng mốc thống kê 10 ms ⇒ TRÙNG BIT bản từng mẫu, test
+  `qa11_block_rfft_test.dart`), `RealFft` (FFT thực = FFT phức N/2) cho phổ + NSDF, vòng đệm chép theo đoạn. Vòng 2:
+  7 phân vị một lượt quét histogram, lịch sử mức 10 Hz đọc `instantDb` thay vì cả `snapshot()`, vòng FFT đọc hệ số xoay
+  một lần. Bench x86 AOT: 189 ⇒ 72 ms CPU/giây âm (dò cao độ 95 ⇒ 31, FFT 51 ⇒ 17, lọc 11 ⇒ 6).
+
+  | Tab (đang đo, gói `.profile`) | Trước (26112504) | Vòng 1 (26112505) | Vòng 2 (26112506, 4 lượt) |
+  | --- | --- | --- | --- |
+  | Đo mức | 38 / 34 | 27 / 32 | 32 / 31 / 32 / 32 |
+  | Phân tích | 86 / 82 | 77 / 74 | 74 / 72 / 72 / 72 |
+  | Bộ chỉnh âm | 72 / 77 | 67 / 59 | 65 / 64 / 65 / 59 |
+  | Cài đặt | 14 / 16 | 15 / 15 | 14 / 14 / 14 / 15 |
+
+  Theo luồng ở Đo mức: luồng chính 19,7 (sau bước 3) ⇒ 17,4 (vòng 1) ⇒ **15,2** (vòng 2); `1.raster` 10,3; thu âm 3,9.
+  Mẫu Dart còn lại: FFT tích luỹ 1/3 octave (5 lần/giây) ~20 %, lọc + tách sóng theo mẫu ~21 % (3 bộ lọc × 48 000 mẫu -
+  việc tối thiểu), vẽ khung phần còn lại. Bản release thường thấp hơn bản profile 2-4 jiffies/s (29-31 vs 32-38 cùng
+  mã). **Hướng tiếp nếu cần < 30 ở bản profile**: tích luỹ 1/3 octave của phiên bằng dàn lọc hạ mẫu (đổi thuật toán -
+  Rust + vector + Dart cùng PR) hoặc FFT 4096 cho tích luỹ; raster 10 jiffies/s là khung vẽ 10 Hz (không giảm thêm
+  mà không đổi giao diện). Không còn khâu lớn rõ rệt - đề xuất chủ dự án chấp nhận ~0,3 lõi và đóng QA-11.
 
 Đo trên máy 21/11 (bằng chứng ảnh): FFT 8192 Hann 5,86 Hz/bin trọng số A hiển thị đúng, nhãn trục không tràn; Cài
 đặt hiện phiên bản 26.11.1705 và khối "Âm thanh không bao giờ rời thiết bị".

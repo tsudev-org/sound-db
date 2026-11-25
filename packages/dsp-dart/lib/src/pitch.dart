@@ -32,11 +32,13 @@ NoteInfo? noteInfo(double frequencyHz, double a4Hz) {
 /// Dò cao độ McLeod (NSDF) - bản port của `PitchDetector` (Rust).
 class PitchDetector {
   PitchDetector(this.size, this.sampleRate)
-      : _padded = _nextPow2(2 * size),
-        _nsdf = Float64List(size) {
-    _fft = Fft(_padded);
-    _re = Float64List(_padded);
-    _im = Float64List(_padded);
+    : _padded = _nextPow2(2 * size),
+      _nsdf = Float64List(size),
+      _squares = Float64List(size) {
+    _fft = RealFft(_padded);
+    _signal = Float64List(_padded);
+    _re = Float64List(_padded ~/ 2 + 1);
+    _im = Float64List(_padded ~/ 2 + 1);
   }
 
   static int _nextPow2(int v) {
@@ -50,9 +52,10 @@ class PitchDetector {
   final int size;
   final double sampleRate;
   final int _padded;
-  late final Fft _fft;
-  late final Float64List _re, _im;
-  final Float64List _nsdf;
+  // FFT thực thuận + ngược (QA-11 bước 4): tự tương quan qua phổ công suất, nửa chi phí FFT phức cùng cỡ.
+  late final RealFft _fft;
+  late final Float64List _signal, _re, _im;
+  final Float64List _nsdf, _squares;
   double minHz = 30;
   double maxHz = 5000;
   double threshold = 0.9;
@@ -65,28 +68,27 @@ class PitchDetector {
       mean += frame[i];
     }
     mean /= n;
-    _re.fillRange(0, _padded, 0);
-    _im.fillRange(0, _padded, 0);
+    _signal.fillRange(n, _padded, 0);
     var energy = 0.0;
-    final squares = Float64List(n);
+    final squares = _squares;
     for (var i = 0; i < n; i++) {
       final v = frame[i] - mean;
-      _re[i] = v;
+      _signal[i] = v;
       squares[i] = v * v;
       energy += squares[i];
     }
     if (energy < 1e-12) return null;
-    _fft.transform(_re, _im);
-    for (var i = 0; i < _padded; i++) {
+    _fft.forward(_signal, _re, _im);
+    for (var i = 0; i < _re.length; i++) {
       _re[i] = _re[i] * _re[i] + _im[i] * _im[i];
       _im[i] = 0;
     }
-    _fft.inverse(_re, _im);
+    _fft.inverse(_re, _im, _signal);
     final scale = 1 / _padded;
     var m = 2 * energy;
     for (var tau = 0; tau < n; tau++) {
       if (tau > 0) m -= squares[n - tau] + squares[tau - 1];
-      _nsdf[tau] = m > 1e-12 ? 2 * _re[tau] * scale / m : 0;
+      _nsdf[tau] = m > 1e-12 ? 2 * _signal[tau] * scale / m : 0;
     }
     final minTau = math.max(2, (sampleRate / maxHz).floor());
     final maxTau = math.min(n - 2, (sampleRate / minHz).ceil());

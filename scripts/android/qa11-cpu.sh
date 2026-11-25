@@ -4,7 +4,7 @@
 set -u
 cd "$(dirname "$0")/../.."
 source scripts/android/ui.sh
-PKG=com.tsudev.sounddb.profile
+PKG=${QA_PKG:-com.tsudev.sounddb.profile}
 mkdir -p "$QA_DIR"; out=$QA_DIR/qa11-cpu-$1.tsv
 sh_ am force-stop $PKG; sleep 1
 sh_ monkey -p $PKG -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1; sleep 5

@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'dart:typed_data';
 
 /// Tần số cực IEC 61672-1 phụ lục E (Hz).
 const double f1 = 20.598997057568145;
@@ -99,6 +100,22 @@ class Biquad {
     return y;
   }
 
+  /// Lọc tại chỗ [n] mẫu đầu của [buf] - cùng phép tính và thứ tự như [process] từng mẫu (kết quả trùng bit), nhưng
+  /// hệ số + trạng thái nằm trong biến cục bộ (QA-11 bước 4).
+  void processBlock(Float64List buf, int n) {
+    final b0 = this.b0, b1 = this.b1, b2 = this.b2, a1 = this.a1, a2 = this.a2;
+    var z1 = _z1, z2 = _z2;
+    for (var i = 0; i < n; i++) {
+      final x = buf[i];
+      final y = b0 * x + z1;
+      z1 = b1 * x - a1 * y + z2;
+      z2 = b2 * x - a2 * y;
+      buf[i] = y;
+    }
+    _z1 = z1;
+    _z2 = z2;
+  }
+
   double magnitude(double freqHz, double sampleRate) {
     final w = 2 * math.pi * freqHz / sampleRate;
     final c1 = math.cos(w), s1 = math.sin(w), c2 = math.cos(2 * w), s2 = math.sin(2 * w);
@@ -129,7 +146,11 @@ class WeightingFilter {
       case Weighting.c:
         _sections.addAll([hp1, lp4]);
       case Weighting.a:
-        _sections.addAll([hp1, Biquad.fromAnalog([1, 0, 0], [1, w2 + w3, w2 * w3], sampleRate), lp4]);
+        _sections.addAll([
+          hp1,
+          Biquad.fromAnalog([1, 0, 0], [1, w2 + w3, w2 * w3], sampleRate),
+          lp4,
+        ]);
     }
     final at1k = _rawMagnitude(1000);
     _gain = at1k > 0 ? 1 / at1k : 1;
@@ -150,6 +171,19 @@ class WeightingFilter {
       y = section.process(y);
     }
     return y;
+  }
+
+  /// Lọc theo khối: [input] mẫu [start]..[end) ⇒ [out] từ chỉ số 0. Mỗi khâu chạy hết khối rồi mới tới khâu sau -
+  /// mỗi mẫu vẫn qua đúng chuỗi phép tính của [process] nên kết quả trùng bit (QA-11 bước 4).
+  void processBlock(Float32List input, int start, int end, Float64List out) {
+    final n = end - start;
+    final g = _gain;
+    for (var i = 0; i < n; i++) {
+      out[i] = input[start + i] * g;
+    }
+    for (final section in _sections) {
+      section.processBlock(out, n);
+    }
   }
 
   void reset() {
