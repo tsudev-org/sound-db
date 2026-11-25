@@ -1,8 +1,8 @@
 # STATE.md - Trạng thái project Sound Db
 
-> **PHIÊN KẾ TIẾP ĐỌC TRƯỚC:** `logs/handover/20261125-10_ban-giao-sound-db.md` (P1 nghiệm thu 26.11.2501 trên máy → P2 QA-11
-> bước 4 → P3 UI2 + chuẩn v6.0.0; bẫy mục 3; phiếu 09 mục 3 + 5 vẫn áp dụng). Phiên `sound-db-9d` kết thúc sáng 25/11/2026,
-> main sạch, LOCKS trống. Điện thoại SM-M325FV RỚT adb sau 02:20 - cần 👤 cắm lại.
+> **PHIÊN KẾ TIẾP ĐỌC TRƯỚC:** `logs/handover/20261125-11_ban-giao-sound-db.md` (việc 👤 có agent hỗ trợ: Required
+> reviewers, worktree qa11, Pro, QR3, TalkBack; rồi QA-11 quyết định đóng/làm tiếp; bẫy mục 3). Phiên `sound-db-ff` kết
+> thúc trưa 25/11/2026, main sạch, LOCKS trống, chuẩn v6.0.0. Điện thoại SM-M325FV đang cắm (adb.exe thấy máy).
 
 > **Phiên kế tiếp (phiếu toàn hệ 20261117-P2):** đọc `~/projects/logs/handover/20261117-P2_ke-hoach-phan-phoi-tin-cay-da-nen-tang.md` hàng 2 (`sound-db`) ở mục 3
 > + `.standards/docs/DISTRIBUTION_TRUST.md` (chuẩn v3.7.0) + `.standards/docs/VERSIONING.md` mục 2. Khuôn thẻ/tên tệp mới chỉ áp
@@ -33,12 +33,13 @@
 - [ ] 👤 QR3 E2E trên máy thật: máy tính đăng nhập tsudev.com ⇒ Tài khoản ⇒ Đăng nhập trên điện thoại ⇒ app Sound Db
   "Quét để đăng nhập" (ADR-0008). DK2: chờ duyệt nhãn tín nhiệm. Dependabot npm (TS 7, vitest 5): cần `astro check` hỗ
   trợ TS 7 + `vitest-pool-workers` hỗ trợ vitest 5 trước khi nhận (PR #48 đã revert).
-- [ ] **Nghiệm thu 26.11.2501 trên máy thật** (phiếu 10 P1): cài đè gói chính giữ dữ liệu + `cpu_rate` bản release.
-- [ ] **QA-11 bước 4** (phiếu 10 P2): Đo mức 32-38 jiffies/s sau #62 (trước 72-83), mục tiêu < 30 ⇒ DSP theo khối/FFT
-  thực (Rust + vector + Dart cùng PR).
-- [ ] **Việc trước đây của 👤 nay giao agent** (phiếu 10 P4): gỡ worktree sound-db-qa11 (đã đồng ý), Required reviewers
-  (repo giờ admin), Pro nghiệm thu, QR3 E2E, TalkBack, SignPath (chỉ nộp khi đạt phiếu 20261113-02 mục 5).
-- [ ] **UI2** rà giao diện web + hiện đại hoá (`logs/handover/20261125-UI2_*`) + sync tsudev-standards v6.0.0.
+- [ ] **QA-11 quyết định** (phiếu 11 P2): sau bước 4 (PR #68) Đo mức bản profile 31-32, bản release 26.11.2501 29-31
+  jiffies/s (gốc 72-83). Đề xuất 👤 chấp nhận ~0,3 lõi và đóng; nếu cần < 30 ⇒ tích luỹ 1/3 octave bằng dàn lọc hạ mẫu
+  (Rust + vector + Dart cùng PR).
+- [ ] **Việc 👤 có agent hỗ trợ** (phiếu 11 P1): Required reviewers (lệnh PUT bị bộ phân loại auto mode chặn 25/11 -
+  👤 tự chạy hoặc cho phép), gỡ worktree sound-db-qa11 (CÒN thay đổi chưa commit - phải hỏi), Pro nghiệm thu, QR3 E2E,
+  TalkBack. SignPath: đo 0/6 (25/11) ⇒ KHÔNG nộp.
+- [ ] Phát hành bản kế tiếp (có QA-11 bước 4 + nền Sáng mới trong app + gói `.intoto.jsonl` tự đính kèm Release).
 - [ ] 👤 TalkBack thật: bật TalkBack, vuốt qua Đo mức khi đang đo - chỉ đọc vùng mức khi đổi, không đọc dồn (QA-05).
 - [ ] **ƯU TIÊN 1 - Kiểm thử toàn diện trên smartphone thật qua adb** (5 phase: kết nối + smoke, chức năng từng tab,
   phi chức năng + bảo mật, sửa lỗi + chuẩn hoá mã, phát hành bản sửa). Kế hoạch + lệnh + tiêu chí:
@@ -62,6 +63,15 @@
 | --- | --- | --- |
 
 ## Đã hoàn thành (mới nhất trên cùng)
+
+- 25/11/2026 trưa - `sound-db-ff`: **Nghiệm thu 26.11.2501** trên SM-M325FV (SHA256 + 2 chứng thực, cài đè giữ Lịch sử
+  2/2, Cài đặt 26.11.2501; `cpu_rate` release Đo mức 29-31). **QA-11 bước 4** (PR #68): lọc A/C/Z theo khối trùng bit,
+  `RealFft` cho phổ + NSDF, phân vị một lượt, `instantDb` ⇒ bench x86 189 ⇒ 72 ms/giây âm; máy thật profile Đo mức
+  34-38 ⇒ 31-32, Bộ chỉnh âm 72-77 ⇒ 59-65 (CHƯA < 30). **Scorecard Signed-Releases** (PR #69): `release.yml` đính
+  `sound-db_<v>.intoto.jsonl`; đã đính bù cho Release 26.11.2501 (kiểm ngoại tuyến `--bundle` đạt). **UI2 + chuẩn
+  v6.0.0** (PR #70, production run 45551877260): nền Sáng giấy, preload font + dự phòng đo khớp (CLS 0,049 ⇒ 0,0001,
+  LCP 1876 ⇒ 1108 ms), bảng `/en/tai-ve/` 360 px, lưới thẻ 3 × 3, hoạ tiết tĩnh, quét production 96/96 đạt.
+  **SignPath** đo 0/6 ⇒ không nộp (phiếu 20261113-02 mục 7). V1: scoop 26.11.1705, cask 26.11.2401, vẫn tên cũ.
 
 - 25/11/2026 sáng - `sound-db-9d`: **QA-11 bước 3** (PR #62): hồ sơ CPU Dart máy thật qua VM service ⇒ dựng/vẽ 51 %,
   FFT phổ thừa 18 % ⇒ phổ chỉ tính đủ nhịp khi Phân tích hiển thị, Đo mức dựng theo phần (`select:`), lưới đồ thị tĩnh,

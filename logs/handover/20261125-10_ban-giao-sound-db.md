@@ -1,7 +1,7 @@
 # PHIẾU BÀN GIAO 20261125-10 - sound-db, cuối phiên `sound-db-9d` (25/11/2026)
 
 - **Từ**: agent-sound phiên `sound-db-9d` - **Đến**: phiên agent-sound kế tiếp (+ 👤 chủ dự án ở mục 4)
-- **Thời điểm**: sáng 25/11/2026 - **Trạng thái**: MỞ - **Thay phiếu**: `20261125-09` (mục 3 công cụ đo + mục 5 bẫy của 09,
+- **Thời điểm**: sáng 25/11/2026 - **Trạng thái**: ĐÓNG 25/11 trưa (thay bằng phiếu `20261125-11`) - **Thay phiếu**: `20261125-09` (mục 3 công cụ đo + mục 5 bẫy của 09,
   mục 4 của 07 + 08 vẫn áp dụng)
 - **Git**: `main` sạch sau PR tài liệu của phiếu này; `logs/LOCKS.md` trống; không nhánh dở của phiên.
 - **Máy thật**: SM-M325FV `RF8T80J6WVF` - **cáp/adb RỚT sau 02:20** (adb.exe `devices` trống từ 06:00). Gói `.profile` trên

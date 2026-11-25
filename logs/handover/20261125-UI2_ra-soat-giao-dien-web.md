@@ -36,3 +36,7 @@
     mới; thẻ có hoạ tiết "giấy kẻ ô" tĩnh (≤ 10 % sắc sản phẩm, mờ dần về phía chữ), chân trang lưới chấm tĩnh (≤ 14 %),
     không dải màu đầu thẻ, không chuyển động. App Flutter đọc token lúc dựng ⇒ bản phát hành kế tiếp có nền Sáng mới.
   - CÒN: Lighthouse/INP trên production sau deploy (đo lại bằng `film`); ảnh cửa hàng chế độ Sáng chụp lại khi nộp.
+  - **Production sau deploy** (run 45551877260, PR #70): HTML có 4 `rel="preload"` font, `theme.js` nền Sáng `#eef1f5`;
+    quay khung hình production: 1366 px h1 một dòng ngay khung đầu, CLS 0,049 ⇒ 0,0001, LCP 1876 ⇒ 1108 ms; 360 px CLS 0,
+    LCP 1040 ms; quét `scripts/web/ui2-sweep.cjs` production 16 trang × 3 khổ × Sáng/Tối = **96/96 đạt**. Phiếu con này
+    coi như XONG phần A + B; còn Lighthouse INP (không đo được ở headless) và ảnh cửa hàng chế độ Sáng khi nộp.
