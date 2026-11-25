@@ -77,7 +77,8 @@ dự án MỘT lần với hướng dẫn ngắn, chờ trả lời rồi làm t
    enabled_accessibility_services` + `accessibility_enabled`, bật TalkBack, mở Đo mức, bấm Bắt đầu đo (toạ độ 867,156) ⇒
    👤 vuốt qua màn Đo mức ~30 s và trả lời: có đọc DỒN số đo không, có đọc vùng mức khi đổi không ⇒ agent TẮT TalkBack ngay,
    khôi phục giá trị cũ, ghi kết quả QA-05 vào phiếu 06.
-6. **Ký mã Windows - SignPath Foundation** - CẨN THẬN: SignPath đã TỪ CHỐI hệ ngày 12/11/2026; phiếu toàn hệ
+6. **Ký mã Windows - SignPath Foundation** - chủ dự án XÁC NHẬN 25/11/2026: giữ đúng quy định phiếu 20261113-02, KHÔNG
+   nộp vội, không hỏi lại. CẨN THẬN: SignPath đã TỪ CHỐI hệ ngày 12/11/2026; phiếu toàn hệ
    `~/projects/logs/handover/20261113-02_ke-hoach-uy-tin-he-sinh-thai.md` mục 5 quy định chỉ nộp lại cho MỘT dự án (đề
    xuất Lotus Share) khi đạt ≥ 4/6 tín hiệu; nộp sai lúc có thể hỏng hồ sơ VĨNH VIỄN. Việc của phiên: đo 6 tín hiệu cho
    sound-db (sao/fork, người đóng góp ngoài, bài viết độc lập, số tháng phát hành đều + ghi chú tiếng Anh, Scorecard
