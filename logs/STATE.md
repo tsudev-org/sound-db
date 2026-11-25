@@ -36,8 +36,7 @@
 - [ ] **QA-11 quyết định** (phiếu 11 P2): sau bước 4 (PR #68) Đo mức bản profile 31-32, bản release 26.11.2501 29-31
   jiffies/s (gốc 72-83). Đề xuất 👤 chấp nhận ~0,3 lõi và đóng; nếu cần < 30 ⇒ tích luỹ 1/3 octave bằng dàn lọc hạ mẫu
   (Rust + vector + Dart cùng PR).
-- [ ] **Việc 👤 có agent hỗ trợ** (phiếu 11 P1): Required reviewers (lệnh PUT bị bộ phân loại auto mode chặn 25/11 -
-  👤 tự chạy hoặc cho phép), gỡ worktree sound-db-qa11 (CÒN thay đổi chưa commit - phải hỏi), Pro nghiệm thu, QR3 E2E,
+- [ ] **Việc 👤 có agent hỗ trợ** (phiếu 11 P1): Required reviewers ĐÃ BẬT (👤 chạy 25/11, AGENTS.md B.5), gỡ worktree sound-db-qa11 (CÒN thay đổi chưa commit - phải hỏi), Pro nghiệm thu, QR3 E2E,
   TalkBack. SignPath: đo 0/6 (25/11) ⇒ KHÔNG nộp.
 - [ ] Phát hành bản kế tiếp (có QA-11 bước 4 + nền Sáng mới trong app + gói `.intoto.jsonl` tự đính kèm Release).
 - [ ] 👤 TalkBack thật: bật TalkBack, vuốt qua Đo mức khi đang đo - chỉ đọc vùng mức khi đổi, không đọc dồn (QA-05).
@@ -50,8 +49,6 @@
 - [ ] 👤 Đăng nhập tsudev: ĐÃ HẾT TẮC (22:20 17/11) - `/auth/web/start` → `/oidc/auth` 303 → `/oidc/interaction/<uid>`
   307 → `tsudev.com/login` 200. Còn nghiệm thu bằng tài khoản tsudev thật của chủ dự án: đăng nhập web
   (sounddb.tsudev.com → Đăng nhập) + app, rồi đồng bộ hai thiết bị. Agent không có tài khoản ⇒ không tự làm được.
-- [ ] 👤 Required reviewers cho Environment `release` và `production` (tài khoản `tsudev-tsudev` không có quyền admin
-  repo - HTTP 403). Lệnh: phiếu `20261117-05` mục 3.
 - [ ] 👤 Duyệt `xuat-ban` của linux-packages khi có run mới cho 26.11.2301.
 - [ ] Phiếu V1 (khuôn phiên bản thống nhất): chờ `tsudev-standards` v3.7.0 ⇒ sync, bản chuyển tiếp phát hành cả
   tên tệp cũ + mới (`{os}-{arch}`, `SHA256SUMS.txt`), phiếu cho scoop-bucket + homebrew-tap. Kế hoạch: phiếu V1 mục 6.

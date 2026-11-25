@@ -87,6 +87,10 @@ npx npm@11 install && npm test && npm run build
 - **`wrangler dev` đổi header `Origin`** thành tên miền của route (`http://sound.tsudev.com`, `http://sounddb.tsudev.com`) ⇒ mọi lệnh ghi từ
   trình duyệt bị chặn CSRF ở local. Chạy `wrangler dev --local-upstream localhost:8787` và đặt
   `PUBLIC_ORIGIN=http://localhost:8787` trong `.dev.vars`.
+- **Required reviewers** (bật 25/11/2026 bởi chủ dự án): Environment `release` + `production` cần `tsudev-tsudev` bấm
+  duyệt ⇒ MỌI lượt Deploy (merge vào main chạm `apps/web`, `services/sync-api`, `packages/dsp-core`, `tokens`,
+  `package-lock.json`) và Release (thẻ `v*`) DỪNG ở "Waiting" tới khi 👤 duyệt. Agent KHÔNG tự duyệt; sau merge nhắn chủ
+  dự án link run cần duyệt rồi chờ (run_in_background), không coi là lỗi.
 - **Cron**: tài khoản Cloudflare đã hết 5 cron Free - đừng thêm `triggers.crons`; việc định kỳ chạy kèm yêu cầu.
 - **i18n** (PRODUCT_POLICY mục 1): app - chuỗi ở `apps/app/lib/l10n/app_{vi,en}.arb` (bản gốc vi, `flutter gen-l10n`
   sinh `app_localizations*.dart` - commit kèm); trong widget dùng `context.l10n`, ngoài cây widget dùng `l10nNow`;
