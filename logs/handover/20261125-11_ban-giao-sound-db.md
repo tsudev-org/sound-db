@@ -66,7 +66,7 @@ ClusterFuzzLite nếu muốn).
 - `gh pr checks` không TTY: vòng chờ bằng `grep "\spending\s"` THOÁT SỚM ⇒ dùng `--json bucket --jq
   'map(select(.bucket=="pending"))|length'`.
 - `cpu_rate` trên máy nhiễu ±5 (một lượt 45 rồi 31-32) ⇒ đo ≥ 4 lượt trước khi kết luận.
-- Cổng quy ước 7.1 bắt ký tự em/en-dash ở MỌI tệp, kể cả regex ⇒ viết `—`.
+- Cổng quy ước 7.1 bắt ký tự em/en-dash ở MỌI tệp, kể cả regex ⇒ viết dạng mã `\u2014` (cổng chạy tại máy chỉ quét tệp ĐÃ theo dõi - tệp mới chưa `git add` lọt qua).
 - knip coi `.standards/templates/**` là mã ⇒ `knip.json` có `"ignore": [".standards/**"]`.
 - Đổi cài đặt bảo vệ repo (PUT environments) bị bộ phân loại auto mode chặn - việc 👤.
 
