@@ -36,6 +36,8 @@
 - [ ] **Nghiệm thu 26.11.2501 trên máy thật** (phiếu 10 P1): cài đè gói chính giữ dữ liệu + `cpu_rate` bản release.
 - [ ] **QA-11 bước 4** (phiếu 10 P2): Đo mức 32-38 jiffies/s sau #62 (trước 72-83), mục tiêu < 30 ⇒ DSP theo khối/FFT
   thực (Rust + vector + Dart cùng PR).
+- [ ] **Việc trước đây của 👤 nay giao agent** (phiếu 10 P4): gỡ worktree sound-db-qa11 (đã đồng ý), Required reviewers
+  (repo giờ admin), Pro nghiệm thu, QR3 E2E, TalkBack, SignPath (chỉ nộp khi đạt phiếu 20261113-02 mục 5).
 - [ ] **UI2** rà giao diện web + hiện đại hoá (`logs/handover/20261125-UI2_*`) + sync tsudev-standards v6.0.0.
 - [ ] 👤 TalkBack thật: bật TalkBack, vuốt qua Đo mức khi đang đo - chỉ đọc vùng mức khi đổi, không đọc dồn (QA-05).
 - [ ] **ƯU TIÊN 1 - Kiểm thử toàn diện trên smartphone thật qua adb** (5 phase: kết nối + smoke, chức năng từng tab,
