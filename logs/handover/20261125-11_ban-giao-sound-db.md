@@ -34,14 +34,17 @@
    done
    ```
    Sau khi bật: MỖI Deploy/Release chờ 👤 bấm duyệt ⇒ ghi vào AGENTS.md B.5.
-2. **Worktree `~/projects/sound-db-qa11`** (nhánh `fix/qa-11-dsp-cpu`, chỉ có ở máy): CÒN thay đổi chưa commit - 4 tệp sửa
+2. **XONG 25/11** (👤 đồng ý): bản sao `logs/qa/qa11-worktree-20261125/` (tracked.patch + untracked.tgz, chỉ ở máy),
+   worktree + nhánh `fix/qa-11-dsp-cpu` đã gỡ. (Cũ:) **Worktree `~/projects/sound-db-qa11`** (nhánh `fix/qa-11-dsp-cpu`, chỉ có ở máy): CÒN thay đổi chưa commit - 4 tệp sửa
    (`tuner_tab.dart`, `measurement.dart`, `locale_test.dart`, `spectrum.dart`) + chưa theo dõi (`qa11_pitch_demand_test.dart`,
    `test/support/`, `qa11_band_cost_test.dart`, `packages/dsp-dart/tool/`). Trông như bản nháp của PR #54 (đã merge) ⇒
    theo phiếu 10 P4.1 phải HỎI 👤 trước khi gỡ. Đồng ý ⇒ `git -C ~/projects/sound-db-qa11 diff > <scratchpad>/qa11.patch`
    (giữ bản sao) rồi `git worktree remove --force ~/projects/sound-db-qa11 && git branch -D fix/qa-11-dsp-cpu`.
 3. **Pro nghiệm thu**, **QR3 E2E**, **TalkBack nghe thật**: như phiếu 10 P4.3-P4.5 (nguyên văn còn đúng; máy đang cắm).
 
-### P2. QA-11 - quyết định
+### P2. QA-11 - ĐÃ ĐÓNG 25/11 (chủ dự án chấp nhận ~0,3 lõi)
+
+Chỉ còn: đo `cpu_rate` Đo mức trên bản phát hành kế tiếp (có #68) và ghi số vào phiếu 06. Bối cảnh cũ:
 
 Bản release 26.11.2501 (có #62, CHƯA có #68) đã 29-31 ở Đo mức. Bước 4 hạ thêm ~10 % (bản profile 31-32). Phần còn
 lại: FFT tích luỹ 1/3 octave 5 lần/giây (~20 % Dart), lọc + tách sóng theo mẫu (~21 %, việc tối thiểu), raster 10 Hz.
