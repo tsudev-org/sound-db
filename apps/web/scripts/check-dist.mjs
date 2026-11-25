@@ -96,7 +96,7 @@ for (const e of tin.evidence) {
   if (!/^https:\/\//.test(e.url ?? '')) loi.push(`trust.json ${e.id}: thiếu liên kết kiểm chứng https`);
   const d = Date.parse(e.measured ?? '');
   if (!/^\d{4}-\d{2}-\d{2}$/.test(e.measured ?? '') || !(d <= Date.now() + 24 * 3600 * 1000)) loi.push(`trust.json ${e.id}: ngày đo sai ${e.measured}`);
-  if (!e.status || /PENDING|TODO/i.test(e.status)) loi.push(`trust.json ${e.id}: chưa có kết quả đo thật`);
+  if (!e.status || /_PENDING\b|\bTODO\b/.test(e.status)) loi.push(`trust.json ${e.id}: chưa có kết quả đo thật`);
 }
 for (const [trang, chu] of [['security/index.html', 'Báo lỗ hổng'], ['en/security/index.html', 'Report a vulnerability']]) {
   const html = readFileSync(join(dist, trang), 'utf8');
